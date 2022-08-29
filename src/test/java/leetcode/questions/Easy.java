@@ -48,11 +48,23 @@ public class Easy {
         return ++left;
     }
 
+    /**
+     * 我的解法
+     */
+    public int maxProfit(int[] prices) {
+        int maxProfit = 0;
+        for(int i = 0;i < prices.length-1;i++){
+            if(prices[i+1] > prices[i]){
+                maxProfit += prices[i+1] - prices[i];
+            }
+        }
+        return maxProfit;
+    }
+
+
     @Test
     public void invoke(){
 //        int i = removeDuplicates(new int[]{1, 1});
 //        int i = removeDuplicatesAnswer(new int[]{0,0,1,1,1,2,2,3,3,4});
-
-
     }
 }
