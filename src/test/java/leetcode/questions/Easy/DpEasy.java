@@ -200,34 +200,6 @@ public class DpEasy {
         return Math.max(res0, res1);
     }
 
-    /**
-     * 打乱数组（我的解法）
-     */
-    class Solution {
-        private int[] nums;
-
-        public Solution(int[] nums) {
-            this.nums = Arrays.copyOf(nums, nums.length);
-        }
-
-        public int[] reset() {
-            return nums;
-        }
-
-        public int[] shuffle() {
-            int[] res = Arrays.copyOf(this.nums, this.nums.length);
-            int j, temp;
-            for(int i = 0;i < nums.length;i++){
-                j = new Random().nextInt(this.nums.length);
-                temp = res[i];
-                res[i] = res[j];
-                res[j] = temp;
-            }
-            return res;
-        }
-    }
-
-
     @Test
     public void invoke(){
 //        maxProfit1(new int[]{7,1,6,5,9,4});
