@@ -2,10 +2,7 @@ package leetcode.datastruture.array;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.PriorityQueue;
+import java.util.*;
 
 /**
  * @author Antares
@@ -340,6 +337,32 @@ public class ArrayLearn {
         }
     }
 
+    /**
+     * 杨辉三角 II
+     * 杨辉三角
+     *  1
+     *  1 1
+     *  1 2 1
+     *  1 3 3 1
+     *  1 4 6 4 1   2x3
+     *  1 5 10 10 5 1   2x5
+     *  1 6 15 20 15 6 1   3x5   4x5
+     */
+    class GetRow {
+        public List<Integer> getRow(int rowIndex) {
+            Integer[] ans = new Integer[rowIndex + 1];
+            ans[0] = 1;
+            for(int i = 1;i < rowIndex + 1;i++){
+                ans[i] = 1;
+                for(int j = i-1; j > 0;j--){
+                    ans[j] = ans[j-1] + ans[j];
+                }
+            }
+
+            return Arrays.asList(ans);
+        }
+    }
+
     @Test
     public void invoke(){
 //        new PivotIndex().pivotIndex(new int[]{-1, 1, -1});
@@ -347,7 +370,7 @@ public class ArrayLearn {
 //        new SetZeroes().setZeroes(new int[][]{{1,1,1},{0,1,2}});
 //        new SetZeroes().setZeroes(new int[][]{{1,0,3}});
 //        new SetZeroes().setZeroes(new int[][]{{1,1,1},{0,1,2}});
-        new FindDiagonalOrder().findDiagonalOrder(new int[][]{{1,2,3},{4,5,6},{7,8,9},{10,11,12}});
+//        new FindDiagonalOrder().findDiagonalOrder(new int[][]{{1,2,3},{4,5,6},{7,8,9},{10,11,12}});
 //        new FindDiagonalOrder().findDiagonalOrder(new int[][]{{1,2,3},{4,5,6},{7,8,9}});
 
     }

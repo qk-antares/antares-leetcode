@@ -3,8 +3,7 @@ package leetcode.datastruture.string;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.StringUtils;
 
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.*;
 
 /**
  * @author Antares
@@ -123,47 +122,63 @@ public class StringLearn {
     }
 
     /**
-     * 翻转字符串里的单词，使用split函数+StringBuilder
+     * 反转字符串中的单词 III（使用Java函数库，解法二手写）
      */
     class ReverseWords {
         public String reverseWords(String s) {
-            String[] strings = s.trim().split(" ");
-
             StringBuilder sb = new StringBuilder();
 
-            for(int i = strings.length-1;i >= 0;i--){
-                if (!strings[i].equals("")){
-                    sb.append(strings[i]).append(" ");
-                }
+            String[] strings = s.split(" ");
+            for (String string : strings) {
+                char[] chars = string.toCharArray();
+                for(int i = chars.length-1;i >= 0;i--)
+                    sb.append(chars[i]);
+
+                sb.append(' ');
             }
 
-            sb.deleteCharAt(sb.length()-1);
+            sb.delete(sb.length()-1, sb.length());
 
             return sb.toString();
         }
-    }
 
-    /**
-     * 实现 strStr()
-     */
-    class StrStr {
-        public int strStr(String haystack, String needle) {
-            return -1;
+
+        /**
+         * 手写，原地修改(效率并没有明显提高)
+         */
+        public String reverseWords0(String s) {
+            char[] charArray = s.toCharArray();
+
+            int startIndex = 0, endIndex = 0;
+            int tempStart, tempEnd;
+            char temp;
+            while (endIndex < s.length()){
+                while (endIndex < s.length() && s.charAt(endIndex) != ' '){
+                    endIndex++;
+                }
+                //对startIndex和endIndex-1区间内的字符进行翻转
+                tempStart = startIndex;
+                tempEnd = endIndex-1;
+                while (tempStart < tempEnd){
+                    //这里提升为函数效率会下降
+                    temp = charArray[tempStart];
+                    charArray[tempStart] = charArray[tempEnd];
+                    charArray[tempEnd] = temp;
+                    tempStart++;
+                    tempEnd--;
+                }
+                endIndex++;
+                startIndex = endIndex;
+            }
+
+            return new String(charArray);
         }
 
-        //首先构造next
-        public int[] buildNext(String P) { // 构造模式串 P 的 next 表
-            int m = P.length(), j = 0; // “主”串指针
-            int[] N = new int[m]; // next 表
-            int t = N[0] = -1; // 模式串指针
-            while (j < m - 1)
-                if ( 0 > t || P.charAt(j) == P.charAt(t)){ // 匹配
-                    j++; t++;
-                    N[j] = t; // 此句可改进为 N[j] = (P[j] != P[t] ? t : N[t]);
-                }else // 失配
-                    t = N[t];
-
-            return N;
+        public void swap(char[] chars, int i, int j){
+            //将temp提成为类的属性效率反而变慢
+            char temp = chars[i];
+            chars[i] = chars[j];
+            chars[j] = temp;
         }
     }
 
@@ -172,8 +187,7 @@ public class StringLearn {
     public void invoke(){
 //        new LongestCommonPrefix().longestCommonPrefix(new String[]{"flower","flow","flight"});
 //        new LongestPalindrome().longestPalindrome0("cbbd");
-//        new ReverseWords().reverseWords("a good   example");
-        new StrStr().buildNext("AATGPACY");
+        new ReverseWords().reverseWords0("Let's take LeetCode contest");
     }
 
 }
