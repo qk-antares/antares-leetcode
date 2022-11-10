@@ -298,7 +298,7 @@ public class PathDp {
         private int mod = 1000000007;
         public int countRoutes0(int[] locations, int start, int finish, int fuel) {
             int n = locations.length;;
-            int[][] dp = new int[n][fuel+1];
+            dp = new int[n][fuel+1];
 
             for(int i = 0;i < n;i++){
                 Arrays.fill(dp[i], -1);
@@ -309,13 +309,13 @@ public class PathDp {
 
         public int dfs(int[] locations, int u, int finish, int fuel){
             //如果已经计算过
-            if(dp[u][finish] != -1)
-                return dp[u][finish];
+            if(dp[u][fuel] != -1)
+                return dp[u][fuel];
 
             //直接到达不了，返回
             int cost = Math.abs(locations[u] - locations[finish]);
             if(cost > fuel){
-                dp[u][finish] = 0;
+                dp[u][fuel] = 0;
                 return 0;
             }
 
@@ -323,24 +323,173 @@ public class PathDp {
             int ans = u == finish ? 1 : 0;
             for(int i = 0;i < locations.length;i++){
                 if(i != u){
-                    ans += dfs(locations, i, finish, fuel - Math.abs(locations[i]-locations[u]));
-                    ans %= mod;
+                    int consume = Math.abs(locations[i]-locations[u]);
+                    if(fuel >= consume){
+                        ans += dfs(locations, i, finish, fuel - consume);
+                        ans %= mod;
+                    }
                 }
             }
 
-            dp[u][finish] = ans;
+            dp[u][fuel] = ans;
             return ans;
         }
     }
 
+    /**
+     * 出界的路径数（我的解法过了！！！记忆化搜索解法）
+     * dp[i][j][t]表示从(i, j)出发，走t步越界的方法数，依然是使用跳板的思想，但是这里的跳板只能是周围的四个单元格
+     */
+    class FindPaths {
+        private int[][][] dp;
+        private int mod = 1000000007;
+        public int findPaths(int m, int n, int maxMove, int startRow, int startColumn) {
+            dp = new int[m][n][maxMove+1];
+
+            for(int i = 0;i < m;i++){
+                for(int j = 0;j < n;j++){
+                    Arrays.fill(dp[i][j], -1);
+                }
+            }
+
+            return dfs(m,n,maxMove,startRow, startColumn);
+        }
+
+        public int dfs(int m, int n, int step, int x, int y){
+            if(x < 0 || y < 0 || x >= m || y >= n)
+                return 1;
+
+            //一定出不去
+            if(Math.min(Math.min(x+1, m-x), Math.min(y+1, n-y)) > step){
+                dp[x][y][step] = 0;
+                return 0;
+            }
+
+            if(dp[x][y][step] != -1){
+                return dp[x][y][step];
+            }
+
+            int ans = 0;
+            //可以走出去，则跳板是周围的四格
+            ans += dfs(m, n, step-1, x-1,y);
+            ans %= mod;
+            ans += dfs(m, n, step-1, x+1,y);
+            ans %= mod;
+            ans += dfs(m, n, step-1, x,y-1);
+            ans %= mod;
+            ans += dfs(m, n, step-1, x,y+1);
+            ans %= mod;
+
+            dp[x][y][step] = ans;
+            return ans;
+        }
+    }
+
+    /**
+     * 最大得分的路径数目
+     */
+    class PathsWithMaxScore {
+        private int mod = 1000000007;
+
+        public int[] pathsWithMaxScore(List<String> board) {
+            int len = board.size();
+            int[][][] dp = new int[len][len][2];
+
+            for(int i = 0;i < len;i++){
+                Arrays.fill(dp[i], new int[]{0,0});
+            }
+
+            dp[len-1][len-1] = new int[]{0, 1};
+            //初始化最后一行和最后一列
+            int i = len-2;
+            char c;
+            for(;i > -1;i--){
+                c = board.get(len-1).charAt(i);
+                if(c != 'X'){
+                    dp[len-1][i] = new int[]{dp[len-1][i+1][0] + c - '0', 1};
+                }else {
+                    break;
+                }
+            }
+            i = len-2;
+            for(;i > -1;i--){
+                c = board.get(i).charAt(len-1);
+                if(c != 'X'){
+                    dp[i][len-1] = new int[]{dp[i+1][len-1][0] + c - '0', 1};
+                }else {
+                    break;
+                }
+            }
+
+            //按行构造dp
+            for(i = len-2;i > -1;i--){
+                for(int j = len-2;j > -1;j--){
+                    c = board.get(i).charAt(j);
+                    if(c != 'X'){
+                        //该点来自右、下、右下三个方向之一
+                        int pathNum = 0;
+                        int maxScore = Math.max(dp[i][j+1][0], Math.max(dp[i+1][j][0], dp[i+1][j+1][0]));
+                        if(maxScore == dp[i][j+1][0]){
+                            pathNum += dp[i][j+1][1];
+                            pathNum %= mod;
+                        }
+                        if(maxScore == dp[i+1][j][0]){
+                            pathNum += dp[i+1][j][1];
+                            pathNum %= mod;
+                        }
+                        if(maxScore == dp[i+1][j+1][0]){
+                            pathNum += dp[i+1][j+1][1];
+                            pathNum %= mod;
+                        }
+
+                        //走得通
+                        if(pathNum != 0){
+                            if(c != 'E')
+                                dp[i][j] = new int[]{maxScore + c - '0', pathNum};
+                            else
+                                dp[i][j] = new int[]{maxScore, pathNum};
+                        }
+                    }
+                }
+            }
+
+            return dp[0][0];
+        }
+
+        // public int[] dfs(int x, int y, List<String> board){
+        //     if(x == 0 && y == 0)
+        //         return dp[0][0];
+        //
+        //     if(board.get(x).charAt(y) == 'X'){
+        //         //无法到达该点
+        //         dp[x][y] = new int[]{0, 0};
+        //     }
+        //
+        //     //该点来自右、下、右下三个方向之一
+        //     int pathNum = 0;
+        //     int maxScore = Math.max(dp[x][y+1][0], Math.max(dp[x+1][y][0], dp[x+1][y+1][0]));
+        //     if(maxScore == dp[x][y+1][0])
+        //         pathNum += dp[x][y+1][1];
+        //     if(maxScore == dp[x+1][y][0])
+        //         pathNum += dp[x][y][1];
+        //     if(maxScore == dp[x+1][y+1][0])
+        //         pathNum += dp[x+1][y+1][0];
+        //     dp[x][y] = new int[]{maxScore + board.get(x).charAt(y) - '0', pathNum};
+        // }
+    }
+
     @Test
     public void invoke(){
-//        new UniquePathsWithObstacles().uniquePathsWithObstacles(new int[][]{{0,0}});
-//        new MinFallingPathSum().minFallingPathSum(new int[][]{{17,82},{1,-44}});
-//        new MinFallingPathSumII().minFallingPathSum(new int[][]{{1,2,3},{4,5,6},{7,8,9}});
-//        new MinFallingPathSumII().minFallingPathSum1(new int[][]{{-37,51,-36,34,-22},{82,4,30,14,38},{-68,-52,-92,65,-85},{-49,-3,-77,8,-19},{-60,-71,-21,-62,-73}});
-//        new MinFallingPathSumII().minFallingPathSum1(new int[][]{{1,2,3},{4,5,6},{7,8,9}});
-//        new MinFallingPathSumII().minFallingPathSum1(new int[][]{{2,2,1,2,2},{2,2,1,2,2},{2,2,1,2,2},{2,2,1,2,2},{2,2,1,2,2}});
-        new CountRoutes().countRoutes(new int[]{4,3,1}, 1 , 0 , 6);
+       // new UniquePathsWithObstacles().uniquePathsWithObstacles(new int[][]{{0,0}});
+       // new MinFallingPathSum().minFallingPathSum(new int[][]{{17,82},{1,-44}});
+       // new MinFallingPathSumII().minFallingPathSum(new int[][]{{1,2,3},{4,5,6},{7,8,9}});
+       // new MinFallingPathSumII().minFallingPathSum1(new int[][]{{-37,51,-36,34,-22},{82,4,30,14,38},{-68,-52,-92,65,-85},{-49,-3,-77,8,-19},{-60,-71,-21,-62,-73}});
+       // new MinFallingPathSumII().minFallingPathSum1(new int[][]{{1,2,3},{4,5,6},{7,8,9}});
+       // new MinFallingPathSumII().minFallingPathSum1(new int[][]{{2,2,1,2,2},{2,2,1,2,2},{2,2,1,2,2},{2,2,1,2,2},{2,2,1,2,2}});
+       // new CountRoutes().countRoutes(new int[]{4,3,1}, 1 , 0 , 6);
+       //  new CountRoutes().countRoutes0(new int[]{2,3,6,8,4},1 ,3 ,5);
+       //  new FindPaths().findPaths(2 ,2 ,2 ,0 ,0);
+       //  new PathsWithMaxScore().pathsWithMaxScore(Arrays.asList("E23","2X2","12S"));
+        new PathsWithMaxScore().pathsWithMaxScore(Arrays.asList("E11","XXX","11S"));
     }
 }

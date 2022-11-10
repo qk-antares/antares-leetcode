@@ -94,6 +94,15 @@ public class ArrayAndString {
         }
     }
 
+    /**
+     * 数组中的第K个最大元素（堆排序，有时间可以复习下）
+     */
+    class Solution {
+        public int findKthLargest(int[] nums, int k) {
+            return -1;
+        }
+    }
+
     @Test
     public void invoke(){
 //        new Generate().generate(5);
