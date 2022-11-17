@@ -187,7 +187,7 @@ public class Sort {
      * 数组中的第K个最大元素（要求时间复杂度必须是O(n)，没做出来）
      *
      */
-    static class FindKthLargest{
+    class FindKthLargest{
         /**
          * 答案解法一：使用Java的最小堆，效率太低了
          * 遍历数组中的元素，添加到最小堆中
