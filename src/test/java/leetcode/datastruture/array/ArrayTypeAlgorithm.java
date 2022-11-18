@@ -58,9 +58,113 @@ public class ArrayTypeAlgorithm {
         }
     }
 
+    /**
+     * 盛最多水的容器，动态规划？
+     * dp[i][j]表示[i,j]中长条所能构成的盛水最多的容器
+     * dp[i][j] = max(dp[i+1][j], dp[i][j-1], (j-i)*min(height[i],height[k]))
+     * 需要斜着构造dp
+     */
+    class MaxArea {
+        /**
+         * dp[][]可解，但是元素特别多时内存会超出限制
+         */
+        public int maxArea(int[] height) {
+            int len = height.length;
+            int[][] dp = new int[len][len];
+            //初始化dp
+            // for(int i = 0;i < len - 1;i++){
+            //     dp[i][i+1] = Math.min(height[i+1], height[i]);
+            // }
+
+            //[0,1] [1,2] ...
+            //[0,2],[1,3]
+            for(int delta = 1;delta < len - 1;delta++){
+                for(int j = 0;j < len - delta;j++){
+                    dp[j][j+delta] = Math.max(Math.max(dp[j+1][j+delta], dp[j][j+delta-1]), delta * Math.min(height[j], height[j+delta]));
+                }
+            }
+
+            return dp[0][len-1];
+        }
+
+        /**
+         * dp压缩（不行，数据量大了会超出时间限制）
+         */
+        public int maxArea0(int[] height) {
+            int len = height.length;
+            int[] dp = new int[len];
+
+            //[0,1] [1,2] ...
+            //[0,2],[1,3]
+            for(int delta = 1;delta < len;delta++){
+                for(int j = len - delta - 1;j >= 0;j--){
+                    dp[j+delta] = Math.max(Math.max(dp[j+delta], dp[j+delta-1]), delta * Math.min(height[j], height[j+delta]));
+                }
+            }
+
+            return dp[len-1];
+        }
+
+        /**
+         * 答案解法：简单双指针，这题的精妙之处在于永远只移动较短的板，移动长板无论长板变长还是变短，最终的volume都一定减小
+         */
+        public int maxArea1(int[] height) {
+            int i = 0, j = height.length - 1;
+            int ans = Integer.MIN_VALUE;
+
+            while (i < j){
+                ans = Math.max(ans, (j-i)*Math.min(height[i], height[j]));
+                if(height[i] < height[j]){
+                    i++;
+                }else {
+                    j--;
+                }
+            }
+
+            return ans;
+        }
+    }
+
+    /**
+     * 长度最小的子数组
+     */
+    class MinSubArrayLen {
+        public int minSubArrayLen(int target, int[] nums) {
+            int sum = 0;
+            //right指向即将添加的元素
+            int left = 0, right = 0;
+
+            while (sum < target && right < nums.length) {
+                sum += nums[right++];
+            }
+            if (sum < target) {
+                return 0;
+            }
+
+            int ans = right - left;
+
+            //开始向右移动窗口
+            while (right < nums.length && left < right) {
+                sum -= nums[left++];
+                if (sum >= target) {
+                    ans = Math.min(ans, right - left);
+                } else {
+                    while (sum < target && right < nums.length) {
+                        sum += nums[right++];
+                    }
+                }
+            }
+
+            return ans;
+        }
+    }
+
     @Test
     void invoke(){
         // new RemoveDuplicates().removeDuplicates(new int[]{1,1,1,1,2,2,3,3,4});
-        new ReverseVowels().reverseVowels("hello");
+        // new ReverseVowels().reverseVowels("hello");
+        // new MaxArea().maxArea0(new int[]{1,8,6,2,5,4,8,3,7});
+        // new MaxArea().maxArea0(new int[]{1,1});
+        new MinSubArrayLen().minSubArrayLen(7 ,new int[]{2,3,1,2,4,3});
     }
 }

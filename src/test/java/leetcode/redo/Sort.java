@@ -131,10 +131,45 @@ public class Sort {
          * 解法三：堆排序
          */
         public int findKthLargest1(int[] nums, int k) {
-            return -1;
+            int len = nums.length;
+            buildHeap(nums);
+            for(int i = 0;i < k - 1;i++){
+                swap(nums, 0, len - 1 - i);
+                heapify(nums, 0, len - 2 - i);
+            }
+
+            return nums[0];
         }
 
+        public void buildHeap(int[] nums){
+            //从第一个非叶子结点开始
+            for(int i = nums.length / 2 - 1;i >= 0;i--){
+                heapify(nums, i, nums.length);
+            }
+        }
 
+        /**
+         * 将以n为根的一棵子树堆化
+         */
+        public void heapify(int[] nums, int n, int len){
+            int left = 2 * n + 1;
+            int right = 2 * n + 2;
+            int maxIndex = n;
+
+            if(left < len && nums[left] > nums[maxIndex]) maxIndex = left;
+            if(right < len && nums[right] > nums[maxIndex]) maxIndex = right;
+
+            if(maxIndex != n){
+                swap(nums, n, maxIndex);
+                heapify(nums, maxIndex, len);
+            }
+        }
+
+        public void swap(int[] nums, int i, int j){
+            int temp = nums[i];
+            nums[i] = nums[j];
+            nums[j] = temp;
+        }
     }
 
     @Test
