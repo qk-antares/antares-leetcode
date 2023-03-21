@@ -2,9 +2,7 @@ package leetcode.redo;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Antares
@@ -94,11 +92,49 @@ public class ArrayAndString {
         }
     }
 
+    /**
+     * 多数元素，我的解法：hashmap，效率太低；先排序再返回，效率比hashmap高；摩尔投票法（效率最高），将数组中的不同数字想象成不同国家的人，进行两两抵消
+     */
+    class MajorityElement {
+        public int majorityElement(int[] nums) {
+            HashMap<Integer, Integer> hashMap = new HashMap<>();
+            int bound = nums.length / 2;
+            for (int num : nums) {
+                hashMap.put(num, hashMap.getOrDefault(num, 0) + 1);
+                if(hashMap.get(num) > bound) return num;
+            }
+            return -1;
+        }
+
+        public int majorityElement0(int[] nums) {
+            Arrays.sort(nums);
+            return nums[nums.length / 2];
+        }
+
+        public int majorityElement1(int[] nums) {
+            int survivor = nums[0];
+            int count = 1;
+            for(int i = 1;i < nums.length;i++){
+                if(count == 0){
+                    survivor = nums[i];
+                    count = 1;
+                } else if(nums[i] == survivor){
+                    count++;
+                } else{
+                    count--;
+                }
+            }
+
+            return survivor;
+
+        }
+    }
 
 
     @Test
     public void invoke(){
 //        new Generate().generate(5);
-        new MoveZeroes().moveZeroes(new int[]{1,0,3,12,0,0,15,0,0});
+//         new MoveZeroes().moveZeroes(new int[]{1,0,3,12,0,0,15,0,0});
+        new MajorityElement().majorityElement(new int[]{3,2,3});
     }
 }

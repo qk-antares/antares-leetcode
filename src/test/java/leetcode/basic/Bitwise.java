@@ -1,2 +1,4 @@
-package leetcode.basic;public class Bitwise {
+package leetcode.basic;
+
+public class Bitwise {
 }
