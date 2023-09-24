@@ -6,6 +6,8 @@ import java.util.List;
 
 /**
  * 字节跳动春招研发部分编程题汇总
+ * 题目概述：将AABB型替换成AAB，AAA型替换成AA
+ * 去了解正则！正则一行解决
  */
 public class Main1 {
     public static void main(String[] args) throws IOException {
