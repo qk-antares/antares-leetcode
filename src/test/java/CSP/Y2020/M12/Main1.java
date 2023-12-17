@@ -16,5 +16,8 @@ public class Main1 {
 
         ans = Math.max(0, ans);
         System.out.println(ans);
+
+        scanner.close();
+
     }
 }

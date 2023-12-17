@@ -33,5 +33,8 @@ public class Main2 {
         for (int an : ans) {
             System.out.println(an);
         }
+
+        scanner.close();
+
     }
 }

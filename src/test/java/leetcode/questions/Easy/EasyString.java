@@ -1,13 +1,11 @@
 package leetcode.questions.Easy;
 
-import leetcode.common.ListNode;
-import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.zip.ZipEntry;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Antares

@@ -39,5 +39,7 @@ public class Main1 {
         System.out.println(index0+1);
         System.out.println(index1+1);
         System.out.println(index2+1);
+
+        scanner.close();
     }
 }

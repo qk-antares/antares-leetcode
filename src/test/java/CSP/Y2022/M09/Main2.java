@@ -26,6 +26,9 @@ public class Main2 {
         backtrack(items, 0);
 
         System.out.println(minCost);
+
+        scanner.close();
+
     }
 
     public static void backtrack(int[] items, int startIndex){

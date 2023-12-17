@@ -10,7 +10,6 @@ public class Main1 {
         constants.add(0);
 
         Scanner scanner = new Scanner(System.in);
-        int varNum = scanner.nextInt();
         int assignNum = scanner.nextInt();
         int ans = 0, a, b;
         for (int i = 0; i < assignNum; i++) {
@@ -22,5 +21,7 @@ public class Main1 {
             constants.add(a);
         }
         System.out.println(ans);
+        scanner.close();
+
     }
 }

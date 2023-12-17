@@ -1,10 +1,10 @@
 package leetcode.questions.Medium;
 
-import leetcode.common.ListNode;
-import leetcode.common.TreeNode;
+import java.util.HashSet;
+
 import org.junit.jupiter.api.Test;
 
-import java.util.HashSet;
+import leetcode.common.ListNode;
 
 /**
  * @author Antares

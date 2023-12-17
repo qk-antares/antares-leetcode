@@ -2,8 +2,6 @@ package leetcode.datastruture.tree;
 
 import leetcode.common.TreeNode;
 
-import java.util.Stack;
-
 public class BinaryTreeHard {
     /**
      * 二叉树中的最大路径和

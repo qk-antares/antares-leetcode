@@ -65,6 +65,7 @@ public class Main3 {
             System.out.print(iterator.next() + " ");
         }
 
+        scanner.close();
     }
 
     private static boolean win(Integer target, Set<Integer> keys) {

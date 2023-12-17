@@ -27,5 +27,8 @@ public class Main1 {
         for (int i = 0; i < n; i++) {
             System.out.println(nums[i]/d);
         }
+
+        scanner.close();
+
     }
 }

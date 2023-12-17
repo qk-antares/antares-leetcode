@@ -25,5 +25,7 @@ public class Main1 {
 
         if(startIndex > endIndex) System.out.println(-1);
         else System.out.println(scores[startIndex]);
+
+        in.close();
     }
 }

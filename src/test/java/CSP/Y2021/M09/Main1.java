@@ -20,5 +20,7 @@ public class Main1 {
 
         System.out.println(sum);
         System.out.println(ans);
+        scanner.close();
+
     }
 }

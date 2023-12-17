@@ -24,5 +24,7 @@ public class Main2 {
             x++;
         }
         System.out.println(x);
+
+        scanner.close();
     }
 }

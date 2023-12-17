@@ -1,18 +1,24 @@
 package leetcode.datastruture.stack;
 
-import leetcode.common.Node;
-import leetcode.common.TreeNode;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Set;
+import java.util.Stack;
+
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import leetcode.common.TreeNode;
 
 public class StackLearn {
 
     class MinStack {
 
         LinkedList<int[]> list;
-
-        private Stack<Integer> stack;
 
         public MinStack() {
             list = new LinkedList<>();

@@ -22,6 +22,8 @@ public class Main2 {
             treePos.add(pos[0]*m + pos[1]);
         }
 
+        scanner.close();
+
         int[][] map = new int[n][n];
         for (int i = 0; i < n; i++) {
             for(int j = 0;j < n;j++){
@@ -42,7 +44,6 @@ public class Main2 {
             }
             flag = false;
             for (int i = n-1;i >= 0;i--){
-                if(false) break;
                 for(int j = 0;j < n;j++){
                     //地图上有棵树 而 实际没树 或者 地图上没树 而 实际有树
                     posTmp = (x+n-i-1) * m + (y+j);

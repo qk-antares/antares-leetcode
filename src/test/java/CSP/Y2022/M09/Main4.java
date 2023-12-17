@@ -73,6 +73,9 @@ public class Main4 {
         for (int i = 0; i < ans.size(); i++) {
             System.out.println(ans.get(i));
         }
+
+        scanner.close();
+
     }
 
     private static Integer computeMax() {

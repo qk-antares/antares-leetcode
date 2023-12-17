@@ -1,6 +1,8 @@
 package leetcode.questions.T1000.T100.easy;
 
-public class Math {
+import org.junit.jupiter.api.Test;
+
+public class MathT {
     /**
      * 9. 回文数
      * 我的解法
@@ -22,5 +24,10 @@ public class Math {
             i++;j--;
         }
         return true;
+    }
+
+    @Test
+    void test(){
+        isPalindrome(10);
     }
 }

@@ -41,6 +41,9 @@ public class Main3 {
         for (int i = 0; i < q; i++) {
             System.out.println(ans.get(i));
         }
+
+        scanner.close();
+
     }
 
     private static Integer checkAction(Action action) {

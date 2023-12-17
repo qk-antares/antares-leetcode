@@ -1,9 +1,13 @@
 package leetcode.questions.Medium;
 
-import org.junit.jupiter.api.Test;
-import org.omg.PortableInterceptor.INACTIVE;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Set;
 
-import java.util.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Antares
@@ -115,7 +119,7 @@ public class Sort {
 
             int index = 0;
 
-            HashMap<Integer, Integer> numsVisited = new HashMap();
+            HashMap<Integer, Integer> numsVisited = new HashMap<>();
             for(int i = 0;i < nums.length;i++){
                 if(!numsVisited.containsKey(nums[i])){
                     nums[index] = nums[i];

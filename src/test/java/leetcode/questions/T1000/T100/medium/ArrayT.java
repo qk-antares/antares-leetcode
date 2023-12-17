@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Array {
+public class ArrayT {
     /**
      * 16. 最接近的三数之和
      */
@@ -106,8 +106,38 @@ public class Array {
         return ans;
     }
 
+    /**
+     * 组合总和 II（使用回溯法）
+     */
+    List<List<Integer>> ans = new ArrayList<>();
+    ArrayList<Integer> curPath = new ArrayList<>();
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        Arrays.sort(candidates);
+        backtrack(candidates, 0, target);
+        return ans;
+    }
+    
+    public void backtrack(int[] choices, int curIndex, int target) {
+        if(target == 0){
+            ans.add(new ArrayList<>(curPath));
+            return;
+        }
+        if(curIndex == choices.length || target < 0){
+            return;
+        }
+
+        for (int i = curIndex; i < choices.length; i++) {
+            if(i > curIndex && choices[i] == choices[i-1]){
+                continue;
+            }
+            curPath.add(choices[i]);
+            backtrack(choices, i+1, target-choices[i]);
+            curPath.remove(curPath.size()-1);
+        }
+    }
+
     @Test
     void test(){
-        fourSum(new int[]{1,-2,-5,-4,-3,3,3,5}, -11);
+        combinationSum2(new int[]{10,1,2,7,6,1,5}, 8);
     }
 }

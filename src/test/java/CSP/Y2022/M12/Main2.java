@@ -69,6 +69,9 @@ public class Main2 {
                 System.out.print(nodeMap.get(i).maxStart + " ");
             }
         }
+
+        scanner.close();
+
     }
 
     public static void setMaxStart(Node node, int dayCount){

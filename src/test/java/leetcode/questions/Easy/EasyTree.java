@@ -1,10 +1,14 @@
 package leetcode.questions.Easy;
 
-import jdk.nashorn.internal.ir.CallNode;
-import leetcode.common.TreeNode;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Stack;
+
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import leetcode.common.TreeNode;
 
 /**
  * @author Antares

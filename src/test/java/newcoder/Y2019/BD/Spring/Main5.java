@@ -31,6 +31,8 @@ public class Main5 {
         backtrack(path, choices);
 
         System.out.println(ans);
+
+        scanner.close();
     }
 
     private static void backtrack(ArrayDeque<Integer> path, ArrayDeque<Integer> choices) {

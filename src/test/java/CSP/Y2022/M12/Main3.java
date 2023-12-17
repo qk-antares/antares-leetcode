@@ -76,6 +76,7 @@ public class Main3 {
 
         if(type == 0){
             printMatrix(matrix);
+            scanner.close();
             return;
         }
         matrixMultiply(matrix0, matrix);
@@ -84,6 +85,9 @@ public class Main3 {
         } else  {
             printMatrixResult(matrix0);
         }
+
+        scanner.close();
+
     }
 
     private static void printMatrixResult(int[][] matrix0) {
@@ -131,15 +135,6 @@ public class Main3 {
     }
 
     private static void printMatrix(int[][] matrix) {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                System.out.print(matrix[i][j] + " ");
-            }
-            System.out.println();
-        }
-    }
-
-    private static void printMatrix(double[][] matrix) {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 System.out.print(matrix[i][j] + " ");

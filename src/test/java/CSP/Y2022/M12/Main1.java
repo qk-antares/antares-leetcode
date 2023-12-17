@@ -20,5 +20,8 @@ public class Main1 {
         }
 
         System.out.println(String.format("%.3f", ans));
+
+        scanner.close();
+
     }
 }

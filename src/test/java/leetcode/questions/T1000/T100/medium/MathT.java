@@ -1,8 +1,10 @@
 package leetcode.questions.T1000.T100.medium;
 
+import org.junit.jupiter.api.Test;
+
 import java.util.Arrays;
 
-public class Math {
+public class MathT {
     /**
      * 两数相除
      */
@@ -67,5 +69,85 @@ public class Math {
             nums[end] = tmp;
             start++;end--;
         }
+    }
+
+    /**
+     * 43. 字符串相乘
+     */
+    public String multiply(String num1, String num2) {
+        if(num1.equals("0") || num2.equals("0")){
+            return "0";
+        }
+
+        int len = num2.length();
+        StringBuilder s0 = multiplyA(num1, num2.charAt(len-1));
+        for (int i = len-2;i >= 0;i--){
+            StringBuilder s1 = multiplyA(num1, num2.charAt(i));
+            for (int j = 0; j < len-i-1; j++) {
+                s1.append(0);
+            }
+            s0 = sum(s0, s1);
+        }
+
+        return s0.toString();
+    }
+
+    public StringBuilder multiplyA(String num1, char a){
+        int len = num1.length();
+        StringBuilder ans = new StringBuilder();
+
+        int add = 0, mul;
+        for (int i = len-1; i >= 0; i--) {
+            mul = (num1.charAt(i) - '0') * (a - '0') + add;
+            ans.append((mul) % 10);
+            add = mul / 10;
+        }
+
+        if(add != 0){
+            ans.append(add);
+        }
+
+        return ans.reverse();
+    }
+
+    public StringBuilder sum(StringBuilder num1, StringBuilder num2){
+        StringBuilder ans = new StringBuilder();
+
+        int i = num1.length()-1, j = num2.length()-1;
+        int add = 0, mul;
+        while (i >= 0 && j >= 0){
+            mul = (num1.charAt(i) - '0') + (num2.charAt(j) - '0') + add;
+            ans.append((mul) % 10);
+            add = mul / 10;
+            i--;j--;
+        }
+        int sum;
+        while (i >= 0){
+            sum = add + num1.charAt(i) - '0';
+            ans.append(sum%10);
+            add = sum/10;
+            i--;
+        }
+        while (j >= 0){
+            sum = add + num2.charAt(j) - '0';
+            ans.append(sum%10);
+            add = sum/10;
+            j--;
+        }
+
+        if(add != 0){
+            ans.append(add);
+        }
+
+        return ans.reverse();
+    }
+
+    /**
+     *
+     */
+
+    @Test
+    void test(){
+        multiply("123456789", "987654321");
     }
 }

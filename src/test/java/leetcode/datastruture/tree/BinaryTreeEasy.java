@@ -1,11 +1,9 @@
 package leetcode.datastruture.tree;
 
-import leetcode.common.TreeNode;
-import org.junit.jupiter.api.Test;
+import java.util.ArrayList;
+import java.util.List;
 
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import leetcode.common.TreeNode;
 
 public class BinaryTreeEasy {
     /**
@@ -31,7 +29,7 @@ public class BinaryTreeEasy {
     /**
      * 二叉树的所有路径（深度优先搜索，递归写法）
      */
-    class binaryTreePaths {
+    class BinaryTreePaths {
         public List<String> binaryTreePaths(TreeNode root) {
             ArrayList<String> ans = new ArrayList<>();
             //叶子结点

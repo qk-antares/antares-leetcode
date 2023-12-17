@@ -88,6 +88,8 @@ public class Main3 {
             }
             System.out.println();
         }
+        scanner.close();
+
     }
 
     private static void updateLoc(Loc loc, int i) {

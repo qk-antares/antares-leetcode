@@ -21,5 +21,8 @@ public class Main1 {
         }
 
         System.out.println(ans);
+
+        scanner.close();
+
     }
 }

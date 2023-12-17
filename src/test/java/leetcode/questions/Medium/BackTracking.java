@@ -1,9 +1,12 @@
 package leetcode.questions.Medium;
 
-import org.junit.jupiter.api.Test;
-import org.omg.PortableInterceptor.INACTIVE;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
 
-import java.util.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Antares
@@ -30,7 +33,6 @@ public class BackTracking {
                 {'t','u','v'},
                 {'w','x','y','z'}};
 
-        char ch;
         int size;
         int len;
         for(int i = 0;i < digits.length();i++){

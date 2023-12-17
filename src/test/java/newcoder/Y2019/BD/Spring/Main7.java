@@ -37,6 +37,8 @@ public class Main7 {
         }
 
         System.out.println(min);
+
+        scanner.close();
     }
 
     private static boolean ok(int e) {

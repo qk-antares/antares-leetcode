@@ -27,5 +27,7 @@ public class Main6 {
             dp[i] = Math.min(a, Math.min(b, Math.min(c, d)));
         }
         System.out.println(dp[count]);
+
+        scanner.close();
     }
 }
