@@ -82,10 +82,9 @@ public class DpT {
     public boolean isMatchV2(String s, String p) {
         int m = s.length(), n = p.length();
         boolean[][] dp = new boolean[m+1][n+1];
-        //初始化
         dp[0][0] = true;
         int index = 1;
-        while (index <= n && p.charAt(index) == '*'){
+        while (index <= n && p.charAt(index-1) == '*'){
             dp[0][index++] = true;
         }
         for (int i = 0; i < m; i++) {

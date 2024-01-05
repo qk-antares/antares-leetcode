@@ -6,33 +6,36 @@ public class MathT {
     /**
      * 第k个排列
      */
+    boolean[] visited;
+    int[] factorial;
     public String getPermutation(int n, int k) {
-        int[] factorial = new int[10];
+        visited = new boolean[n];
+        factorial = new int[10];
         factorial[0] = 1;
         for (int i = 1; i <= n; i++) {
             factorial[i] = factorial[i-1]*i;
         }
 
-        int[] indexes = new int[n];
         StringBuilder sb = new StringBuilder();
-        for (int i = n; i >= 1 ; i--) {
-            int index = k / factorial[i-1];
-            k = k % factorial[i-1];
-            if(k == 0){
-                indexes[n-i] = index;
-            } else {
-                indexes[n-i] = index+1;
+        k--;
+        for (int i = 0; i < n; i++) {
+            int order = k/ factorial[n-i-1] + 1;
+            k %= factorial[n-i-1];
+
+            int cur = 0;
+            while (order > 0) {
+                if(!visited[cur]){
+                    order--;
+                }
+                cur++;
             }
+            visited[cur-1] = true;
+            sb.append(cur);
         }
-
-        boolean[] visited = new boolean[n];
-
-
-
-
 
         return sb.toString();
     }
+
 
     @Test
     void test(){
