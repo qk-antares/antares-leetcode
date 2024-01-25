@@ -47,7 +47,7 @@ public class EasyString {
             res *= -1;
         }
         if(res >= -2147483648 && res <= 2147483647)
-            return new Long(res).intValue();
+            return (int)res;
         else
             return 0;
     }
