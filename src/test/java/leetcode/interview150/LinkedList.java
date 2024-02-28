@@ -113,6 +113,32 @@ public class LinkedList {
         return reverse;
     }
 
+    /**
+     * 82. 删除排序链表中的重复元素 II
+     */
+    public ListNode deleteDuplicates(ListNode head) {
+        //虚拟头节点
+        ListNode h = new ListNode();
+        h.next = head;
+
+        ListNode pre = h, cur = head;
+        while(cur != null) {
+            if(cur.next != null && cur.val == cur.next.val) {
+                int val = cur.val;
+                //一直跳出这个相等区间为止
+                while (cur != null && cur.val == val) {
+                    cur = cur.next;
+                }
+                pre.next = cur;
+            } else {
+                pre = pre.next;
+                cur = cur.next;
+            }
+        }
+
+        return h.next;
+    }
+
     @Test
     void test(){
         ListNode n1 = new ListNode(1);
