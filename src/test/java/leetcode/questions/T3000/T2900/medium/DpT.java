@@ -12,9 +12,6 @@ public class DpT {
         int m = rides.length;
         Arrays.sort(rides, (o1, o2) -> o1[1]-o2[1]);
 
-
-
-
         return 0;
     }
 }

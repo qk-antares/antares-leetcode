@@ -13,9 +13,9 @@ public class Stack {
         ArrayDeque<String> stack = new ArrayDeque<>();
         String[] split = path.split("/");
         for (int i = 0; i < split.length; i++) {
-            if(!split[i].isEmpty()){
-                if(split[i].equals("..")){
-                    if(!stack.isEmpty()){
+            if (!split[i].isEmpty()) {
+                if (split[i].equals("..")) {
+                    if (!stack.isEmpty()) {
                         stack.removeLast();
                     }
                 } else if (split[i].equals(".")) {
@@ -32,7 +32,7 @@ public class Stack {
             sb.append("/").append(stack.pollFirst());
         }
 
-        if(len == 0){
+        if (len == 0) {
             return "/";
         }
         return sb.toString();
@@ -50,7 +50,7 @@ public class Stack {
         }
 
         public void push(int val) {
-            list.addLast(new int[]{val, list.isEmpty() ? val : Math.min(val, list.getLast()[1])});
+            list.addLast(new int[] { val, list.isEmpty() ? val : Math.min(val, list.getLast()[1]) });
         }
 
         public void pop() {
@@ -68,22 +68,48 @@ public class Stack {
 
     /**
      * 224. 基本计算器
-     * 一个操作数栈，一个符号栈
-     * 遇到操作数：
-     * 用flag标记之前的字符是否是数字，如果是，则把栈顶弹出*10+当前数，然后再压栈
-     *
-     * 遇到符号：
-     * 当前符号的优先级低于符号栈栈顶符号，则弹出两个操作数和一个符号进行运算
+     * 只有+-()
+     * 每个数字的+-和其前面的单个+-号和前面的()决定
+     * 维护ops栈，该栈代表括号造成的影响，初始为+1
      */
     public int calculate(String s) {
-        new ArrayDeque<>();
-        return -1;
+        ArrayDeque<Integer> ops = new ArrayDeque<Integer>();
+        ops.addLast(1);
+
+        int ans = 0;
+
+        int sign = 1;
+        int len = s.length();
+        int i = 0;
+        while (i < len) {
+            if(s.charAt(i) == ' '){
+                
+            } else if(s.charAt(i) == '+') {
+                sign = ops.peekLast();
+            } else if(s.charAt(i) == '-') {
+                sign = -ops.peekLast();
+            } else if(s.charAt(i) == '(') {
+                ops.addLast(sign);
+            } else if(s.charAt(i) == ')'){
+                ops.removeLast();
+            } else {
+                int num = 0;
+                while (i < len && Character.isDigit(s.charAt(i))) {
+                    num = 10 * num + s.charAt(i) - '0';
+                    i++;
+                }
+                ans += sign * num;
+                i--;
+            }
+            i++;
+        }
+
+        return ans;
     }
 
-
     @Test
-    void test(){
-//        simplifyPath("/a//b////c/d//././/..");
-        calculate("-(2 + 3)");
+    void test() {
+        // simplifyPath("/a//b////c/d//././/..");
+        calculate("(1+(4-5+2)-(3-1))+(6+8)");
     }
 }
