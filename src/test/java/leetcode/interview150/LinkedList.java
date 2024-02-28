@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test;
 import leetcode.common.ListNode;
 
 public class LinkedList {
+    /**
+     * 138. 随机链表的复制
+     */
     class Node {
         int val;
         Node next;
@@ -137,6 +140,27 @@ public class LinkedList {
         }
 
         return h.next;
+    }
+
+    /**
+     * 86. 分隔链表
+     */
+    public ListNode partition(ListNode head, int x) {
+        ListNode smaller = new ListNode(), bigger = new ListNode();
+        ListNode h1 = smaller, h2 = bigger;
+        while (head != null) {
+            if(head.val < x) {
+                smaller.next = head;
+                smaller = smaller.next;
+            } else {
+                bigger.next = head;
+                bigger = bigger.next;
+            }
+            head = head.next;
+        }
+        bigger.next = null;
+        smaller.next = h2.next;
+        return h1.next;
     }
 
     @Test
