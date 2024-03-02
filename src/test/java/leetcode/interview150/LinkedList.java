@@ -2,6 +2,7 @@ package leetcode.interview150;
 
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
@@ -163,6 +164,168 @@ public class LinkedList {
         return h1.next;
     }
 
+    /**
+     * 25. K 个一组翻转链表
+     */
+    public ListNode reverseKGroup(ListNode head, int k) {
+        int i = k-1;
+        ListNode nextHeadPre = head;
+        while (i > 0 && nextHeadPre != null) {
+            nextHeadPre = nextHeadPre.next;
+            i--;
+        }
+
+        if(i > 0 || nextHeadPre == null) {
+            return head;
+        }
+
+
+        ListNode nextHead = nextHeadPre.next;
+        nextHeadPre.next = null;
+
+        reverseHelper(head);
+        head.next = reverseKGroup(nextHead, k);
+
+        return nextHeadPre;
+    }
+
+    /**
+     * 19. 删除链表的倒数第 N 个结点
+     */
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode dumyNode = new ListNode();
+        dumyNode.next = head;
+        
+        ListNode fast = dumyNode, slow = dumyNode;
+        while (n >= 0) {
+            fast = fast.next;
+            n--;
+        }
+        while (fast != null) {
+            fast = fast.next;
+            slow = slow.next;
+        }
+
+        //此时slow指向要删除的节点的前一个节点
+        slow.next = slow.next.next;
+        return dumyNode.next;
+    }
+
+    /**
+     * 61. 旋转链表
+     */
+    public ListNode rotateRight(ListNode head, int k) {
+        //获取链表的长度
+        int len = 0;
+        ListNode tmp = head;
+        while (tmp != null) {
+            len++;
+            tmp = tmp.next;
+        }
+
+        if(len <= 1) {
+            return head;
+        }
+        k %= len;
+        if(k == 0) {
+            return head;
+        }
+
+        ListNode reverse = reverseHelper(head);
+
+        //找到第k个节点
+        ListNode kNode = reverse;
+        while (k > 1) {
+            k--;
+            kNode = kNode.next;
+        }
+
+        ListNode next = kNode.next;
+        kNode.next = null;
+
+        reverseHelper(reverse);
+        reverse.next = reverseHelper(next);
+        return kNode;
+    }
+
+    class LRUCache {
+        class DNode {
+            DNode pre;
+            DNode next;
+            int key;
+            int val;
+        }
+        
+        Map<Integer, DNode> map;
+        DNode head;
+        DNode tail;
+        int capacity;
+
+        public LRUCache(int capacity) {
+            map = new HashMap<>();
+            head = new DNode();
+            tail = new DNode();
+            head.next = tail;
+            tail.pre = head;
+            this.capacity = capacity;
+        }
+        
+        public int get(int key) {
+            if(map.containsKey(key)) {
+                DNode node = map.get(key);
+                moveToHead(node);
+                return node.val;
+            }
+            return -1;
+        }
+        
+        public void put(int key, int value) {
+            if(map.containsKey(key)) {
+                DNode node = map.get(key);
+                node.val = value;
+                moveToHead(node);
+            } else {
+                DNode newNode = new DNode();
+                newNode.key = key;
+                newNode.val = value;
+                insertNodeToHead(newNode);
+                map.put(key, newNode);
+
+                if(map.size() > capacity){
+                    map.remove(tail.pre.key);
+                    removeTail();
+                }
+            }
+        }
+
+        void moveToHead(DNode node) {
+            node.pre.next = node.next;
+            node.next.pre = node.pre;
+
+            head.next.pre = node;
+            node.next = head.next;
+            head.next = node;
+            node.pre = head;
+        }
+
+        void insertNodeToHead(DNode node){
+            node.pre = head;
+            node.next = head.next;
+            head.next.pre = node;
+            head.next = node;
+        }
+
+        void removeTail(){
+            DNode remove = tail.pre;
+
+            tail.pre = tail.pre.pre;
+            tail.pre.next = tail;
+            remove.next = null;
+            remove.pre = null;
+        }
+    }
+
+
     @Test
     void test(){
         ListNode n1 = new ListNode(1);
@@ -175,6 +338,7 @@ public class LinkedList {
         n3.next = n4;
         n4.next = n5;
         n5.next = null;
-        reverseBetween(n1, 2, 4);
+        // reverseBetween(n1, 2, 4);
+        rotateRight(n1, 2);
     }
 }

@@ -1,4 +1,4 @@
-package leetcode.questions.T3000.T2900.medium;
+package leetcode.questions.T3000.T2700.medium;
 
 import org.junit.jupiter.api.Test;
 
