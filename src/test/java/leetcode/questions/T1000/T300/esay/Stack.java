@@ -1,5 +1,7 @@
 package leetcode.questions.T1000.T300.esay;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -7,6 +9,9 @@ import java.util.Queue;
  * Stack
  */
 public class Stack {
+    /**
+     * 
+     */
     class MyStack {
         Queue<Integer> q;
 
@@ -34,4 +39,40 @@ public class Stack {
             return q.isEmpty();
         }
     }
+
+    /**
+     * 232. 用栈实现队列
+     */
+    class MyQueue {
+        Deque<Integer> stk1;
+        Deque<Integer> stk2;
+
+        public MyQueue() {
+            stk1 = new ArrayDeque<>();
+            stk2 = new ArrayDeque<>();
+        }
+
+        public void push(int x) {
+            while (!stk1.isEmpty()) {
+                stk2.push(stk1.pop());
+            }
+            stk1.push(x);
+            while (!stk2.isEmpty()) {
+                stk1.push(stk2.pop());
+            }
+        }
+
+        public int pop() {
+            return stk1.pop();
+        }
+
+        public int peek() {
+            return stk1.peek();
+        }
+
+        public boolean empty() {
+            return stk1.isEmpty();
+        }
+    }
+
 }
