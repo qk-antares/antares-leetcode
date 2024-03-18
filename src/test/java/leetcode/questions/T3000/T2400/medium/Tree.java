@@ -15,6 +15,7 @@ public class Tree {
             cannotVisit[node] = true;
         }
 
+        @SuppressWarnings("unchecked")
         List<Integer>[] childern = new List[n];
         for (int i = 0; i < n; i++) {
             childern[i] = new ArrayList<>();

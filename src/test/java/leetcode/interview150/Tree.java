@@ -12,7 +12,7 @@ public class Tree {
      * 广度优先遍历解法
      */
     public int maxDepth0(TreeNode root) {
-        if(root == null) {
+        if (root == null) {
             return 0;
         }
 
@@ -25,10 +25,10 @@ public class Tree {
             ans++;
             for (int i = 0; i < size; i++) {
                 TreeNode poll = queue.removeFirst();
-                if(poll.left != null) {
+                if (poll.left != null) {
                     queue.addLast(poll.left);
                 }
-                if(poll.right != null) {
+                if (poll.right != null) {
                     queue.addLast(poll.right);
                 }
             }
@@ -41,8 +41,9 @@ public class Tree {
      * 深度优先遍历解法
      */
     int maxDepth = 0;
+
     public int maxDepth(TreeNode root) {
-        if(root == null) {
+        if (root == null) {
             return 0;
         }
 
@@ -53,10 +54,10 @@ public class Tree {
     public void dfs(TreeNode root, int curDepth) {
         curDepth++;
         maxDepth = Math.max(curDepth, maxDepth);
-        if(root.left != null) {
+        if (root.left != null) {
             dfs(root.left, curDepth);
         }
-        if(root.right != null) {
+        if (root.right != null) {
             dfs(root.right, curDepth);
         }
     }
@@ -65,12 +66,12 @@ public class Tree {
      * 100. 相同的树
      */
     public boolean isSameTree(TreeNode p, TreeNode q) {
-        if(p == null && q == null){
+        if (p == null && q == null) {
             return true;
-        } else if(p == null || q == null || p.val != q.val) {
+        } else if (p == null || q == null || p.val != q.val) {
             return false;
         }
-        
+
         return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
     }
 
@@ -78,7 +79,7 @@ public class Tree {
      * 226. 翻转二叉树
      */
     public TreeNode invertTree(TreeNode root) {
-        if(root == null || root.left == null && root.right == null) {
+        if (root == null || root.left == null && root.right == null) {
             return root;
         }
         TreeNode tmp = root.left;
@@ -93,24 +94,20 @@ public class Tree {
      * 101. 对称二叉树
      */
     public boolean isSymmetric(TreeNode root) {
-        if(root == null) {
+        if (root == null) {
             return true;
         }
         return isSymmetricHelper(root.left, root.right);
     }
 
     public boolean isSymmetricHelper(TreeNode tree1, TreeNode tree2) {
-        if(tree1 == null && tree2 == null) {
+        if (tree1 == null && tree2 == null) {
             return true;
-        } else if(tree1 == null || tree2 == null || tree1.val != tree2.val) {
+        } else if (tree1 == null || tree2 == null || tree1.val != tree2.val) {
             return false;
         }
         return isSymmetricHelper(tree1.left, tree2.right) && isSymmetricHelper(tree1.right, tree2.left);
     }
-
-    
-
-
 
     /**
      * 637. 二叉树的层平均值
@@ -126,15 +123,39 @@ public class Tree {
             for (int i = 0; i < size; i++) {
                 TreeNode poll = queue.removeFirst();
                 sum += poll.val;
-                if(poll.left != null) {
+                if (poll.left != null) {
                     queue.addLast(poll.left);
                 }
-                if(poll.right != null) {
+                if (poll.right != null) {
                     queue.addLast(poll.right);
                 }
             }
             ans.add(sum / size);
         }
         return ans;
+    }
+
+    /**
+     * 530. 二叉搜索树的最小绝对差
+     * 对二叉搜索树进行前序遍历
+     */
+    public int getMinimumDifference(TreeNode root) {
+        List<Integer> preOrder = new ArrayList<>();
+        preOrder(root, preOrder);
+        int ans = Integer.MAX_VALUE;
+        for (int i = 1; i < preOrder.size(); i++) {
+            ans = Math.min(ans, preOrder.get(i) - preOrder.get(i-1));
+        }
+        return ans;
+    }
+
+    public void preOrder(TreeNode root, List<Integer> preOrder) {
+        if(root.left != null) {
+            preOrder(root.left, preOrder);
+        }
+        preOrder.add(root.val);
+        if(root.right != null) {
+            preOrder(root.right, preOrder);
+        }
     }
 }
