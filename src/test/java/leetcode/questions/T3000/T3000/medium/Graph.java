@@ -1,4 +1,4 @@
-package leetcode.questions.T2000.T3000.medium;
+package leetcode.questions.T3000.T3000.medium;
 
 public class Graph {
     /**
