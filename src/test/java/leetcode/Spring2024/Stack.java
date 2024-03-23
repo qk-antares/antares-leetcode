@@ -171,7 +171,7 @@ public class Stack {
             if(nums1[l] > nums2[r]){
                 ans[l+r] = nums1[l];
                 l++;
-            } else if(nums1[l] > nums2[r]) {
+            } else if(nums1[l] < nums2[r]) {
                 ans[l+r] = nums2[r];
                 r++;
             } else {
@@ -179,15 +179,18 @@ public class Stack {
                 while (i < len1 && j < len2 && nums1[i] == nums2[j]) {
                     i++;j++;
                 }
-                //i越界了
                 if(i == len1) {
                     ans[l+r] = nums2[r];
                     r++;
                 } else if (j == len2) {
                     ans[l+r] = nums1[l];
                     l++;
-                } else {
-                    
+                } else if(nums1[i] > nums2[j]){
+                    ans[l+r] = nums1[l];
+                    l++;
+                } else if(nums1[i] < nums2[j]) {
+                    ans[l+r] = nums2[r];
+                    r++;
                 }
             }
         }
@@ -227,6 +230,7 @@ public class Stack {
     void test(){
         // removeKdigits("1432219", 3);
         // removeDuplicateLetters("bcabc");
-        int[] res = merge(new int[]{6, 7}, new int[]{6,0,4});
+        // int[] res = merge(new int[]{6, 7}, new int[]{6,0,4});
+        merge(new int[]{6, 5}, new int[]{9,8,3});
     }
 }
