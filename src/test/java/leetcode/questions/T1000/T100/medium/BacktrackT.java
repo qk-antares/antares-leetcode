@@ -1,8 +1,13 @@
 package leetcode.questions.T1000.T100.medium;
 
-import org.junit.jupiter.api.Test;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.List;
 
-import java.util.*;
+import org.junit.jupiter.api.Test;
 
 public class BacktrackT {
     /**
@@ -158,10 +163,40 @@ public class BacktrackT {
         }
     }
 
+    /**
+     * 90. 子集 II
+     */
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        List<List<Integer>> ans = new ArrayList<>();
+        ArrayList<Integer> curPath = new ArrayList<Integer>();
+        Arrays.sort(nums);
+
+        dfs(ans, curPath, false, nums, 0);
+        return ans;
+    }
+
+    public void dfs(List<List<Integer>> ans, ArrayList<Integer> curPath, boolean choosePre, int[] nums, int curIndex){
+        if(curIndex == nums.length) {
+            ans.add(new ArrayList<>(curPath));
+            return;
+        }
+        
+        //不选择的这层dfs必须位于前面
+        dfs(ans, curPath, false, nums, curIndex+1);
+
+        if(curIndex > 0 && !choosePre && nums[curIndex]==nums[curIndex-1]){
+            return;
+        }
+
+        curPath.add(nums[curIndex]);
+        dfs(ans, curPath, true, nums, curIndex+1);
+        curPath.remove(curPath.size()-1);
+    }
 
     @Test
     void test(){
         // permuteUnique(new int[]{1,1,2});
-        restoreIpAddresses("0000");
+        // restoreIpAddresses("0000");
+        subsetsWithDup(new int[]{1,2,2});
     }
 }

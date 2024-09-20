@@ -45,9 +45,9 @@ public class DpT {
     /**
      * 32. 最长有效括号
      * dp[i]代表s[i]结尾的字符串形成的最长有效括号，显然s[i]='('，dp[i] = 0，s[i] = ')'时：
-     * (s[i-1]='(')：dp[i] = dp[i-2]+2
-     * (s[i-1]=')')：
-     * s[i-dp[i-1]-1] == '('：dp[i] = dp[i-1] + 2 + dp[i-dp[i-1]-2]
+     * s[i-1]='('：dp[i] = dp[i-2]+2
+     * s[i-1]=')'：
+     * s[i-dp[i-1]-1] == '('：dp[i] = dp[i-1] + 2 + dp[i-dp[i-1]-2] 【中间的那段有效括号+新形成的括号+再往前的括号】
      * else: 0
      */
     public int longestValidParentheses(String s) {
@@ -80,7 +80,7 @@ public class DpT {
      * ① p[j]=a-z，dp[i][j]=s[i]==p[j] && dp[i-1][j-1]
      * ② p[j]=?，dp[i][j]=dp[i-1][j-1]
      * ③ p[j]=*，dp[i][j]=dp[i][j-1] || dp[i-1][j-1] || ... || dp[0][j-1]
-     * =dp[i][j-1] || dp[i-1][j]（精华就在这一步的转换）
+     * =dp[i][j-1] || dp[i-1][j]（精华就在这一步的转换，【*丢掉不匹配】或者【*保留，干掉s的一个字符】）
      *
      * 初始化有注意点，就是dp[0][index]有可能是true，只要p的前n位都是*
      */
