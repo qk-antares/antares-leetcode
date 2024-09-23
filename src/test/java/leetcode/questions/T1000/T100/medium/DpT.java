@@ -73,6 +73,10 @@ public class DpT {
      * 当前位不为0时：
      * 可以和前一位结合（结合后<=26）或者不和前一位结合：dp[i] = dp[i-1] + dp[i-2]
      * 无法和前一位结合：dp[i] = dp[i-1]
+     * 
+     * 或者换一种思路：
+     * 当前位不为0时，肯定可以作为单独的一位，所以dp[i] += dp[i-1]
+     * 当前位为0，且可以和前一位结合时，dp[i] += dp[i-2];否则dp[i] = 0(不做处理)
      */
     public int numDecodings(String s) {
         int len = s.length();
