@@ -20,7 +20,7 @@ public class BFST {
      * 因此，可以优化建图方案。具体来说，每个单词，例如abc，都与3个虚拟节点连接（*bc，a*b，ab*）
      * 使用邻接表来存储图
      * 
-     * 建完图后，进度广度优先遍历
+     * 建完图后，进行广度优先遍历
      */
 
     Map<String, Integer> map = new HashMap<>();
@@ -87,7 +87,7 @@ public class BFST {
         }
     }
 
-    
+
 
     @Test
     public void test() {
