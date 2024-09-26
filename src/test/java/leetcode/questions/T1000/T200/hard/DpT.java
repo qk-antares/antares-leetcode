@@ -115,8 +115,51 @@ public class DpT {
         return sell2;
     }
 
+    /**
+     * 132. 分割回文串 II
+     * 首先对s进行预处理，用dp[i][j]表示s[i..j]是否是回文串
+     * dp[i][j] = true 当 i>=j
+     * dp[i][j] = dp[i+1][j-1] && s[i] == s[j] （依赖左下角，构建dp时，外层循环是j，内层才是i）
+     * 
+     * 用f[j]表示s[0..j]的最少分割次数
+     * if dp[0][j]: f[j] = 0
+     * else
+     *     for i in [1, j]:
+     *         if dp[i][j]: f[j] = min(f[j], f[i-1] + 1)
+     */
+    public int minCut(String s) {
+        int len = s.length();
+        boolean[][] dp = new boolean[len][len];
+        for (int j = 0; j < len; j++) {
+            for (int i = 0; i < dp.length; i++) {
+                if(i >= j){
+                    dp[i][j] = true;
+                } else {
+                    dp[i][j] = dp[i+1][j-1] && s.charAt(i) == s.charAt(j);
+                }
+            }
+        }
+
+        int[] cnt = new int[len];
+        for (int j = 0; j < len; j++) {
+            if(dp[0][j]) {
+                cnt[j] = 0;
+            } else {
+                cnt[j] = cnt[j-1]+1;
+                for (int i = 1; i < j; i++) {
+                    if(dp[i][j]){
+                        cnt[j] = Math.min(cnt[j], cnt[i-1] + 1);
+                    }
+                }
+            }
+        }
+
+        return cnt[len-1];
+    }
+
     @Test
     void test(){
-        maxProfit(new int[]{1,2,4,2,5,7,2,4,9,0});
+        // maxProfit(new int[]{1,2,4,2,5,7,2,4,9,0});
+        minCut("aab");
     }
 }
