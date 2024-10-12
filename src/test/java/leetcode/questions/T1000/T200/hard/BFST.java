@@ -87,8 +87,6 @@ public class BFST {
         }
     }
 
-
-
     @Test
     public void test() {
         String beginWord = "hit";

@@ -1,5 +1,10 @@
 package leetcode.questions.T1000.T200.hard;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 public class DpT {
@@ -157,9 +162,53 @@ public class DpT {
         return cnt[len-1];
     }
 
+    /*
+     * 140. 单词拆分 II
+     * dp[i]表示字符串s[0..i-1]是否可以拆分
+     * dp[0] = true
+     * map[0] = ""
+     * 
+     * dp[i] = s[j+1..i] in wordDict j是往上寻找dp[j]==true得到的
+     */
+    public List<String> wordBreak(String s, List<String> wordDict) {
+        //记忆化搜索用于存储已经得到的答案
+        HashMap<Integer, List<List<String>>> map = new HashMap<>();
+        List<List<String>> empty = new ArrayList<>();
+        empty.add(new ArrayList<>());
+        map.put(-1, empty);
+
+        int len = s.length();
+        for (int i = 0; i < len; i++) {
+            List<List<String>> ans = new ArrayList<>();
+            for (int j = i; j >= 0; j--) {
+                String word = s.substring(j, i+1);
+                List<List<String>> pre = map.get(j-1);
+                int preSize = pre.size();
+                if(wordDict.contains(word) && preSize > 0){
+                    for (int k = 0; k < preSize; k++) {
+                        ArrayList<String> copy = new ArrayList<>(pre.get(k));
+                        copy.add(word);
+                        ans.add(copy);
+                    }
+                }
+            }
+            map.put(i, ans);
+        }
+
+        List<String> ret = new ArrayList<>();
+        List<List<String>> tmp = map.get(len-1);
+        int size = tmp.size();
+        for (int i = 0; i < size; i++) {
+            ret.add(String.join(" ", tmp.get(i)));
+        }
+        return ret;
+    }
+
+
     @Test
     void test(){
         // maxProfit(new int[]{1,2,4,2,5,7,2,4,9,0});
-        minCut("aab");
+        // minCut("aab");
+        wordBreak("catsanddog", Arrays.asList(new String[]{"cat","cats","and","sand","dog"}));
     }
 }
