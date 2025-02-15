@@ -73,6 +73,47 @@ public class LinkedListT {
         }
     }
 
+    /**
+     * 147. 对链表进行插入排序
+     * 
+     * 首先创建一个虚拟头节点dummy
+     * 
+     * 从head开始遍历
+     * 有以下情况：
+     * 情况1 head.next == null：return dummy.next
+     * 情况2 head.next.val >= head.val：head = head.next
+     * 情况3 head.next.val < head.val
+     * 从insertPrev = dummy开始遍历
+     * if(insertPrev.val <= head.next.val && insertPrev.next.val >= head.next.val) 
+     * ListNode cur = head.next;
+     * head.next = head.next.next;
+     * cur.next = insertPrev.next;
+     * insertPrev.next = cur;
+     */
+    public ListNode insertionSortList(ListNode head) {
+        ListNode dummy = new ListNode();
+        dummy.val = Integer.MIN_VALUE;
+        dummy.next = head;
+
+        while (head.next != null) {
+            if(head.next.val >= head.val){
+                head = head.next;
+            } else {
+                ListNode insertPrev = dummy;
+                while (insertPrev.val > head.next.val || insertPrev.next.val < head.next.val) {
+                    insertPrev = insertPrev.next;
+                }
+                ListNode cur = head.next;
+                head.next = head.next.next;
+                cur.next = insertPrev.next;
+                insertPrev.next = cur;
+            }
+        }
+
+        return dummy.next;
+    }
+
+
     @Test    
     public void test() {
         ListNode head = new ListNode(1);

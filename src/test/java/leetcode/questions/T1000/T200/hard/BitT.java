@@ -1,6 +1,6 @@
 package leetcode.questions.T1000.T200.hard;
 
-public class bitT {
+public class BitT {
     /**
      * 137. 只出现一次的数字 II
      */
