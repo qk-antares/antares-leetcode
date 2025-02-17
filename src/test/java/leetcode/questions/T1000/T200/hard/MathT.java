@@ -12,12 +12,9 @@ public class MathT {
      * for (int j = i + 1; j < n; j++) {
      * // 两个点形成直线的斜率
      * int slope;
-     * 
-     * 
      * }
      * 遍历HashMap来记录当前的答案
      * }
-     * 
      * 需要注意的是斜率的保存：
      * 1、可以用一个二元组（dx，dy）来保存斜率
      * 2、需要统一正负，例如dy应该始终是正的
@@ -55,7 +52,7 @@ public class MathT {
                     dy /= gcd;
                 }
 
-                map.put(dx*20001+dy, map.getOrDefault(dx*20001+dy, 0) + 1);
+                map.put(dx * 20001 + dy, map.getOrDefault(dx * 20001 + dy, 0) + 1);
             }
 
             for (Integer value : map.values()) {
