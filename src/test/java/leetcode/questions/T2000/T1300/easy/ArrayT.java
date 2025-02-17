@@ -13,4 +13,25 @@ public class ArrayT {
         }
         return arr;
     }
+
+    /*
+     * 1287. 有序数组中出现次数超过25%的元素
+     */
+    public int findSpecialInteger(int[] arr) {
+        int l = 0, r = 0;
+        int max = arr.length / 4 + 1;
+        while (r < arr.length) {
+            if(arr[r] == arr[l]) {
+                r++;
+            } else {
+                l = r;
+            }
+
+            if(r - l  >= max) {
+                return arr[l];
+            }
+        }
+
+        return -1;
+    }
 }
