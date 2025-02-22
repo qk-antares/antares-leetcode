@@ -3,7 +3,7 @@ package leetcode.questions.T3000.T2600.easy;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class Array {
+public class ArrayT {
     /**
      * 2549. 统计桌面上的不同数字
      */
