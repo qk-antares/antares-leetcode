@@ -1,5 +1,8 @@
 package leetcode.questions.T1000.T200.medium;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 import org.junit.jupiter.api.Test;
 
 public class StringT {
@@ -22,8 +25,31 @@ public class StringT {
         return 0;
     }
 
+    /*
+     * 179. 最大数
+     */
+    public String largestNumber(int[] nums) {
+        String[] arr = new String[nums.length];
+        for (int i = 0; i < nums.length; i++) {
+            arr[i] = String.valueOf(nums[i]);
+        }
+
+        Arrays.sort(arr, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return (o1+o2).compareTo(o2+o1);
+            }
+        });
+
+        StringBuilder ans = new StringBuilder();
+        for (int i = 0; i < arr.length; i++) {
+            ans.append(arr[i]);
+        }
+        return ans.toString();
+    }
+
     @Test
     public void test() {
-        System.out.println(compareVersion("1.01", "1.001"));
+        System.out.println(largestNumber(new int[]{3,30,34,5,9}));
     }
 }
