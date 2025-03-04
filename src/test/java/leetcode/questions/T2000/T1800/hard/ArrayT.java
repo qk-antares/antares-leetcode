@@ -1,6 +1,6 @@
 package leetcode.questions.T2000.T1800.hard;
 
-public class Array {
+public class ArrayT {
     /**
      * 1793. 好子数组的最大分数
      * 双指针 + 滑动窗口
