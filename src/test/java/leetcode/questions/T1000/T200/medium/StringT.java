@@ -37,9 +37,13 @@ public class StringT {
         Arrays.sort(arr, new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
-                return (o1+o2).compareTo(o2+o1);
+                return (o2+o1).compareTo(o1+o2);
             }
         });
+
+        if(arr[0].equals("0")){
+            return "0";
+        }
 
         StringBuilder ans = new StringBuilder();
         for (int i = 0; i < arr.length; i++) {
