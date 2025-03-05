@@ -80,6 +80,25 @@ public class DpT {
 
     /**
      * 123. 买卖股票的最佳时机 III
+     * 
+     * 原本解法错误的原因在于，两次买卖的最大收益对应在prices中不一定是连续的
+     * 
+     * 在任意一天结束之后，会处于以下5种状态中的一种：
+     * 1. 未进行过任何买卖
+     * 2. 进行过一次买
+     * 3. 进行过一次买和一次卖
+     * 4. 在完成第一笔交易的前提下，进行了第二次买
+     * 5. 完成了两次买卖
+     * 
+     * 其中第一种状态的收益为0，不用进行记录。
+     * 剩下的4种即为buy1，sell1，buy2，sell2
+     * 
+     * 假设已经知道了第i-1天剩下4种状态的最高收益，则第i天的状态更新为：
+     * buy1 = max{buy1, -prices[i]}
+     * sell1 = max{sell1, buy1 + prices[i]}
+     * buy2 = max{buy2, sell1 - prices[i]}
+     * sell2 = max{sell2, buy2 + prices[i]}
+     * 
      */
     public int maxProfitWrongAns(int[] prices) {
         int len = prices.length;
@@ -117,6 +136,23 @@ public class DpT {
             sell2 = Math.max(sell2, buy2 + prices[i]);
         }
         return sell2;
+    }
+
+    /*
+     * 188. 买卖股票的最佳时机 IV
+     */
+    public int maxProfit(int k, int[] prices) {
+        int n = prices.length;
+        int[] buy = new int[k+1];
+        int[] sell = new int[k+1];
+        Arrays.fill(buy, Integer.MIN_VALUE);
+        for(int i = 0;i < n;i++) {
+            for(int j = 1;j <= k;j++){
+                buy[j] = Math.max(buy[j], sell[j-1] - prices[i]);
+                sell[j] = Math.max(sell[j], buy[j] + prices[i]);
+            }
+        }
+        return sell[k];
     }
 
     /**
