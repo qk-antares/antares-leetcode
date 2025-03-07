@@ -1,6 +1,6 @@
-package leetcode.questions.T1000.T300.medium;
+package leetcode.questions.T1000.T400.medium;
 
-public class Bit {
+public class BitT {
     /**
      * 318. 最大单词长度乘积
      */
