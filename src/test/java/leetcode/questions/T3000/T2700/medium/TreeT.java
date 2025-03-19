@@ -2,7 +2,7 @@ package leetcode.questions.T3000.T2700.medium;
 
 import org.junit.jupiter.api.Test;
 
-public class Tree {
+public class TreeT {
     /**
      * 2673. 使二叉树所有路径值相等的最小代价
      * 0
