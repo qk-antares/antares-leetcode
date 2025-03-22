@@ -40,20 +40,14 @@ public class SlideWindowT {
 
     public int divisorSubstrings(int num, int k) {
         String str = String.valueOf(num);
+        int len = str.length();
         int ans = 0;
-        while (tmp > 0) {
+        for (int i = 0; i < len - k + 1; i++) {
+            int cur = Integer.parseInt(str.substring(i, i+k));
             if(cur != 0 && num % cur == 0) {
                 ans++;
             }
-            cur = (tmp % 10) * pow + cur / 10;
-            tmp /= 10;
         }
-
-        if(cur != 0 && num % cur == 0) {
-            ans++;
-        }
-        cur = (tmp % 10) * pow + cur / 10;
-        tmp /= 10;
 
         return ans;
     }
