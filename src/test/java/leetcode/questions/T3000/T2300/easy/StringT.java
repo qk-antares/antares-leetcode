@@ -1,3 +1,5 @@
+package leetcode.questions.T3000.T2300.easy;
+
 public class StringT {
     /*
      * 2255. 统计是给定字符串前缀的字符串数目
