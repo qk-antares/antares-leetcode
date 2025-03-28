@@ -3,7 +3,7 @@ package leetcode.questions.T4000.T3300.medium;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DFS {
+public class DFST {
     /*
      * 3211. 生成不含相邻零的二进制字符串
      */
