@@ -73,7 +73,9 @@ public class BFST {
             bannedSet.add(banned[i]);
         }
 
+        @SuppressWarnings("unchecked")
         TreeSet<Integer>[] sets = new TreeSet[2];
+        
         sets[0] = new TreeSet<Integer>();
         sets[1] = new TreeSet<Integer>();
         ArrayDeque<Integer> q = new ArrayDeque<>();
@@ -96,7 +98,6 @@ public class BFST {
             TreeSet<Integer> set = sets[l % 2];
             //取出下一个同奇偶的位置（且没有访问过）
             Integer next = set.ceiling(l);
-            //如果有且在范围之内
             while (next != null && next <= r) {
                 ans[next] = ans[i] + 1;
                 q.add(next);
