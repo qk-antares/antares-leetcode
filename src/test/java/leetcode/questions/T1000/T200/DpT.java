@@ -1,4 +1,4 @@
-package leetcode.questions.T1000.T200.hard;
+package leetcode.questions.T1000.T200;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,8 +8,30 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 public class DpT {
-    /**
-     * 115. 不同的子序列
+    /*
+     * 198. 打家劫舍 [Medium]
+     */
+    public int rob(int[] nums) {
+        int len = nums.length;
+        if (len < 2)
+            return nums[0];
+        int[] dp = new int[len];
+        dp[0] = nums[0];
+        dp[1] = Math.max(nums[0], nums[1]);
+
+        for (int i = 2; i < len; i++) {
+            dp[i] = Math.max(dp[i - 1], nums[i] + dp[i - 2]);
+        }
+
+        return dp[len - 1];
+    }
+
+    /*
+     * ========================== 分割线 ==========================
+     */
+
+    /*
+     * 115. 不同的子序列 [Hard]
      * dp[i][j]表示【s的前i位】和【t的前j位】在题设下的解
      * 显然i<j时，dp[i][j]=0
      * i=j时，dp[i][j]=1 (s[0..i]=t[0..j]) 否则 dp[i][j]=0
@@ -50,7 +72,7 @@ public class DpT {
         return dp[m][n];
     }
 
-    /**
+    /*
      * 上述方法还可以简写为
      */
     public int numDistinct0(String s, String t) {
@@ -78,8 +100,8 @@ public class DpT {
         return dp[m][n];
     }
 
-    /**
-     * 123. 买卖股票的最佳时机 III
+    /*
+     * 123. 买卖股票的最佳时机 III [Hard]
      * 
      * 原本解法错误的原因在于，两次买卖的最大收益对应在prices中不一定是连续的
      * 
@@ -139,24 +161,24 @@ public class DpT {
     }
 
     /*
-     * 188. 买卖股票的最佳时机 IV
+     * 188. 买卖股票的最佳时机 IV [Hard]
      */
     public int maxProfit(int k, int[] prices) {
         int n = prices.length;
-        int[] buy = new int[k+1];
-        int[] sell = new int[k+1];
+        int[] buy = new int[k + 1];
+        int[] sell = new int[k + 1];
         Arrays.fill(buy, Integer.MIN_VALUE);
-        for(int i = 0;i < n;i++) {
-            for(int j = 1;j <= k;j++){
-                buy[j] = Math.max(buy[j], sell[j-1] - prices[i]);
+        for (int i = 0; i < n; i++) {
+            for (int j = 1; j <= k; j++) {
+                buy[j] = Math.max(buy[j], sell[j - 1] - prices[i]);
                 sell[j] = Math.max(sell[j], buy[j] + prices[i]);
             }
         }
         return sell[k];
     }
 
-    /**
-     * 132. 分割回文串 II
+    /*
+     * 132. 分割回文串 II [Hard]
      * 首先对s进行预处理，用dp[i][j]表示s[i..j]是否是回文串
      * dp[i][j] = true 当 i>=j
      * dp[i][j] = dp[i+1][j-1] && s[i] == s[j] （依赖左下角，构建dp时，外层循环是j，内层才是i）
@@ -198,7 +220,7 @@ public class DpT {
     }
 
     /*
-     * 140. 单词拆分 II
+     * 140. 单词拆分 II [Hard]
      * dp[i]表示字符串s[0..i-1]是否可以拆分
      * dp[0] = true
      * map[0] = ""
@@ -240,7 +262,7 @@ public class DpT {
     }
 
     /*
-     * 174. 地下城游戏
+     * 174. 地下城游戏 [Hard]
      * 
      * 这道题的精髓之处在于将“勇士救公主”的过程逆向为“公主救骑士”
      * 
@@ -272,21 +294,21 @@ public class DpT {
         int m = dungeon.length, n = dungeon[0].length;
         int[][] dp = new int[m][n];
 
-        for (int i = m-1; i>=0 ; i--) {
-            for (int j = n-1; j >= 0; j--) {
-                if (i == m-1 && j == n-1) {
+        for (int i = m - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
+                if (i == m - 1 && j == n - 1) {
                     dp[i][j] = Math.min(0, dungeon[i][j]);
-                } else if(i == m-1) {
+                } else if (i == m - 1) {
                     dp[i][j] = Math.min(0, dp[i][j + 1] + dungeon[i][j]);
-                } else if (j == n-1) {
-                    dp[i][j] = Math.min(0, dp[i+1][j] + dungeon[i][j]);
+                } else if (j == n - 1) {
+                    dp[i][j] = Math.min(0, dp[i + 1][j] + dungeon[i][j]);
                 } else {
                     dp[i][j] = Math.min(0, Math.max(dp[i][j + 1], dp[i + 1][j]) + dungeon[i][j]);
                 }
             }
         }
 
-        return -dp[0][0]+1;
+        return -dp[0][0] + 1;
     }
 
     @Test

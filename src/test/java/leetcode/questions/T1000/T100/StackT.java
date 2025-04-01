@@ -1,4 +1,4 @@
-package leetcode.questions.T1000.T100.hard;
+package leetcode.questions.T1000.T100;
 
 import java.util.ArrayDeque;
 
@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 public class StackT {
     /**
-     * 84. 柱状图中最大的矩形
+     * 84. 柱状图中最大的矩形   [Hard]
      * 用两个单调栈分别记录每个柱子左侧最短和右侧最短
      */
     public int largestRectangleArea(int[] heights) {

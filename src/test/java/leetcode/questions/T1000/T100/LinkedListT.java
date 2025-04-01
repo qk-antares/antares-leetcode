@@ -1,10 +1,10 @@
-package leetcode.questions.T1000.T100.easy;
+package leetcode.questions.T1000.T100;
 
 import leetcode.common.ListNode;
 
 public class LinkedListT {
     /*
-     * 21. 合并两个有序链表
+     * 21. 合并两个有序链表 [Easy]
      */
     public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
         ListNode dummy = new ListNode();

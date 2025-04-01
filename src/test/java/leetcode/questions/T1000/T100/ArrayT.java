@@ -1,14 +1,14 @@
-package leetcode.questions.T1000.T100.medium;
-
-import org.junit.jupiter.api.Test;
+package leetcode.questions.T1000.T100;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 public class ArrayT {
-    /**
-     * 16. 最接近的三数之和
+    /*
+     * 16. 最接近的三数之和 [Medium]
      */
     public int threeSumClosest(int[] nums, int target) {
         Arrays.sort(nums);
@@ -32,8 +32,8 @@ public class ArrayT {
         return ans;
     }
 
-    /**
-     * 18. 四数之和
+    /*
+     * 18. 四数之和 [Medium]
      * 我的解法的主要问题是没有进行有效的剪枝
      */
     public List<List<Integer>> fourSum(int[] nums, int target) {
@@ -69,8 +69,8 @@ public class ArrayT {
         return ans;
     }
 
-    /**
-     * 18. 四数之和 剪枝版
+    /*
+     * 18. 四数之和 剪枝版  [Medium]
      */
     public List<List<Integer>> fourSum0(int[] nums, int target) {
         Arrays.sort(nums);
@@ -106,8 +106,8 @@ public class ArrayT {
         return ans;
     }
 
-    /**
-     * 组合总和 II（使用回溯法）
+    /*
+     * 组合总和 II（使用回溯法）    [Medium]
      */
     List<List<Integer>> ans = new ArrayList<>();
     ArrayList<Integer> curPath = new ArrayList<>();

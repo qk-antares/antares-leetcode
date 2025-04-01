@@ -1,10 +1,10 @@
-package leetcode.questions.T1000.T100.hard;
+package leetcode.questions.T1000.T100;
 
 import org.junit.jupiter.api.Test;
 
 public class StringT {
-    /**
-     * 65. 有效数字
+    /*
+     * 65. 有效数字 [Hard]
      */
     public boolean isNumber(String s) {
         int len = s.length();

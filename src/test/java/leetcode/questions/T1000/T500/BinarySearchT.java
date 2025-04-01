@@ -1,4 +1,4 @@
-package leetcode.questions.T1000.T500.medium;
+package leetcode.questions.T1000.T500;
 
 import java.util.Arrays;
 
@@ -6,7 +6,27 @@ import org.junit.jupiter.api.Test;
 
 public class BinarySearchT {
     /*
-     * 436. 寻找右区间
+     * 441. 排列硬币 [Easy]
+     */
+    public int arrangeCoins(int n) {
+        long l = 1, r = n;
+        while (l <= r) {
+            long mid = (r - l) / 2 + l;
+            long sum = (mid + 1) * mid / 2;
+            if (sum > n)
+                r = mid - 1;
+            else
+                l = mid + 1;
+        }
+        return (int) r;
+    }
+
+    /*
+     * ========================== 分割线 ==========================
+     */
+
+    /*
+     * 436. 寻找右区间 [Medium]
      * 巧妙之处在于对intervals的排序方式，创建的startIntervals仅保存各个区间的(起点，index)，然后按照起点进行排序
      * 最后答案也是创建一个ans，逐个往里塞（而不是严格的从前往后顺序），每个使用二分查找在startIntervals中找
      */
