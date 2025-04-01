@@ -1,10 +1,10 @@
-package leetcode.questions.T1000.T700.medium;
+package leetcode.questions.T1000.T700;
 
 import java.util.List;
 
 public class GreedyT {
     /*
-     * 624. 数组列表中的最大距离
+     * 624. 数组列表中的最大距离    [Medium]
      * 
      * 原始解法（O(n^2)超时）
      * 两两比较数组的最小值和最大值，最终返回结果
