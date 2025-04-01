@@ -9,6 +9,7 @@ public class Tree {
      * 本质上是图的深度优先遍历
      */
     int cnt = 0;
+
     public int reachableNodes0(int n, int[][] edges, int[] restricted) {
         boolean[] cannotVisit = new boolean[n];
         for (int node : restricted) {
@@ -26,14 +27,14 @@ public class Tree {
             childern[edge[1]].add(edge[0]);
         }
 
-        dfs(0,-1,cannotVisit,childern);
+        dfs(0, -1, cannotVisit, childern);
         return cnt;
     }
 
     public void dfs(int cur, int pre, boolean[] cannotVisit, List<Integer>[] childern) {
         cnt++;
         for (Integer child : childern[cur]) {
-            if(!cannotVisit[child] && child != pre) {
+            if (!cannotVisit[child] && child != pre) {
                 dfs(child, cur, cannotVisit, childern);
             }
         }
@@ -51,7 +52,7 @@ public class Tree {
 
         UnionFind uf = new UnionFind(n);
         for (int[] edge : edges) {
-            if(cannotVisit[edge[0]] || cannotVisit[edge[1]]){
+            if (cannotVisit[edge[0]] || cannotVisit[edge[1]]) {
                 continue;
             }
             uf.merge(edge[0], edge[1]);
@@ -64,12 +65,12 @@ public class Tree {
          * 并查集是一个树状的结构。初始时，每个节点的父节点是自己，合并操作实际是将自己的父亲指向对应的节点
          */
 
-        //父节点
+        // 父节点
         private int[] f;
         private int[] rank;
-        
+
         public UnionFind(int n) {
-            //初始时，父节点是自己
+            // 初始时，父节点是自己
             f = new int[n];
             for (int i = 0; i < n; i++) {
                 f[i] = i;
@@ -78,42 +79,42 @@ public class Tree {
             rank = new int[n];
         }
 
-        //找出这个集合中的代表元素（即树的根，也只有树的根父节点是自己）
+        // 找出这个集合中的代表元素（即树的根，也只有树的根父节点是自己）
         public int find(int x) {
-            if(f[x] == x) {
+            if (f[x] == x) {
                 return x;
             } else {
                 return find(f[x]);
             }
         }
 
-        //合并操作
-        public void merge(int x, int y){
+        // 合并操作
+        public void merge(int x, int y) {
             int rx = find(x);
             int ry = find(y);
 
-            //两个帮派的帮主不一样，此时要进行合并
-            if(rx != ry) {
-                //rx打赢了，ry要认rx做父亲
+            // 两个帮派的帮主不一样，此时要进行合并
+            if (rx != ry) {
+                // rx打赢了，ry要认rx做父亲
                 if (rank[rx] > rank[ry]) {
                     f[ry] = rx;
                 } else if (rank[rx] < rank[ry]) {
-                    //反之
+                    // 反之
                     f[rx] = ry;
                 } else {
-                    //打成平手，也要合并
+                    // 打成平手，也要合并
                     f[ry] = rx;
                     rank[rx]++;
                 }
             }
         }
 
-        //计算该帮派的大小
+        // 计算该帮派的大小
         public int count() {
             int cnt = 0;
             int rt = find(0);
             for (int i = 0; i < f.length; i++) {
-                if(rt == find(i)) {
+                if (rt == find(i)) {
                     cnt++;
                 }
             }

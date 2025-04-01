@@ -22,20 +22,20 @@ public class GraphT {
         int ans = -1;
         int curTime = 0;
         int[] visitTime = new int[n];
-        for(int i = 0; i < n; i++){
-            int startTime = curTime; //本轮的开始时间
-            int curNode = i; //本轮的起始节点
+        for (int i = 0; i < n; i++) {
+            int startTime = curTime; // 本轮的开始时间
+            int curNode = i; // 本轮的起始节点
 
-            //当前节点未访问过
-            while(curNode != -1 && visitTime[curNode] == 0) {
+            // 当前节点未访问过
+            while (curNode != -1 && visitTime[curNode] == 0) {
                 visitTime[curNode] = curTime++;
                 curNode = edges[curNode];
             }
 
-            //要么是没有下一个节点了，要么就是遇到访问过的节点了
-            //是在本轮重复访问的
-            if(curNode != -1 && visitTime[curNode] >= startTime) {
-                ans = Math.max(ans, curTime-visitTime[curNode]);
+            // 要么是没有下一个节点了，要么就是遇到访问过的节点了
+            // 是在本轮重复访问的
+            if (curNode != -1 && visitTime[curNode] >= startTime) {
+                ans = Math.max(ans, curTime - visitTime[curNode]);
             }
         }
 
