@@ -1,6 +1,44 @@
 package leetcode.questions.T1000.T600;
 
+import java.util.Random;
+
 public class BinarySearchT {
+    /*
+     * 528. 按权重随机选择
+     * 
+     * 定义一个wSum数组，统计截至当前元素（包含当前元素）的w之和
+     * 当pick时，通过一个随机函数生成[1, weight]的随机数random
+     * 通过二分查找看这个随机数落在哪个weight区间（>=random的最小wSum值的index）
+     */
+    class Solution {
+        int[] wSum;
+        int n;
+
+        public Solution(int[] w) {
+            n = w.length;
+            wSum = new int[n];
+            wSum[0] = w[0];
+            for (int i = 1; i < n; i++) {
+                wSum[i] = w[i] + wSum[i - 1];
+            }
+        }
+
+        public int pickIndex() {
+            int l = 0, r = n - 1;
+            Random random = new Random();
+            int randomVal = random.nextInt(wSum[r]) + 1;
+            while (l <= r) {
+                int mid = (l + r) / 2;
+                if (wSum[mid] < randomVal) {
+                    l = mid + 1;
+                } else {
+                    r = mid - 1;
+                }
+            }
+            return l;
+        }
+    }
+
     /*
      * 540. 有序数组中的单一元素 [Medium]
      * 

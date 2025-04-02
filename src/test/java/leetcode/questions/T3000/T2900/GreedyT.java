@@ -1,4 +1,4 @@
-package leetcode.questions.T3000.T2900.medium;
+package leetcode.questions.T3000.T2900;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -7,25 +7,7 @@ import org.junit.jupiter.api.Test;
 
 public class GreedyT {
     /*
-     * 2829. k-avoiding 数组的最小总和
-     * 
-     * 优化可以把两个for换成等差数列求和公式
-     */
-    public int minimumSum(int n, int k) {
-        int mid = k / 2;
-        int ans = 0;
-        for (int i = 1; i <= Math.min(n, mid); i++) {
-            ans += i;
-        }
-
-        for (int i = k; i < k + n - mid; i++) {
-            ans += i;
-        }
-        return ans;
-    }
-
-    /*
-     * 2116. 判断一个括号字符串是否有效
+     * 2116. 判断一个括号字符串是否有效 [Medium]
      * 
      * 我的一遍遍历解法错误的原因在于，遇到一个未锁的括号时，能把它消耗就消耗掉，这种方法不一定是最优解
      * 
