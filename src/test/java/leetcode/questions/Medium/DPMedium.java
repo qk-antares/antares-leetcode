@@ -112,42 +112,9 @@ public class DPMedium {
         }
     }
 
-    /**
-     * 最长递增子序列，dp[i]表示nums[i]结尾的最长递增子序列
-     * dp[i] = dp[i-k] + 1 (nums[i] > nums[i-k]，k是满足条件的最小值)
-     * dp[0] = 1
-     */
-    class LengthOfLIS {
-        public int lengthOfLIS(int[] nums) {
-            int[] dp = new int[nums.length];
-            dp[0] = 1;
-
-            int max;
-            for(int i = 1;i < nums.length;i++){
-                max = Integer.MIN_VALUE;
-                for(int j = i-1;j > -1 && j >= max;j--){
-                    if(nums[j] < nums[i] && dp[j] > max){
-                        max = dp[j];
-                    }
-                }
-                dp[i] = 1 + (max == Integer.MIN_VALUE ? 0 : max);
-            }
-
-            int ans = Integer.MIN_VALUE;
-            for(int i = 0;i < nums.length;i++){
-                if(dp[i] > ans)
-                    ans = dp[i];
-            }
-
-            return ans;
-        }
-    }
-
-
 
     @Test
     public void invoke(){
 //        new CanJump().canJump0(new int[]{2,0,0});
-        new LengthOfLIS().lengthOfLIS(new int[]{0,1,0,3,2,3});
     }
 }
