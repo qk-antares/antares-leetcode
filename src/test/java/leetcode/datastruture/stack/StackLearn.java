@@ -44,65 +44,6 @@ public class StackLearn {
     }
 
     /**
-     * 每日温度，应该倒着来算，答案方法使用栈，效率稍有提高
-     */
-    class DailyTemperatures {
-        public int[] dailyTemperatures(int[] temperatures) {
-            int len = temperatures.length;
-            int[] ans = new int[len];
-            int temp;
-            for(int i = len - 2;i >= 0;i--){
-                temp = 0;
-                if(temperatures[i] == temperatures[i+1]){
-                    if(ans[i+1] > 0){
-                        ans[i] = ans[i+1] + 1;
-                    } else {
-                        ans[i] = 0;
-                    }
-                } else if (temperatures[i] > temperatures[i+1]) {
-                    for(int j = i + ans[i+1] + 1; j < len;j++){
-                        temp++;
-                        if(temperatures[j] > temperatures[i]) {
-                            ans[i] = ans[i+1] + temp;
-                            break;
-                        }
-                    }
-                } else {
-                    ans[i] = 1;
-                }
-            }
-
-            return ans;
-        }
-
-        public int[] dailyTemperatures0(int[] temperatures) {
-            int len = temperatures.length;
-            int[] ans = new int[len];
-            Stack<Integer> stack = new Stack<Integer>();
-            int cur;
-            for(int i = 0;i < len;i++){
-                cur = temperatures[i];
-                if(stack.isEmpty()){
-                    stack.push(i);
-                    continue;
-                }
-                if(cur > temperatures[stack.peek()]){
-                    while (!stack.isEmpty() && cur > temperatures[stack.peek()]) {
-                        ans[stack.peek()] = i - stack.peek();
-                        stack.pop();
-                    }
-                    stack.push(i);
-                }
-
-                if(cur <= temperatures[stack.peek()]){
-                    stack.push(i);
-                }
-            }
-            return ans;
-        }
-    }
-
-    /**
      * 深度优先搜索使用栈，递归地实现 DFS 时，似乎不需要使用任何栈。但实际上，我们使用的是由系统提供的隐式栈，也称为调用栈
      */
     boolean DFS(Node cur, Node target, Set<Node> visited) {

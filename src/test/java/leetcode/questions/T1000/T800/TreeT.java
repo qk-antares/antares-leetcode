@@ -1,10 +1,10 @@
-package leetcode.questions.T1000.T800.easy;
+package leetcode.questions.T1000.T800;
 
 import leetcode.common.TreeNode;
 
-public class Tree {
+public class TreeT {
     /**
-     * 783. 二叉搜索树节点最小距离
+     * 783. 二叉搜索树节点最小距离  [Easy]
      */
     int pre;
     int ans = Integer.MAX_VALUE;
