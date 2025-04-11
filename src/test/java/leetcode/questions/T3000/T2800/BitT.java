@@ -1,11 +1,11 @@
-package leetcode.questions.T3000.T2800.easy;
+package leetcode.questions.T3000.T2800;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class BitT {
     /*
-     * 2716. 最小化字符串长度
+     * 2716. 最小化字符串长度   [Easy]
      * 
      * 问题的本质是统计字符串中出现的不同字符数
      * 一种简单的方法是使用HashSet

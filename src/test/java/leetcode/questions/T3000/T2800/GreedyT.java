@@ -1,8 +1,8 @@
-package leetcode.questions.T3000.T2800.medium;
+package leetcode.questions.T3000.T2800;
 
 public class GreedyT {
     /*
-     * 2712. 使所有字符相等的最小成本
+     * 2712. 使所有字符相等的最小成本   [Medium]
      */
     public long minimumCost(String s) {
         long ans = 0;

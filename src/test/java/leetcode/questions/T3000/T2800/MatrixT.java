@@ -1,10 +1,10 @@
-package leetcode.questions.T3000.T2800.medium;
+package leetcode.questions.T3000.T2800;
 
 import java.util.HashSet;
 
 public class MatrixT {
     /*
-     * 2711. 对角线上不同值的数量差
+     * 2711. 对角线上不同值的数量差 [Medium]
      */
     public int[][] differenceOfDistinctValues(int[][] grid) {
         int m = grid.length, n = grid[0].length;
