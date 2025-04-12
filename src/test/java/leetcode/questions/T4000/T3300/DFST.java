@@ -1,11 +1,11 @@
-package leetcode.questions.T4000.T3300.medium;
+package leetcode.questions.T4000.T3300;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DFST {
     /*
-     * 3211. 生成不含相邻零的二进制字符串
+     * 3211. 生成不含相邻零的二进制字符串   [Medium]
      */
     List<String> ans = new ArrayList<>();
     public List<String> validStrings(int n) {

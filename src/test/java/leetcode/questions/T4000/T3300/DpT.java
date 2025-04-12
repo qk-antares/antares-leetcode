@@ -1,8 +1,8 @@
-package leetcode.questions.T4000.T3300.medium;
+package leetcode.questions.T4000.T3300;
 
 public class DpT {
     /*
-     * 3259. 超级饮料的最大强化能量
+     * 3259. 超级饮料的最大强化能量 [Medium]
      * 
      * dpA[i]表示第i小时以A结尾的答案
      * dpB[i]同理

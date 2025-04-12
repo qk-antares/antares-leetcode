@@ -1,8 +1,8 @@
-package leetcode.questions.T4000.T3300.easy;
+package leetcode.questions.T4000.T3300;
 
 public class GreedyT {
     /*
-     * 3216. 交换后字典序最小的字符串
+     * 3216. 交换后字典序最小的字符串   [Easy]
      */
     public String getSmallestString(String s) {
         char[] arr = s.toCharArray();

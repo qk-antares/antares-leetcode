@@ -1,11 +1,11 @@
-package leetcode.questions.T3000.T2400.medium;
+package leetcode.questions.T3000.T2400;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Tree {
+public class TreeT {
     /**
-     * 2368. 受限条件下可到达节点的数目
+     * 2368. 受限条件下可到达节点的数目  [Medium]
      * 本质上是图的深度优先遍历
      */
     int cnt = 0;

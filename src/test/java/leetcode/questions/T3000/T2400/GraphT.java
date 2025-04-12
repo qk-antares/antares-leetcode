@@ -1,8 +1,8 @@
-package leetcode.questions.T3000.T2400.hard;
+package leetcode.questions.T3000.T2400;
 
 public class GraphT {
     /*
-     * 2360. 图中的最长环
+     * 2360. 图中的最长环   [Hard]
      * 
      * 首先在读题的时候要注意到，每个节点至多有1条出边，edges的长度就等于nodes数，edges[i]=0代表nodei没有出边
      * 

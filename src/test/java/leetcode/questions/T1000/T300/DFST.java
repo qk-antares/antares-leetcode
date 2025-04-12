@@ -6,7 +6,18 @@ import org.junit.jupiter.api.Test;
 
 public class DFST {
     /*
-     * 233. 数字 1 的个数
+     * 233. 数字 1 的个数   [Hard]  [Link: 2999]
+     * 
+     * 数位dp
+     * dfs(i, cnt1, isLimit, s, memo)
+     * i: 当前填写的位
+     * cnt1: [0..i]中1的个数
+     * isLimit: 当前位是否限制
+     * s: 数字char[]
+     * memo: 记忆数组
+     * 
+     * 需要记忆的状态有i和cnt1
+     * 这道题的特点就是需要记录前面已经填写的1 cnt1，然后在填写完成时返回cnt1
      */
     public int countDigitOne(int n) {
         char[] s = String.valueOf(n).toCharArray();
