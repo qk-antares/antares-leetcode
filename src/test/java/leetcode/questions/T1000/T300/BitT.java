@@ -1,8 +1,8 @@
-package leetcode.questions.T1000.T300.medium;
+package leetcode.questions.T1000.T300;
 
 public class BitT {
     /*
-     * 201. 数字范围按位与
+     * 201. 数字范围按位与  [Medium]
      * 
      * [m,n]的范围与等价于求m和n的最大二进制前缀，后面补零
      * 

@@ -1,8 +1,8 @@
-package leetcode.questions.T1000.T300.medium;
+package leetcode.questions.T1000.T300;
 
-public class DataStructureT {
+public class TreeT {
     /*
-     * 208. 实现 Trie (前缀树)
+     * 208. 实现 Trie (前缀树)  [Medium]
      */
     class Trie {
         // 判断是否是叶子节点

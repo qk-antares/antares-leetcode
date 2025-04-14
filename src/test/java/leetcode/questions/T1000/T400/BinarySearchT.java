@@ -91,7 +91,7 @@ public class BinarySearchT {
     }
 
     /*
-     * 354. 俄罗斯套娃信封问题  [Hard]  [Link: T300]
+     * 354. 俄罗斯套娃信封问题  [Hard]  [Link: 300. 最长递增子序列]
      * 
      * 首先对envelopes进行排序，排序的规则为：（首要）wi从小到大，（次要）hi从大到小。
      * 经过如此排序后，按照hi进行比较，如果hi<hj（i<j），可以保证(wi,hi)一定能够放入(wj,hj)

@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 public class StackT {
     /**
-     * 84. 柱状图中最大的矩形 [Hard]    [Link: T739]
+     * 84. 柱状图中最大的矩形 [Hard]    [Link: 739. 每日温度]
      * 
      * 使用单调栈，对heights进行遍历，分别保存：
      * leftSmaller: heights左侧第一个<heights[i]的index

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 public class DFST {
     /*
-     * 233. 数字 1 的个数   [Hard]  [Link: 2999]
+     * 233. 数字 1 的个数   [Hard]  [Link: 2999. 统计强大整数的数目]
      * 
      * 数位dp
      * dfs(i, cnt1, isLimit, s, memo)

@@ -5,7 +5,7 @@ import java.util.Deque;
 
 public class StackT {
     /*
-     * 739. 每日温度 [Medium]   [Link: T84]
+     * 739. 每日温度 [Medium]   [Link: 84. 柱状图中最大的矩形]
      * 
      * 单调栈
      * 创建一个栈，对temperatures进行1次遍历（存入idx）

@@ -1,4 +1,4 @@
-package leetcode.questions.T1000.T300.esay;
+package leetcode.questions.T1000.T300;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -8,9 +8,9 @@ import java.util.Queue;
 /**
  * Stack
  */
-public class Stack {
+public class StackT {
     /**
-     * 
+     * 225. 用队列实现栈    [Easy]
      */
     class MyStack {
         Queue<Integer> q;
@@ -41,7 +41,7 @@ public class Stack {
     }
 
     /**
-     * 232. 用栈实现队列
+     * 232. 用栈实现队列    [Easy]
      */
     class MyQueue {
         Deque<Integer> stk1;

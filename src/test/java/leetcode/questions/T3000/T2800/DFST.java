@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 public class DFST {
     /*
-     * 2719. 统计整数数目   [Hard]  [Link: T2999]
+     * 2719. 统计整数数目   [Hard]  [Link: 2999. 统计强大整数的数目]
      * 
      * 数位dp
      * dfs(i, num1, num2, num1Limit, num2Limit, sum, min_sum, max_sum, memo)

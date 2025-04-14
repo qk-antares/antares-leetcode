@@ -23,9 +23,5 @@ public class DpT {
     @Test
     void test(){
         maxScoreSightseeingPair(new int[]{2,7,7,2,1,7,10,4,3,3});
-
-        String str = "hello";
-        StringBuilder sb = new StringBuilder(str);
-        String substring = sb.reverse().substring(1);
     }
 }

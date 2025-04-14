@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class DFST {
     /*
-     * 1012. 至少有 1 位重复的数字 [Hard]   [Link T2376]
+     * 1012. 至少有 1 位重复的数字 [Hard]   [Link 2376. 统计特殊整数]
      * 
      * 逆向思维，具有至少1位重复数字的正整数个数=n-没有重复的正整数个数
      * dfs(i,mask,isLimit,isNum)用来求没有重复的正整数个数
