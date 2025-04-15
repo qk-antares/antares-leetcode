@@ -1,8 +1,23 @@
-package leetcode.questions.T1000.T200.hard;
+package leetcode.questions.T1000.T200;
 
 public class BitT {
-    /**
-     * 137. 只出现一次的数字 II
+    /*
+     * 136. 只出现一次的数字 [Easy]
+     */
+    public int singleNumberEasy(int[] nums) {
+        int ans = 0;
+        for (int num : nums) {
+            ans ^= num;
+        }
+        return ans;
+    }
+
+    /*
+     * ========================== 分割线 ==========================
+     */
+
+    /*
+     * 137. 只出现一次的数字 II [Medium]
      */
     public int singleNumber(int[] nums) {
         // 用 high，low 2个二进制位表示某个二进制位上1出现的次数。

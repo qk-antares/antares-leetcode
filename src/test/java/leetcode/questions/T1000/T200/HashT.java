@@ -1,4 +1,4 @@
-package leetcode.questions.T1000.T200.medium;
+package leetcode.questions.T1000.T200;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -7,7 +7,7 @@ import java.util.List;
 
 public class HashT {
     /*
-     * 187. 重复的DNA序列
+     * 187. 重复的DNA序列   [Medium]
      * 
      * 这里不必使用StringBuilder
      */

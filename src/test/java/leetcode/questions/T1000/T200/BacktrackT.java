@@ -1,11 +1,11 @@
-package leetcode.questions.T1000.T200.medium;
+package leetcode.questions.T1000.T200;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BacktrackT {
     /*
-     * 131. 分割回文串
+     * 131. 分割回文串  [Medium]
      * 这是一道dp+回溯的题，个人认为难度为难
      * 
      * 首先需要对s进行预处理，通过动态规划判断s的所有子串是否为回文串

@@ -1,4 +1,4 @@
-package leetcode.questions.T1000.T200.medium;
+package leetcode.questions.T1000.T200;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -7,7 +7,25 @@ import org.junit.jupiter.api.Test;
 
 public class StringT {
     /*
-     * 165. 比较版本号
+     * 168. Excel 表列名称  [Easy]
+     */
+    public String convertToTitle(int columnNumber) {
+        StringBuilder ans = new StringBuilder();
+        while (columnNumber != 0) {
+            columnNumber -= 1;
+            ans.append((char)('A' + columnNumber % 26 ));
+            columnNumber /= 26;
+        }
+
+        return ans.reverse().toString();
+    }
+
+    /*
+     * ========================== 分割线 ==========================
+     */
+
+    /*
+     * 165. 比较版本号  [Medium]
      */
     public int compareVersion(String version1, String version2) {
         String[] arr1 = version1.split("\\.");
@@ -26,7 +44,7 @@ public class StringT {
     }
 
     /*
-     * 179. 最大数
+     * 179. 最大数  [Medium]
      */
     public String largestNumber(int[] nums) {
         String[] arr = new String[nums.length];
@@ -53,7 +71,7 @@ public class StringT {
     }
 
     @Test
-    public void test() {
-        System.out.println(largestNumber(new int[]{3,30,34,5,9}));
+    public void test(){
+        convertToTitle(701);
     }
 }

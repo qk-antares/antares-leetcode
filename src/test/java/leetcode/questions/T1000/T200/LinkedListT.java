@@ -1,4 +1,4 @@
-package leetcode.questions.T1000.T200.medium;
+package leetcode.questions.T1000.T200;
 
 import org.junit.jupiter.api.Test;
 
@@ -6,7 +6,7 @@ import leetcode.common.ListNode;
 
 public class LinkedListT {
     /*
-     * 143. 重排链表
+     * 143. 重排链表    [Medium]
      * 我的递归解法时间和空间复杂度太高
      * 
      * 正确的解法是，找到链表中点，将【中点之后】的反转，之后再将前半段（注意将中点.next=null）和后半段合并

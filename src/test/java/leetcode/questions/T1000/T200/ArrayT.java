@@ -1,10 +1,33 @@
-package leetcode.questions.T1000.T200.medium;
+package leetcode.questions.T1000.T200;
 
 import java.util.Arrays;
 
 public class ArrayT {
     /*
-     * 164. 最大间距
+     * TODO 169. 多数元素 [Easy]
+     * 这一题用"一换一"的思想，即一个非多数元素换一个多数元素，最后剩下的那个肯定是多数元素
+     */
+    public int majorityElement(int[] nums) {
+        int ans = nums[0], cnt = 1;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] == ans)
+                cnt++;
+            else if (cnt > 0) {
+                cnt--;
+            } else {
+                ans = nums[i];
+                cnt = 1;
+            }
+        }
+        return ans;
+    }
+
+    /*
+     * ========================== 分割线 ==========================
+     */
+
+    /*
+     * 164. 最大间距 [Medium]
      * 
      * 解法1是使用暴力算法，首先使用常规的排序算法（nlogn），然后遍历数组寻找最大间距
      * 
@@ -20,7 +43,8 @@ public class ArrayT {
      * 之后按照桶排序的步骤将元素依次放至桶中，则最大间距一定来自桶和桶之间的间距（一定不在桶的内部）
      * 维护每个桶的最大值和最小值，最后遍历各个桶即可得到答案
      * 
-     * 这里有个小注意点是，Java中可以利用Arrays.stream(nums).min().getAsInt()和Arrays.stream(nums).max().getAsInt()获取数组的最大值和最小值
+     * 这里有个小注意点是，Java中可以利用Arrays.stream(nums).min().getAsInt()和Arrays.stream(nums).
+     * max().getAsInt()获取数组的最大值和最小值
      */
     public int maximumGap0(int[] nums) {
         Arrays.sort(nums);
@@ -42,21 +66,20 @@ public class ArrayT {
         int d = Math.max(1, (max - min) / (n - 1));
         int bucketCnt = (max - min) / d + 1;
 
-        int[][] buckets = new int[bucketCnt][2];  // 每个桶维护最大值和最小值
+        int[][] buckets = new int[bucketCnt][2]; // 每个桶维护最大值和最小值
         for (int i = 0; i < buckets.length; i++) {
-            Arrays.fill(buckets[i], -1);    // -1 表示桶为空
+            Arrays.fill(buckets[i], -1); // -1 表示桶为空
         }
 
         for (int i = 0; i < nums.length; i++) {
             int index = (nums[i] - min) / d;
-            if (buckets[index][0] == -1) {  // 桶为空，填充首个元素
+            if (buckets[index][0] == -1) { // 桶为空，填充首个元素
                 buckets[index][0] = buckets[index][1] = nums[i];
             } else {
                 buckets[index][0] = Math.min(buckets[index][0], nums[i]);
                 buckets[index][1] = Math.max(buckets[index][1], nums[i]);
             }
         }
-        
 
         int ans = 0;
         int prev = buckets[0][1];

@@ -1,8 +1,8 @@
-package leetcode.questions.T1000.T200.medium;
+package leetcode.questions.T1000.T200;
 
 public class MatrixT {
     /**
-     * 130. 被围绕的区域
+     * 130. 被围绕的区域    [Medium]
      */
     boolean[][] mask;
     int m;

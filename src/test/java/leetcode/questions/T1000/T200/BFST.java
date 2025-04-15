@@ -1,4 +1,4 @@
-package leetcode.questions.T1000.T200.hard;
+package leetcode.questions.T1000.T200;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 public class BFST {
     /**
-     * 127. 单词接龙
+     * 127. 单词接龙    [Hard]
      * 
      * 在beginWord+wordList上建立图，每个单词是一个节点。
      * 一个直观的方法是，如果两个单词只差一个字母，就在这两个节点之间添加双向边，但是这样需要n*n次比较才能完成建图
