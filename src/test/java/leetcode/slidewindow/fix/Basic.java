@@ -1,6 +1,11 @@
 package leetcode.slidewindow.fix;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.jupiter.api.Test;
 
 public class Basic {
     /*
@@ -81,7 +86,7 @@ public class Basic {
     }
 
     /*
-     * 2090. 半径为 k 的子数组平均值
+     * 2090. 半径为 k 的子数组平均值 [Medium]
      * 
      * 这题的坑点在于，半径中的子数组之和有可能超出int范围
      * 另外一个技巧点在于，可以将ans初始化为-1
@@ -107,5 +112,70 @@ public class Basic {
         }
 
         return ans;
+    }
+
+    /*
+     * 2379. 得到 K 个黑块的最少涂色次数
+     * 
+     * 相当于统计窗口中的最少白色块数
+     */
+    public int minimumRecolors(String blocks, int k) {
+        int minW = k;
+        int cnt = 0;
+        char[] arr = blocks.toCharArray();
+        for (int i = 0; i < arr.length; i++) {
+            // 入
+            if (arr[i] == 'W') {
+                cnt++;
+            }
+            // 更新
+            if (i < k - 1)
+                continue;
+
+            minW = Math.min(minW, cnt);
+
+            // 出
+            if (arr[i + 1 - k] == 'W') {
+                cnt--;
+            }
+        }
+        return minW;
+    }
+
+    /*
+     * 2841. 几乎唯一子数组的最大和
+     */
+    public long maxSum(List<Integer> nums, int m, int k) {
+        long ans = 0;
+        long sum = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < nums.size(); i++) {
+            // 入
+            int num = nums.get(i);
+            map.put(num, map.getOrDefault(num, 0) + 1);
+            sum += num;
+
+            if (i < k - 1)
+                continue;
+
+            // 更新
+            if (map.size() >= m)
+                ans = Math.max(ans, sum);
+
+            // 出
+            num = nums.get(i + 1 - k);
+            sum -= num;
+            int oldCnt = map.get(num);
+            if (oldCnt == 1)
+                map.remove(num);
+            else
+                map.put(num, oldCnt - 1);
+        }
+        return ans;
+    }
+
+    @Test
+    public void test() {
+        System.out.println(maxSum(Arrays.asList(1, 2, 2), 2, 2));
     }
 }
