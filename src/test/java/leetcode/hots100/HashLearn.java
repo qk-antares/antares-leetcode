@@ -1,26 +1,13 @@
 package leetcode.hots100;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
-
 public class HashLearn {
-    /**
-     * 两数之和
-     */
-    public int[] twoSum(int[] nums, int target) {
-        HashMap<Integer, Integer> map = new HashMap<>();
-        for (int i = 0; i < nums.length; i++) {
-            int left = target - nums[i];
-            if(map.containsKey(left)){
-                return new int[]{map.get(left), i};
-            }
-            map.put(nums[i], i);
-        }
-
-        return new int[]{};
-    }
-
     /**
      * 最长连续序列
      */

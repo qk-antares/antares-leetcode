@@ -1,8 +1,12 @@
 package leetcode.questions.Easy;
 
-import org.junit.jupiter.api.Test;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
-import java.util.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Antares
@@ -265,69 +269,6 @@ public class EasyArray {
         for(;j < nums.length;j++){
             nums[j] = 0;
         }
-    }
-
-    /**
-     * 两数之和
-     * 我的解法1：暴力解法(时间复杂度过高)
-     */
-    public int[] twoSum(int[] nums, int target) {
-        for(int i = 0;i < nums.length;i++){
-            for(int j = i+1;j < nums.length;j++){
-                if(nums[i]+nums[j]==target){
-                    return new int[]{i, j};
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 我的解法2：思路可以，只是不适用这题
-     */
-    public int[] twoSum0(int[] nums, int target) {
-        Arrays.sort(nums);
-        int i = 0,j = nums.length-1,sum;
-        do{
-            sum = nums[i] + nums[j];
-            if(sum > target){
-                j--;
-            }else if(sum < target){
-                i++;
-            }
-        }while (sum != target);
-
-        return new int[]{i, j};
-    }
-
-    /**
-     * 答案解法一：HashMap(效率最高)
-     */
-    public int[] twoSum1(int[] nums, int target) {
-        HashMap<Integer, Integer> integerHashMap = new HashMap<>();
-        for(int i = 0;i < nums.length;i++){
-            if(integerHashMap.get(target - nums[i]) != null){
-                return new int[]{integerHashMap.get(target - nums[i]), i};
-            }
-            integerHashMap.put(nums[i], i);
-        }
-        return null;
-    }
-
-    /**
-     * 答案解法二：双指针，实质依然是暴力解法，效率较低
-     */
-    public int[] twoSum2(int[] nums, int target) {
-        int i = 0,j = 1;
-        int maxArea = nums.length - 1;
-        while (nums[i] + nums[j] != target){
-            if(j == maxArea){
-                i++;
-                j = i;
-            }
-            j++;
-        }
-        return new int[]{i, j};
     }
 
     /**

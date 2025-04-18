@@ -174,6 +174,90 @@ public class Basic {
         return ans;
     }
 
+    /*
+     * 1423. 可获得的最大点数 [Medium]
+     * 
+     * 有正向思维和逆向思维两种解法：
+     * 对于正向思维：首先计算前k个点数的和，接着开始移动窗口（+末尾的点数，-前面的点数），边移动窗口，边记录窗口的最大和
+     * 对于逆向思维：假设n张牌，拿完k张剩n-k，剩下的这些牌相当于一个窗口，且窗口内的牌点数之和最小
+     * 
+     * 需要注意的小点是，逆向思维需要对"把所有n张牌都拿走"这种特殊情况进行单独判断
+     * 由于测试用例的设置问题（k通常较小），所以正向思维的解法时间效率会更高
+     */
+    public int maxScore0(int[] cardPoints, int k) {
+        int n = cardPoints.length;
+        int sum = 0;
+        int tot = 0;
+        int minSum = Integer.MAX_VALUE;
+        int window = n - k;
+        for (int i = 0; i < n; i++) {
+            // 入
+            tot += cardPoints[i];
+
+            if (window != 0) {
+                sum += cardPoints[i];
+                if (i < window - 1)
+                    continue;
+
+                // 更新
+                minSum = Math.min(minSum, sum);
+
+                // 出
+                sum -= cardPoints[i + 1 - n + k];
+            }
+        }
+
+        return window == 0 ? tot : tot - minSum;
+    }
+
+    public int maxScore(int[] cardPoints, int k) {
+        int n = cardPoints.length;
+        int sum = 0;
+        for (int i = 0; i < k; i++) {
+            sum += cardPoints[i];
+        }
+
+        int ans = sum;
+        for (int i = 0; i < k; i++) {
+            sum += cardPoints[n - 1 - i] - cardPoints[k - 1 - i];
+            ans = Math.max(ans, sum);
+        }
+
+        return ans;
+    }
+
+    /*
+     * 1052. 爱生气的书店老板
+     * 
+     * 相当于一个抑制情绪的固定窗口，从前往后移动这个窗口，并记录最大值
+     * 首先计算，假设老板不抑制情绪，可以使多少顾客满意
+     * 接着通过滑动窗口，计算抑制情绪的窗口，最多可以让多少不满变满意，最后加上这个delta即可
+     * 当然上述两个步骤还可以在一个for循环中同步进行
+     */
+    public int maxSatisfied(int[] customers, int[] grumpy, int minutes) {
+        int delta = 0;
+        int maxDelta = 0;
+        int ans = 0;
+        for (int i = 0; i < customers.length; i++) {
+            // 入窗口
+            if (grumpy[i] == 0) {
+                ans += customers[i];
+            } else {
+                delta += customers[i];
+            }
+            if (i < minutes - 1)
+                continue;
+
+            // 更新
+            maxDelta = Math.max(maxDelta, delta);
+
+            // 出（这里需要做额外判断，只有对应的时刻生气才出）
+            delta -= grumpy[i + 1 - minutes] * customers[i + 1 - minutes];
+        }
+
+        return ans + maxDelta;
+    }
+
     @Test
     public void test() {
         System.out.println(maxSum(Arrays.asList(1, 2, 2), 2, 2));
