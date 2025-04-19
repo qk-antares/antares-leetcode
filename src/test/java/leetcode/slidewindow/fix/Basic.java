@@ -1,5 +1,6 @@
 package leetcode.slidewindow.fix;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -256,6 +257,73 @@ public class Basic {
         }
 
         return ans + maxDelta;
+    }
+
+    /*
+     * 1652. 拆炸弹
+     * 
+     * 用滑动窗口来做替换
+     */
+    public int[] decrypt(int[] code, int k) {
+        // 首先计算前k个元素组成的窗口
+        int sum = 0;
+        int absK = Math.abs(k);
+        for (int i = 0; i < absK; i++) {
+            sum += code[i];
+        }
+
+        int n = code.length;
+        int[] ans = new int[n];
+
+        if (k > 0) {
+            for (int i = 0; i < n; i++) {
+                // 相当于n-1-i是一个整体
+                ans[n - 1 - i] = sum;
+                sum += code[n - 1 - i] - code[(absK - 1 - i + n) % n];
+            }
+        } else {
+            for (int i = 0; i < n; i++) {
+                // 相当于i是一个整体
+                ans[(i + absK) % n] = sum;
+                sum += code[(i + absK) % n] - code[i];
+            }
+        }
+        return ans;
+    }
+
+    /*
+     * 3439. 重新安排会议得到最多空余时间 I
+     * 
+     * 将会议与会议中间的空余时间看作一个nums数组
+     * 每平移1个会议，相当于合并nums中的2个元素，则平移k个会议，相当于nums中k+1大小的窗口
+     * 变成了求nums中k+1的窗口的最大元素和
+     */
+    public int maxFreeTime(int eventTime, int k, int[] startTime, int[] endTime) {
+        List<Integer> nums = new ArrayList<>();
+        int n = startTime.length;
+        int end = 0;
+        for (int i = 0; i < n; i++) {
+            nums.add(startTime[i] - end);
+            end = endTime[i];
+        }
+        nums.add(eventTime - endTime[n - 1]);
+
+        int sum = 0;
+        int ans = 0;
+        n = nums.size();
+        for (int i = 0; i < n; i++) {
+            // 入
+            sum += nums.get(i);
+            if (i < k)
+                continue;
+
+            // 更新
+            ans = Math.max(ans, sum);
+
+            // 出
+            sum -= nums.get(i - k);
+        }
+        return Math.max(ans, sum);
     }
 
     @Test
