@@ -326,6 +326,119 @@ public class Basic {
         return Math.max(ans, sum);
     }
 
+    /*
+     * 2134. 最少交换次数来组合所有的 1 II
+     * 
+     * 首先对nums进行1次遍历，统计出包含了多少个1
+     * 假设它包含cnt个1吧，然后就用cnt大小的窗口对nums进行一次"环形遍历"
+     * 遍历的过程中记录窗口中1的最多值（maxSum），结果即为cnt-maxSum
+     */
+    public int minSwaps(int[] nums) {
+        int cnt = 0;
+        for (int num : nums)
+            cnt += num;
+
+        int sum = 0;
+        for (int i = 0; i < cnt; i++)
+            sum += nums[i];
+
+        int maxSum = sum;
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            sum += nums[(cnt + i) % n] - nums[i];
+            maxSum = Math.max(sum, maxSum);
+        }
+        return cnt - maxSum;
+    }
+
+    /*
+     * 1297. 子串的最大出现次数 [Medium]
+     * 
+     * 实际上只需要统计minSize这样的一个窗口即可，maxSize这个参数是完全没有意义的
+     * 想象一个maxSize的子串出现了n次，那么该子串的子串一定也出现了n次
+     * 所以可以用minSize的窗口，统计窗口中的字母数量，如果字母数量满足maxLetters的条件，将子串的Map计数+1
+     * 最后return Map中的最大值即可
+     * 上述过程可能会想到用TreeMap，但TreeMap是根据键来进行排序的，所以不可行
+     */
+    public int maxFreq(String s, int maxLetters, int minSize, int maxSize) {
+        int[] cnt = new int[26];
+        char[] arr = s.toCharArray();
+        int ans = 0;
+        Map<String, Integer> map = new HashMap<>();
+        for (int i = 0; i < arr.length; i++) {
+            cnt[arr[i] - 'a']++;
+            if (i < minSize - 1)
+                continue;
+
+            // 判断子串是否有效
+            if (valid(cnt, maxLetters)) {
+                String substr = s.substring(i - minSize + 1, i + 1);
+                int update = map.getOrDefault(substr, 0) + 1;
+                ans = Math.max(ans, update);
+                map.put(substr, update);
+            }
+
+            cnt[arr[i - minSize + 1] - 'a']--;
+        }
+        return ans;
+    }
+
+    boolean valid(int[] cnt, int maxLetters) {
+        int diff = 0;
+        for (int i = 0; i < cnt.length; i++) {
+            if (cnt[i] != 0)
+                diff++;
+        }
+        return diff <= maxLetters;
+    }
+
+    /*
+     * 2653. 滑动子数组的美丽值
+     * 
+     * 用大小为k的堆去维护这样的一个窗口，这应该是一个大根堆，如果遇到了比根元素更小的元素才往堆中添加元素
+     * 这么做会超时
+     * 
+     * 根据题目的条件，nums的值域较小，可以用一个cnt数组一直统计窗口中各个数字的出现次数，然后据此来获取第x小的数
+     */
+    public int[] getSubarrayBeauty(int[] nums, int k, int x) {
+        // 共计可能出现101种数字
+        int[] cnt = new int[101];
+        for (int i = 0; i < k - 1; i++) {
+            cnt[nums[i] + 50]++;
+        }
+
+        int n = nums.length;
+        int[] ans = new int[n - k + 1];
+        for (int i = 0; i < n - k + 1; i++) {
+            cnt[nums[i + k - 1] + 50]++;
+
+            ans[i] = getXMin(cnt, x);
+
+            cnt[nums[i] + 50]--;
+        }
+
+        return ans;
+    }
+
+    int getXMi0(int[] cnt, int x) {
+        int i = 0;
+        while(x > 0) {
+            x -= cnt[i++];
+        }
+        return Math.min(0, i-51);
+    }
+
+    int getXMin(int[] cnt, int x) {
+        //这里的小优化是，只枚举负值
+        for (int i = 0; i < 50; i++) {
+            x -= cnt[i];
+            if (x <= 0)
+                return i - 50;
+        }
+
+        return 0;
+    }
+
     @Test
     public void test() {
         System.out.println(maxSum(Arrays.asList(1, 2, 2), 2, 2));
