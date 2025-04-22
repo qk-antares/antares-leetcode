@@ -1,4 +1,4 @@
-package leetcode.slidewindow.fix;
+package leetcode.slidewindow;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-public class Basic {
+public class FixT {
     /*
      * 1456. 定长子串中元音的最大数目 [Medium]
      */
@@ -393,7 +393,7 @@ public class Basic {
     }
 
     /*
-     * 2653. 滑动子数组的美丽值
+     * 2653. 滑动子数组的美丽值 [Medium] <Star>
      * 
      * 用大小为k的堆去维护这样的一个窗口，这应该是一个大根堆，如果遇到了比根元素更小的元素才往堆中添加元素
      * 这么做会超时
@@ -422,14 +422,14 @@ public class Basic {
 
     int getXMi0(int[] cnt, int x) {
         int i = 0;
-        while(x > 0) {
+        while (x > 0) {
             x -= cnt[i++];
         }
-        return Math.min(0, i-51);
+        return Math.min(0, i - 51);
     }
 
     int getXMin(int[] cnt, int x) {
-        //这里的小优化是，只枚举负值
+        // 这里的小优化是，只枚举负值
         for (int i = 0; i < 50; i++) {
             x -= cnt[i];
             if (x <= 0)
@@ -439,8 +439,177 @@ public class Basic {
         return 0;
     }
 
+    /*
+     * 30. 串联所有单词的子串 [Hard] <Star>
+     * 
+     * 假设m=s.length(), n = words[i].length, w = words.length
+     * 则s中包含m/n个单词
+     * 
+     * 还要考虑words中有重复的单词...
+     * 还要考虑这个子串的起点，不一定是n的整倍数...
+     * 
+     * 因此这是一个带有外层循环（遍历窗口的起点）的固定窗口
+     */
+    public List<Integer> findSubstring(String s, String[] words) {
+        int m = s.length(), n = words[0].length(), w = words.length;
+        Map<String, Integer> wordsMap = new HashMap<>();
+        for (int i = 0; i < w; i++) {
+            wordsMap.put(words[i], wordsMap.getOrDefault(words[i], 0) + 1);
+        }
+
+        List<Integer> ans = new ArrayList<>();
+        // 枚举各种起点
+        for (int i = 0; i < n; i++) {
+            // 这种起点超出了s的长度
+            if (i + w * n > m)
+                break;
+
+            Map<String, Integer> diff = new HashMap<>(wordsMap);
+            for (int j = i; j <= m - n; j += n) {
+                String substr = s.substring(j, j + n);
+                int update = diff.getOrDefault(substr, 0) - 1;
+                if (update == 0)
+                    diff.remove(substr);
+                else
+                    diff.put(substr, update);
+
+                if (j - i + n < w * n)
+                    continue;
+
+                if (diff.size() == 0)
+                    ans.add(j - (w - 1) * n);
+
+                substr = s.substring(j - (w - 1) * n, j - (w - 2) * n);
+                update = diff.getOrDefault(substr, 0) + 1;
+                if (update == 0)
+                    diff.remove(substr);
+                else
+                    diff.put(substr, update);
+            }
+        }
+        return ans;
+    }
+
+    /*
+     * 438. 找到字符串中所有字母异位词
+     * 
+     * 类似的题都有两种写法吧，一种是使用HashMap来统计次数，而另一种是使用一个固定大小的int[] cnt数组
+     * 当Map为空或者cnt数组全0时，代表找到了一个满足条件的答案
+     * 实测下来，还是使用数组的这种解法效率更高
+     */
+    public List<Integer> findAnagrams0(String s, String p) {
+        // 统计p中各个字符的出现次数（HashMap）
+        Map<Character, Integer> diff = new HashMap<>();
+        char[] pArr = p.toCharArray();
+
+        for (char ch : pArr) {
+            diff.put(ch, diff.getOrDefault(ch, 0) + 1);
+        }
+
+        // 在s中使用相同的窗口大小，如果diff空了，则证明窗口中的子串是一个异位词
+        char[] sArr = s.toCharArray();
+        int w = pArr.length;
+        List<Integer> ans = new ArrayList<>();
+        for (int i = 0; i < sArr.length; i++) {
+            int update = diff.getOrDefault(sArr[i], 0) - 1;
+            if (update == 0)
+                diff.remove(sArr[i]);
+            else
+                diff.put(sArr[i], update);
+
+            if (i < w - 1)
+                continue;
+
+            if (diff.isEmpty())
+                ans.add(i - w + 1);
+
+            update = diff.getOrDefault(sArr[i - w + 1], 0) + 1;
+            if (update == 0)
+                diff.remove(sArr[i - w + 1]);
+            else
+                diff.put(sArr[i - w + 1], update);
+        }
+
+        return ans;
+    }
+
+    public List<Integer> findAnagrams(String s, String p) {
+        // 统计p中各个字符的出现次数（大小为26的cnt数组）
+        int[] cnt = new int[26];
+        char[] pArr = p.toCharArray();
+
+        for (char ch : pArr) {
+            cnt[ch - 'a']++;
+        }
+
+        char[] sArr = s.toCharArray();
+        int w = pArr.length;
+        List<Integer> ans = new ArrayList<>();
+        for (int i = 0; i < sArr.length; i++) {
+            cnt[sArr[i] - 'a']--;
+            if (i < w - 1)
+                continue;
+
+            if (verify(cnt))
+                ans.add(i - w + 1);
+
+            cnt[sArr[i - w + 1] - 'a']++;
+        }
+
+        return ans;
+    }
+
+    boolean verify(int[] cnt) {
+        for (int c : cnt) {
+            if (c != 0)
+                return false;
+        }
+        return true;
+    }
+
+    /*
+     * 1888. 使二进制字符串字符交替的最少反转次数
+     * 
+     * 大小为2的滑动窗口，统计11，00，01，10的出现次数
+     * 对于11，00这样的数对，它们必须修改1次
+     * 对于01或10，取它们中较少的那一类进行修改
+     * 如果最后多一个1或0，可以随便放
+     * 
+     * 另外要枚举起点了
+     * 
+     * 上述的实现会超时
+     * 
+     * 实际上枚举起点这个操作，等价于把(s || s)拼接起来，然后在拼接后的这个字符串上移动大小为n的窗口
+     * 0的ASCII码是48，1的ASCII码是49，因此0%2='0'%2
+     */
+    public int minFlips(String s) {
+        char[] arr = s.toCharArray();
+        int n = arr.length;
+        int ans = n;
+        int cnt = 0;
+        // 外层循环枚举起点（期望窗口中是0101..的序列）
+        for (int i = 0; i < 2 * n; i++) {
+            if (arr[i % n] % 2 != i % 2)
+                cnt++;
+            if (i < n - 1)
+                continue;
+
+            ans = Math.min(ans, Math.min(cnt, n - cnt));
+
+            if (arr[(i - n + 1) % n] % 2 != (i - n + 1) % 2) {
+                cnt--;
+            }
+        }
+
+        return ans;
+    }
+
     @Test
     public void test() {
-        System.out.println(maxSum(Arrays.asList(1, 2, 2), 2, 2));
+        // System.out.println("ling mind rabo ofoo owin gdin gbar rwin gmon keyp ound
+        // cake".length());
+        // findSubstring("barfoothefoobarman", new String[]{"foo", "bar"});
+        findSubstring("wordgoodgoodgoodbestword", new String[] { "word", "good", "best", "good" });
+        // System.out.println(maxSum(Arrays.asList(1, 2, 2), 2, 2));
     }
 }
