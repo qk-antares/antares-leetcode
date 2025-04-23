@@ -568,7 +568,7 @@ public class FixT {
     }
 
     /*
-     * 1888. 使二进制字符串字符交替的最少反转次数
+     * 1888. 使二进制字符串字符交替的最少反转次数 [Medium] <Star>
      * 
      * 大小为2的滑动窗口，统计11，00，01，10的出现次数
      * 对于11，00这样的数对，它们必须修改1次
@@ -604,12 +604,150 @@ public class FixT {
         return ans;
     }
 
+    /*
+     * 2156. 查找给定哈希值的子串   [Hard]  <Star>
+     * 
+     * 窗口大小是k
+     * 本题的注意点有几个：
+     * hash和p值都要使用long类型，防止可能出现的溢出
+     * 将a-z转成1-26可以使用(ch&31)，但要记住位运算的优先级极低，所以要加括号
+     * 由于本题hash值的计算特性，应该对s进行倒序的遍历，在此过程中移动窗口
+     */
+    public String subStrHash(String s, int power, int modulo, int k, int hashValue) {
+        char[] arr = s.toCharArray();
+        long hash = 0;
+        long p = 1;
+        int n = arr.length;
+
+        for (int i = n - 1; i >= n - k; i--) {
+            hash = (hash * power + (arr[i] & 31)) % modulo;
+            p = p * power % modulo;
+        }
+
+        int ans = 0;
+        if (hash == hashValue)
+            ans = n - k;
+
+        for (int i = n - k - 1; i >= 0; i--) {
+            // 左移窗口
+            hash = (hash * power + (arr[i] & 31) - p * (arr[i + k] & 31) % modulo + modulo) % modulo;
+            if (hash == hashValue)
+                ans = i;
+        }
+
+        return s.substring(ans, ans + k);
+    }
+
+    /*
+     * 2953. 统计完全子字符串   [Hard]  <Star>
+     * 
+     * 一个自然的想法是：
+     * 固定窗口的大小可能是k，2k，3k，...一直枚举直至达到word的长度（外层循环）
+     * 内层循环在这个窗口内分别判断两个条件
+     * 
+     * 上述方法毫无意外地会超时
+     * 
+     * 一个改进方法是：
+     * 使用分组循环。相邻字母相差至多位2这个约束把word划分成了多个子串s，每个子串分别处理
+     * 
+     * 但上述方法依然会超时，问题在于，测试用例中存在非常长的全为同一字符的字符串，这样分组循环就不会生效
+     * 所以还要再限制下固定窗口的大小，不能是k，2k，3k，...一直无限增加，而是最多增长到26k
+     */
+
+    public int countCompleteSubstrings0(String word, int k) {
+        char[] s = word.toCharArray();
+        int n = s.length;
+        int ans = 0;
+        for (int w = k; w <= n; w += k) {
+            int[] cnt = new int[26];
+
+            for (int i = 0; i < n; i++) {
+                cnt[s[i] - 'a']++;
+                if (i < w - 1)
+                    continue;
+
+                if (verify0(cnt, s, i, k))
+                    ans++;
+
+                cnt[s[i - w + 1] - 'a']--;
+            }
+        }
+        return ans;
+    }
+
+    boolean verify0(int[] cnt, char[] s, int end, int k) {
+        // 检查条件1
+        for (int i = 0; i < 26; i++) {
+            if (cnt[i] != 0 && cnt[i] != k)
+                return false;
+        }
+
+        // 检查条件2
+        char pre = s[end];
+        int delta = 0;
+        for (int i = end - 1; i > end - k; i--) {
+            delta = s[i] - pre;
+            if (delta > 2 || delta < -2)
+                return false;
+            pre = s[i];
+        }
+        return true;
+    }
+
+    public int countCompleteSubstrings(String word, int k) {
+        int n = word.length();
+        int ans = 0;
+        int i = 0;
+        while (i < n) {
+            int l = i;
+            i++;
+            while (i < n && Math.abs(word.charAt(i) - word.charAt(i - 1)) <= 2)
+                i++;
+            ans += f(word.substring(l, i), k);
+        }
+        return ans;
+    }
+
+    int f(String word, int k) {
+        char[] s = word.toCharArray();
+        int n = s.length;
+        int ans = 0;
+        //注意这里还要限制窗口最大为26k
+        for (int w = k; w <= n && w <= 26 * k; w += k) {
+            int[] cnt = new int[26];
+
+            for (int i = 0; i < n; i++) {
+                cnt[s[i] - 'a']++;
+                if (i < w - 1)
+                    continue;
+
+                if (verify(cnt, k))
+                    ans++;
+
+                cnt[s[i - w + 1] - 'a']--;
+            }
+        }
+        return ans;
+    }
+
+    boolean verify(int[] cnt, int k) {
+        // 检查条件1
+        for (int i = 0; i < 26; i++) {
+            if (cnt[i] != 0 && cnt[i] != k)
+                return false;
+        }
+        return true;
+    }
+
     @Test
     public void test() {
+        countCompleteSubstrings("jjjqq", 1);
+        // subStrHash("leetcode", 7, 20, 2, 0);
         // System.out.println("ling mind rabo ofoo owin gdin gbar rwin gmon keyp ound
         // cake".length());
         // findSubstring("barfoothefoobarman", new String[]{"foo", "bar"});
-        findSubstring("wordgoodgoodgoodbestword", new String[] { "word", "good", "best", "good" });
+        // findSubstring("wordgoodgoodgoodbestword", new String[] { "word", "good",
+        // "best", "good" });
         // System.out.println(maxSum(Arrays.asList(1, 2, 2), 2, 2));
     }
 }
