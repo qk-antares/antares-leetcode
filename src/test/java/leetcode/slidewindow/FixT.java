@@ -3,8 +3,10 @@ package leetcode.slidewindow;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -144,7 +146,7 @@ public class FixT {
     }
 
     /*
-     * 2841. 几乎唯一子数组的最大和
+     * 2841. 几乎唯一子数组的最大和 [Medium]
      */
     public long maxSum(List<Integer> nums, int m, int k) {
         long ans = 0;
@@ -228,7 +230,7 @@ public class FixT {
     }
 
     /*
-     * 1052. 爱生气的书店老板
+     * 1052. 爱生气的书店老板 [Medium]
      * 
      * 相当于一个抑制情绪的固定窗口，从前往后移动这个窗口，并记录最大值
      * 首先计算，假设老板不抑制情绪，可以使多少顾客满意
@@ -260,7 +262,7 @@ public class FixT {
     }
 
     /*
-     * 1652. 拆炸弹
+     * 1652. 拆炸弹 [Easy]
      * 
      * 用滑动窗口来做替换
      */
@@ -292,7 +294,7 @@ public class FixT {
     }
 
     /*
-     * 3439. 重新安排会议得到最多空余时间 I
+     * 3439. 重新安排会议得到最多空余时间 I [Medium]
      * 
      * 将会议与会议中间的空余时间看作一个nums数组
      * 每平移1个会议，相当于合并nums中的2个元素，则平移k个会议，相当于nums中k+1大小的窗口
@@ -327,7 +329,7 @@ public class FixT {
     }
 
     /*
-     * 2134. 最少交换次数来组合所有的 1 II
+     * 2134. 最少交换次数来组合所有的 1 II [Medium]
      * 
      * 首先对nums进行1次遍历，统计出包含了多少个1
      * 假设它包含cnt个1吧，然后就用cnt大小的窗口对nums进行一次"环形遍历"
@@ -491,7 +493,7 @@ public class FixT {
     }
 
     /*
-     * 438. 找到字符串中所有字母异位词
+     * 438. 找到字符串中所有字母异位词 [Medium]
      * 
      * 类似的题都有两种写法吧，一种是使用HashMap来统计次数，而另一种是使用一个固定大小的int[] cnt数组
      * 当Map为空或者cnt数组全0时，代表找到了一个满足条件的答案
@@ -605,7 +607,7 @@ public class FixT {
     }
 
     /*
-     * 2156. 查找给定哈希值的子串   [Hard]  <Star>
+     * 2156. 查找给定哈希值的子串 [Hard] <Star>
      * 
      * 窗口大小是k
      * 本题的注意点有几个：
@@ -639,7 +641,7 @@ public class FixT {
     }
 
     /*
-     * 2953. 统计完全子字符串   [Hard]  <Star>
+     * 2953. 统计完全子字符串 [Hard] <Star>
      * 
      * 一个自然的想法是：
      * 固定窗口的大小可能是k，2k，3k，...一直枚举直至达到word的长度（外层循环）
@@ -712,7 +714,7 @@ public class FixT {
         char[] s = word.toCharArray();
         int n = s.length;
         int ans = 0;
-        //注意这里还要限制窗口最大为26k
+        // 注意这里还要限制窗口最大为26k
         for (int w = k; w <= n && w <= 26 * k; w += k) {
             int[] cnt = new int[26];
 
@@ -738,6 +740,27 @@ public class FixT {
         }
         return true;
     }
+
+    /*
+     * 1461. 检查一个字符串是否包含所有长度为 K 的二进制子串    [Medium]
+     * 
+     * k的范围在20以内，也就是说这样的一个子串可以用int表示
+     * 用set保存s中所有长度为k的子串
+     */
+    public boolean hasAllCodes(String s, int k) {
+        Set<Integer> set = new HashSet<>();
+        char[] arr = s.toCharArray();
+        int cur = 0;
+        for (int i = 0; i < arr.length; i++) {
+            cur = (cur << 1) + arr[i] - '0';
+            if (i < k - 1)
+                continue;
+
+            set.add(cur << (32 - k));
+        }
+        return set.size() == (1 << k);
+    }
+
 
     @Test
     public void test() {
