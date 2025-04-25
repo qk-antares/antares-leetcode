@@ -1,9 +1,13 @@
 package leetcode.slidewindow;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.junit.jupiter.api.Test;
 
 public class VarT {
     /*
@@ -45,5 +49,35 @@ public class VarT {
         }
 
         return ans;
+    }
+
+    /*
+     * 
+     */
+    public long countInterestingSubarrays(List<Integer> nums, int modulo, int k) {
+        int n = nums.size();
+        int[] sum = new int[n+1];
+        for(int i = 0; i < n; i++) {
+            sum[i] = sum[i] + (nums.get(i)%modulo == k ? 1 : 0);
+        }
+
+        int[] cnt = new int[Math.min(n+1,modulo)];
+        int ans = 0;
+        for(int i = 0; i <= n; i++) {
+            int tmp = (sum[i]-k) % modulo;
+            if(tmp >= 0) ans += cnt[tmp];
+            cnt[sum[i]%modulo]++;
+        }
+
+        return ans;
+    }
+
+    @Test
+    public void test() {
+        List<Integer> nums = new ArrayList<>();
+        nums.add(3);
+        nums.add(2);
+        nums.add(4);
+        System.out.println(countInterestingSubarrays(nums, 2, 1));
     }
 }

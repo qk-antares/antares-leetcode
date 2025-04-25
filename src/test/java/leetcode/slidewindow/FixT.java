@@ -178,6 +178,37 @@ public class FixT {
     }
 
     /*
+     * 2461. 长度为 K 子数组中的最大和
+     * 
+     * 使用Map来统计子数组中各个元素的出现次数
+     */
+    public long maximumSubarraySum(int[] nums, int k) {
+        long sum = 0;
+        long maxSum = 0;
+        Map<Integer, Integer> cnt = new HashMap<>();
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            sum += nums[i];
+            cnt.put(nums[i], cnt.getOrDefault(nums[i], 0) + 1);
+            if (i < k - 1)
+                continue;
+
+            if (cnt.size() == k) {
+                maxSum = Math.max(maxSum, sum);
+            }
+
+            int rm = nums[i - k + 1];
+            sum -= rm;
+            int update = cnt.get(rm) - 1;
+            if (update == 0)
+                cnt.remove(rm);
+            else
+                cnt.put(rm, update);
+        }
+        return maxSum;
+    }
+
+    /*
      * 1423. 可获得的最大点数 [Medium]
      * 
      * 有正向思维和逆向思维两种解法：
@@ -742,7 +773,7 @@ public class FixT {
     }
 
     /*
-     * 1461. 检查一个字符串是否包含所有长度为 K 的二进制子串    [Medium]
+     * 1461. 检查一个字符串是否包含所有长度为 K 的二进制子串 [Medium]
      * 
      * k的范围在20以内，也就是说这样的一个子串可以用int表示
      * 用set保存s中所有长度为k的子串
@@ -761,6 +792,46 @@ public class FixT {
         return set.size() == (1 << k);
     }
 
+    /*
+     * 1016. 子串能表示从 1 到 N 数字的二进制串 [Medium]
+     * 
+     * 正向思维：从1-n遍历，看s中是否包含子串i
+     * 该过程会用到一些API，例如s.contains()判断s中是否包含某个子串（KMP算法）
+     * Integer.toBinaryString(i)将i转为二进制
+     * 
+     * 反过来想，将s的子串转为整型，添加到Set<Integer>中，如果最后set的大小为n，则返回true
+     * 
+     * 上述两种方法，实际上正向思维这种暴力的算法效率反而会更高，这是因为题目把s的范围设置的很小，而n却非常大
+     * 想象[4,7]这个区间，每个数字是3个bit位，并且互不相同
+     * 考虑它们即使有重合，s的最小长度也应该是3+3=6（长度为3的窗口，右移3次）
+     * 随着n的增大，s的最小长度会快速增加，而题目却将s的范围设置的很小。这意味着后面的测试用例都是返回false
+     * 暴力的算法反而能够提前退出
+     */
+    public boolean queryString(String s, int n) {
+        for (int i = 1; i <= n; i++) {
+            if (!s.contains(Integer.toBinaryString(i)))
+                return false;
+        }
+        return true;
+    }
+
+    public boolean queryString0(String s, int n) {
+        char[] arr = s.toCharArray();
+        int len = arr.length;
+        Set<Integer> seen = new HashSet<>();
+        for (int i = 0; i < len; i++) {
+            if (arr[i] == '0')
+                continue;
+            int num = 1;
+            for (int j = i + 1; num <= n; j++) {
+                seen.add(num);
+                if (j == len)
+                    break;
+                num = (num << 1) | arr[j] - '0';
+            }
+        }
+        return seen.size() == n;
+    }
 
     @Test
     public void test() {
