@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -190,54 +189,6 @@ public class ArrayAndString {
         return new ArrayList<>(ans.values());
     }
 
-    /**
-     * 无重复字符的最长子串（我的解法：滑动窗口，效果还可以）
-     */
-    public int lengthOfLongestSubstring(String s) {
-        //这是窗口的边界
-        int i = -1,j = 0;
-        int ans = 0;
-        HashSet<Character> chars = new HashSet<>();
-        for(;i < s.length()-1;i++){
-            //一定不可能是答案
-            if(s.length() - i - 1 <= ans)
-                continue;
-            for(;j < s.length();j++){
-                if(chars.contains(s.charAt(j)))
-                    break;
-                else {
-                    chars.add(s.charAt(j));
-                    if(j - i > ans)
-                        ans = j - i;
-                }
-            }
-            chars.remove(s.charAt(i+1));
-        }
-
-        return ans;
-    }
-
-    /**
-     * 答案解法，使用数组标记所有字符（效率少有提升）
-     */
-    public int lengthOfLongestSubstring0(String s) {
-        boolean[] visited = new boolean[256];
-
-        int ans = 0,startIndex = 0;
-        for(int i = 0;i < s.length();i++){
-            char c = s.charAt(i);
-
-            //如果该字符已经访问过
-            while (visited[c]){
-                visited[s.charAt(startIndex++)] = false;
-            }
-
-            //标记为已经访问过
-            visited[c] = true;
-            ans = Math.max(ans, i - startIndex + 1);
-        }
-        return ans;
-    }
 
     /**
      * 最长回文子串（我的解法：动态规划，方向是对的，但细节错了）

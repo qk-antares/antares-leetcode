@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class CT {
     /*
-     * 2338. 统计理想数组的数目
+     * 2338. 统计理想数组的数目 [Hard]
      */
     private static final int MOD = 1_000_000_007;
     private static final int MAX_N = 10_000;

@@ -1,31 +1,11 @@
 package leetcode.hots100;
 
-import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
-public class SlideWindowLearn {
-    /**
-     * 无重复字符的最长子串
-     */
-    public int lengthOfLongestSubstring(String s) {
-        int ans = 0;
-        int l = 0,r = 0,len = s.length();
-        HashSet<Character> window = new HashSet<>();
-        while (r < len){
-            while (window.contains(s.charAt(r))){
-                //窗口左边界开始向右收缩
-                window.remove(s.charAt(l++));
-            }
-            window.add(s.charAt(r));
-            ans = Math.max(ans, window.size());
-            r++;
-        }
-        return ans;
-    }
+import org.junit.jupiter.api.Test;
 
+public class SlideWindowLearn {
     /**
      * 找到字符串中所有字母异位词
      */

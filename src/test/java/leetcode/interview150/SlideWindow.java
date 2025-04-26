@@ -1,9 +1,10 @@
 package leetcode.interview150;
 
-import org.junit.jupiter.api.Test;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 public class SlideWindow {
     /**
@@ -27,29 +28,6 @@ public class SlideWindow {
             }
             while (sum < target && r < nums.length){
                 sum += nums[r++];
-            }
-        }
-
-        return ans;
-    }
-
-    /**
-     * 3. 无重复字符的最长子串
-     */
-    public int lengthOfLongestSubstring(String s) {
-        int l = 0, r = 0;
-        int ans = 0;
-        HashSet<Character> chars = new HashSet<>();
-
-        while (r < s.length()){
-            while (r < s.length() && !chars.contains(s.charAt(r))){
-                chars.add(s.charAt(r));
-                r++;
-            }
-            ans = Math.max(ans, r-l);
-            while (r < s.length() && l < r && chars.contains(s.charAt(r))){
-                chars.remove(s.charAt(l));
-                l++;
             }
         }
 
