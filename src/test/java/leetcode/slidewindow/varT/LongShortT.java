@@ -117,7 +117,7 @@ public class LongShortT {
     }
 
     /*
-     * 904. 水果成篮    [Medium]
+     * 904. 水果成篮 [Medium]
      * 
      * 使用一个map来统计当前摘到的果子
      * 也可以把map换成一个数组，大小为n+1，效率稍高
@@ -137,6 +137,101 @@ public class LongShortT {
                     cnt.remove(fruits[l]);
                 else
                     cnt.put(fruits[l], update);
+                l++;
+            }
+
+            ans = Math.max(ans, r - l);
+        }
+
+        return ans;
+    }
+
+    /*
+     * 1695. 删除子数组的最大得分 [Medium]
+     */
+    public int maximumUniqueSubarray(int[] nums) {
+        int[] cnt = new int[10001];
+        int n = nums.length;
+        int l = 0, r = 0;
+        int sum = 0;
+        int ans = 0;
+        while (r < n) {
+            int add = nums[r];
+            sum += add;
+            cnt[add]++;
+            r++;
+
+            while (cnt[add] > 1) {
+                int remove = nums[l];
+                cnt[remove]--;
+                sum -= remove;
+                l++;
+            }
+
+            ans = Math.max(ans, sum);
+        }
+
+        return ans;
+    }
+
+    /*
+     * 2958. 最多 K 个重复元素的最长子数组 [Medium]
+     * 
+     * 这题nums[i]的范围比较大，只能使用HashMap来统计各个元素的出现次数
+     */
+    public int maxSubarrayLength(int[] nums, int k) {
+        Map<Integer, Integer> cnt = new HashMap<>();
+        int n = nums.length;
+        int l = 0, r = 0;
+        int ans = 0;
+        while (r < n) {
+            int add = nums[r];
+            int addCnt = cnt.getOrDefault(add, 0) + 1;
+            cnt.put(add, addCnt);
+            r++;
+
+            while (addCnt > k) {
+                int remove = nums[l];
+                int removeCnt = cnt.get(remove) - 1;
+                if (removeCnt == 0)
+                    cnt.remove(remove);
+                else
+                    cnt.put(remove, removeCnt);
+                if (remove == add)
+                    addCnt--;
+                l++;
+            }
+
+            ans = Math.max(ans, r - l);
+        }
+
+        return ans;
+    }
+
+    /*
+     * 2024. 考试的最大困扰度
+     * 
+     * 使用TCnt和FCnt分别统计窗口中出现的T和F（最好还是用一个数组，这样后面不用做T和F的字符的判断，好吧，实际效率差的不多）
+     * 窗口中只允许有一个字符的出现次数超过2
+     */
+    public int maxConsecutiveAnswers(String answerKey, int k) {
+        char[] s = answerKey.toCharArray();
+        int n = s.length;
+        int l = 0, r = 0;
+        int ans = 0;
+        int TCnt = 0, FCnt = 0;
+        while (r < n) {
+            if (s[r] == 'T')
+                TCnt++;
+            else
+                FCnt++;
+            r++;
+
+            while (TCnt > k && FCnt > k) {
+                if (s[l] == 'T')
+                    TCnt--;
+                else
+                    FCnt--;
                 l++;
             }
 
