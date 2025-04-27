@@ -1,5 +1,8 @@
 package leetcode.slidewindow.varT;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /*
  * [变长滑动窗口] / [求最长/最短]
  */
@@ -52,6 +55,88 @@ public class LongShortT {
 
             while (cnt[add] > 2) {
                 cnt[arr[l] - 'a']--;
+                l++;
+            }
+
+            ans = Math.max(ans, r - l);
+        }
+
+        return ans;
+    }
+
+    /*
+     * 1493. 删掉一个元素以后全为 1 的最长子数组 [Medium]
+     * 
+     * 依然是变长滑动窗口
+     * 只是序列中允许出现一个0
+     */
+    public int longestSubarray(int[] nums) {
+        int l = 0, r = 0, n = nums.length;
+        int ans = 0;
+        int[] cnt = new int[2];
+        while (r < n) {
+            cnt[nums[r]]++;
+            r++;
+
+            while (cnt[0] > 1) {
+                cnt[nums[l]]--;
+                l++;
+            }
+            ans = Math.max(ans, r - l);
+        }
+
+        return ans - 1;
+    }
+
+    /*
+     * 1208. 尽可能使字符串相等 [Medium]
+     * 
+     * 使用一个数组来标记各个位置的costs
+     * 在costs上应用变长滑动窗口
+     * 或者再优化一点，根本不需要costs（内存占用小，时间开销变大）
+     */
+    public int equalSubstring(String s, String t, int maxCost) {
+        char[] ss = s.toCharArray();
+        char[] tt = t.toCharArray();
+        int n = ss.length;
+
+        int l = 0, r = 0;
+        int ans = 0;
+        while (r < n) {
+            maxCost -= Math.abs(ss[r] - tt[r]);
+            r++;
+
+            while (maxCost < 0) {
+                maxCost += Math.abs(ss[l] - tt[l]);
+                l++;
+            }
+            ans = Math.max(ans, r - l);
+        }
+
+        return ans;
+    }
+
+    /*
+     * 904. 水果成篮    [Medium]
+     * 
+     * 使用一个map来统计当前摘到的果子
+     * 也可以把map换成一个数组，大小为n+1，效率稍高
+     */
+    public int totalFruit(int[] fruits) {
+        Map<Integer, Integer> cnt = new HashMap<>();
+        int n = fruits.length;
+        int l = 0, r = 0;
+        int ans = 0;
+        while (r < n) {
+            cnt.put(fruits[r], cnt.getOrDefault(fruits[r], 0) + 1);
+            r++;
+
+            while (cnt.size() > 2) {
+                int update = cnt.get(fruits[l]) - 1;
+                if (update == 0)
+                    cnt.remove(fruits[l]);
+                else
+                    cnt.put(fruits[l], update);
                 l++;
             }
 
