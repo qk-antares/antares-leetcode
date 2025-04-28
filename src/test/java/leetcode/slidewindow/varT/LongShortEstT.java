@@ -1,5 +1,6 @@
 package leetcode.slidewindow.varT;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -262,7 +263,7 @@ public class LongShortEstT {
     }
 
     /*
-     * 1658. 将 x 减到 0 的最小操作数
+     * 1658. 将 x 减到 0 的最小操作数 [Medium]
      */
     public int minOperations(int[] nums, int x) {
         int sum = 0;
@@ -291,4 +292,62 @@ public class LongShortEstT {
 
         return ans == -1 ? -1 : n - ans;
     }
+
+    /*
+     * 2730. 找到最长的半重复子字符串 [Medium]
+     * 
+     * 用一个boolean数组flags，标记s[i]==s[i-1]
+     * 接下来在flags上使用滑动窗口，窗口中最多框住一个true，统计窗口的最大长度，再加上1就是答案
+     */
+    public int longestSemiRepetitiveSubstring(String s) {
+        char[] arr = s.toCharArray();
+        int n = arr.length;
+        boolean[] flags = new boolean[n];
+        for (int i = 1; i < n; i++) {
+            flags[i] = arr[i] == arr[i - 1];
+        }
+
+        int ans = 0;
+        int cnt = 0;
+        int l = 1, r = 1;
+        while (r < n) {
+            if (flags[r++])
+                cnt++;
+
+            while (cnt == 2) {
+                if (flags[l++])
+                    cnt--;
+            }
+
+            ans = Math.max(ans, r - l);
+        }
+        return ans + 1;
+    }
+
+    /*
+     * 2779. 数组的最大美丽值
+     * 
+     * 这里的子序列不考虑连续，所以可以先对nums进行排序在进行后续的处理
+     * 滑动窗口中元素的极差<= 2k
+     */
+    public int maximumBeauty(int[] nums, int k) {
+        Arrays.sort(nums);
+        int n = nums.length;
+        int l = 0, r = 0;
+
+        int ans = 0;
+        while (r < n) {
+            while (nums[r] - nums[l] > k * 2)
+                l++;
+            r++;
+            ans = Math.max(ans, r - l);
+        }
+
+        return ans;
+    }
+
+    /*
+     * ========================== 分割线 ==========================
+     */
+
 }
