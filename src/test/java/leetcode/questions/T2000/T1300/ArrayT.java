@@ -1,4 +1,4 @@
-package leetcode.questions.T2000.T1300.easy;
+package leetcode.questions.T2000.T1300;
 
 public class ArrayT {
     /*

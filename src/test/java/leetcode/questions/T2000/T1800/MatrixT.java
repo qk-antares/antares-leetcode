@@ -1,4 +1,4 @@
-package leetcode.questions.T2000.T1800.medium;
+package leetcode.questions.T2000.T1800;
 
 public class MatrixT {
     /**

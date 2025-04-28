@@ -347,6 +347,75 @@ public class LongShortEstT {
     }
 
     /*
+     * 1838. 最高频元素的频数
+     * 
+     * 首先依然排序，然后变长滑动窗口
+     * 由于操作只能是+1，所以将窗口最右侧的那个值视为target
+     * 
+     * 具体到这一题有几个注意点
+     * 1. 统计当前的+1次数时（必须这么做，不能直接利用k），要用long类型，防止可能发生的溢出（1个测试用例）
+     * 2. 这道题的l和r都是闭区间
+     */
+    public int maxFrequency(int[] nums, int k) {
+        Arrays.sort(nums);
+
+        int n = nums.length;
+        // 这里是闭区间
+        int l = 0, r = 1;
+        // 目前+1次数，注意用long防止溢出
+        long cnt = 0;
+        int ans = 1;
+        while (r < n) {
+            cnt += (long) (nums[r] - nums[r - 1]) * (r - l);
+
+            while (cnt > k) {
+                cnt -= nums[r] - nums[l];
+                l++;
+            }
+
+            r++;
+            ans = Math.max(ans, r - l);
+        }
+
+        return ans;
+    }
+
+    /*
+     * 2516. 每种字符至少取 K 个
+     * 
+     * 逆向思维
+     * 首先统计s中各个字符的数量cnt
+     * 然后用滑动窗口，窗口中圈住相应字符，统计最大窗口大小
+     */
+    public int takeCharacters(String s, int k) {
+        char[] arr = s.toCharArray();
+        int[] cnt = new int[3];
+
+        for (char ch : arr)
+            cnt[ch - 'a']++;
+
+        if (cnt[0] < k || cnt[1] < k || cnt[2] < k)
+            return -1;
+
+        int n = arr.length;
+        int l = 0, r = 0;
+        int maxW = 0;
+        while (r < n) {
+            cnt[arr[r] - 'a']--;
+            r++;
+
+            while (cnt[0] < k || cnt[1] < k || cnt[2] < k) {
+                cnt[arr[l] - 'a']++;
+                l++;
+            }
+
+            maxW = Math.max(maxW, r - l);
+        }
+
+        return n - maxW;
+    }
+
+    /*
      * ========================== 分割线 ==========================
      */
 

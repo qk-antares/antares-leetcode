@@ -1,4 +1,4 @@
-package leetcode.questions.T3000.T2100.medium;
+package leetcode.questions.T3000.T2100;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package leetcode.questions.T2000.T1900.medium;
+package leetcode.questions.T2000.T1900;
 
 import java.util.PriorityQueue;
 

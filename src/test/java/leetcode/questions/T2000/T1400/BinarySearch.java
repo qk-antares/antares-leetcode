@@ -1,4 +1,4 @@
-package leetcode.questions.T2000.T1400.easy;
+package leetcode.questions.T2000.T1400;
 
 public class BinarySearch {
     /*
