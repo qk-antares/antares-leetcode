@@ -6,7 +6,7 @@ import java.util.Map;
 /*
  * [变长滑动窗口] / [求最长/最短]
  */
-public class LongShortT {
+public class LongShortEstT {
     /*
      * 3. 无重复字符的最长子串 [Medium]
      * 
@@ -239,5 +239,56 @@ public class LongShortT {
         }
 
         return ans;
+    }
+
+    /*
+     * 1004. 最大连续1的个数 III
+     * 
+     * 变长滑动窗口，窗口中1的个数不限，0的个数最多k个，统计窗口长度最大值
+     */
+    public int longestOnes(int[] nums, int k) {
+        int[] cnt = new int[2];
+        int n = nums.length;
+        int l = 0, r = 0;
+        int ans = 0;
+        while (r < n) {
+            cnt[nums[r++]]++;
+            while (cnt[0] > k) {
+                cnt[nums[l++]]--;
+            }
+            ans = Math.max(ans, r - l);
+        }
+        return ans;
+    }
+
+    /*
+     * 1658. 将 x 减到 0 的最小操作数
+     */
+    public int minOperations(int[] nums, int x) {
+        int sum = 0;
+        for (int num : nums) {
+            sum += num;
+        }
+
+        if (sum < x)
+            return -1;
+
+        // sum减去窗口中的值，直至等于x
+        int n = nums.length;
+        int ans = -1;
+        int l = 0, r = 0;
+        while (r < n) {
+            sum -= nums[r++];
+
+            while (sum < x) {
+                sum += nums[l++];
+            }
+
+            if (sum == x) {
+                ans = Math.max(ans, r - l);
+            }
+        }
+
+        return ans == -1 ? -1 : n - ans;
     }
 }

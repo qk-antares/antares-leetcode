@@ -1,15 +1,16 @@
-package leetcode.slidewindow;
+package leetcode.slidewindow.varT;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class VarT {
+/*
+ * [变长滑动窗口]/[求子数组个数]/[越长越合法]
+ */
+public class LongerT {
     /*
      * 2799. 统计完全子数组的数目 [Medium]
-     * 
-     * 这是[变长滑动窗口]/[求子数组个数]/[越长越合法]
      * 
      * 需要注意的点是，在扩展右边界r的时候，不应套while循环
      * 这是由于，即时当前的右边界下，窗口中的元素不满足条件，但是它可以使用之前的左边界
