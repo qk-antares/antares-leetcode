@@ -47,4 +47,34 @@ public class LongerT {
 
         return ans;
     }
+
+    /*
+     * 2962. 统计最大元素出现至少 K 次的子数组
+     */
+    public long countSubarrays(int[] nums, int k) {
+        // 首先一次遍历找出nums中的最大值
+        int max = nums[0];
+        for (int num : nums)
+            max = Math.max(max, num);
+
+        // 变长滑动窗口，记录窗口中出现的max次数
+        int cnt = 0;
+        int l = 0, r = 0, n = nums.length;
+        long ans = 0;
+        while (r < n) {
+            if (nums[r] == max)
+                cnt++;
+            r++;
+
+            while (cnt >= k) {
+                if (nums[l] == max)
+                    cnt--;
+                l++;
+            }
+
+            ans += l;
+        }
+
+        return ans;
+    }
 }

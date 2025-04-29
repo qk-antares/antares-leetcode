@@ -1,7 +1,9 @@
 package leetcode.slidewindow.varT;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /*
@@ -413,6 +415,91 @@ public class LongShortEstT {
         }
 
         return n - maxW;
+    }
+
+    /*
+     * 2831. 找出最长等值子数组
+     * 
+     * 变长滑动窗口
+     * 注意这道题nums的值域，由于1<=nums[i]<=nums.length，实际上可以利用数组对窗口中的数字进行统计，而不是哈希表，效率更高
+     * 窗口中出现次数最多的元素，它的cnt+k>=窗口长度
+     * 上述算法超时
+     * 
+     * 首先使用List<List<Integer>> posLists（大小为n+1），统计nums中各个数字出现的下标
+     * 接着for循环对posLists进行遍历
+     * 假设我们现在遍历的pos好了
+     * 如果pos.length <= ans，这意味着我们无论怎么删，都不可能得到一个更大的答案，直接continue
+     * 否则对pos使用变长滑动窗口，窗口的左右端点分别是l=0,r=1（闭区间）
+     * 窗口中每添加一个元素，这意味着我们要删除pos[r]-pos[r-1]-1个元素
+     * 如果删除的元素数量>k，则移动左端点，这意味着我们要删除的元素，减少了pos[l+1]-pos[l]-1
+     * 滑动窗口的过程中，记录最长等值序列
+     * 
+     * 上述过程还有一个更简化的写法，只是比较难想到：
+     * 窗口中添加一个元素，意味着我们要删除pos[r]-pos[l]-(r-l)个元素（不是在原来的基础上新增）
+     * 发现上式其实有一定规律，我们可以在记录pos的时候，直接存pos[i]-i
+     */
+    public int longestEqualSubarray0(List<Integer> nums, int k) {
+        int n = nums.size();
+        int[] cnt = new int[n + 1];
+        int l = 0, r = 0;
+        int ans = 0;
+        while (r < n) {
+            cnt[nums.get(r)]++;
+            r++;
+
+            while (deleteCnt(cnt) > k) {
+                cnt[nums.get(l)]--;
+                l++;
+            }
+
+            ans = Math.max(ans, r - l - deleteCnt(cnt));
+        }
+
+        return ans;
+    }
+
+    int deleteCnt(int[] cnt) {
+        int sumCnt = 0;
+        int maxCnt = 0;
+        for (int c : cnt) {
+            sumCnt += c;
+            maxCnt = Math.max(maxCnt, c);
+        }
+        return sumCnt - maxCnt;
+    }
+
+    @SuppressWarnings("unchecked")
+    public int longestEqualSubarray(List<Integer> nums, int k) {
+        int n = nums.size();
+        List<Integer>[] posLists = new ArrayList[n + 1];
+        Arrays.setAll(posLists, i -> new ArrayList<>());
+        for (int i = 0; i < n; i++) {
+            posLists[nums.get(i)].add(i);
+        }
+
+        int ans = 0;
+        for (List<Integer> pos : posLists) {
+            int m = pos.size();
+            if (m <= ans)
+                continue;
+
+            int cnt = 0;
+            int l = 0, r = 0;
+            while (r < m) {
+                cnt = pos.get(r) - pos.get(l) - (r - l);
+
+                while (cnt > k) {
+                    l++;
+                    cnt = pos.get(r) - pos.get(l) - (r - l);
+                }
+
+                r++;
+                ans = Math.max(ans, r - l);
+            }
+
+        }
+
+        return ans;
     }
 
     /*
