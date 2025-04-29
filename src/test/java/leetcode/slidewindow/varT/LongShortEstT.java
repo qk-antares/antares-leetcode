@@ -212,7 +212,7 @@ public class LongShortEstT {
     }
 
     /*
-     * 2024. 考试的最大困扰度
+     * 2024. 考试的最大困扰度 [Medium]
      * 
      * 使用TCnt和FCnt分别统计窗口中出现的T和F（最好还是用一个数组，这样后面不用做T和F的字符的判断，好吧，实际效率差的不多）
      * 窗口中只允许有一个字符的出现次数超过2
@@ -245,7 +245,7 @@ public class LongShortEstT {
     }
 
     /*
-     * 1004. 最大连续1的个数 III
+     * 1004. 最大连续1的个数 III [Medium]
      * 
      * 变长滑动窗口，窗口中1的个数不限，0的个数最多k个，统计窗口长度最大值
      */
@@ -327,7 +327,7 @@ public class LongShortEstT {
     }
 
     /*
-     * 2779. 数组的最大美丽值
+     * 2779. 数组的最大美丽值 [Medium]
      * 
      * 这里的子序列不考虑连续，所以可以先对nums进行排序在进行后续的处理
      * 滑动窗口中元素的极差<= 2k
@@ -349,7 +349,7 @@ public class LongShortEstT {
     }
 
     /*
-     * 1838. 最高频元素的频数
+     * 1838. 最高频元素的频数 [Medium]
      * 
      * 首先依然排序，然后变长滑动窗口
      * 由于操作只能是+1，所以将窗口最右侧的那个值视为target
@@ -383,7 +383,7 @@ public class LongShortEstT {
     }
 
     /*
-     * 2516. 每种字符至少取 K 个
+     * 2516. 每种字符至少取 K 个 [Medium]
      * 
      * 逆向思维
      * 首先统计s中各个字符的数量cnt
@@ -418,7 +418,7 @@ public class LongShortEstT {
     }
 
     /*
-     * 2831. 找出最长等值子数组
+     * 2831. 找出最长等值子数组 [Medium] <Star>
      * 
      * 变长滑动窗口
      * 注意这道题nums的值域，由于1<=nums[i]<=nums.length，实际上可以利用数组对窗口中的数字进行统计，而不是哈希表，效率更高
@@ -497,6 +497,150 @@ public class LongShortEstT {
                 ans = Math.max(ans, r - l);
             }
 
+        }
+
+        return ans;
+    }
+
+    /*
+     * 2271. 毯子覆盖的最多白色砖块数 [Medium] <Star>
+     * 
+     * 这道题的注意点是，我们应按照"区间的右端点一定被覆盖"这样的思想来做
+     * 而不是反过来"区间的左端点一定被覆盖"，后者需要处理当毯子一个区间也覆盖不了这种边界情况，代码不清晰（没写出来）
+     * 
+     * 下面的0 1都是一些错解
+     */
+    public int maximumWhiteTiles0(int[][] tiles, int carpetLen) {
+        Arrays.sort(tiles, (o1, o2) -> o1[0] - o2[0]);
+
+        int n = tiles.length;
+        // 代表毯子覆盖的开始和结束区间
+        int l = 0, r = 0;
+        int ans = 0;
+        int cur = 0;
+        int tot = 0;
+        while (r < n) {
+            tot = tiles[r][1] - tiles[l][0] + 1;
+            cur += tiles[r][1] - tiles[r][0] + 1;
+
+            // 缺的部分
+            int missing = Math.min(0, carpetLen - tot);
+            ans = Math.max(ans, cur + missing);
+
+            while (tot > carpetLen) {
+                cur -= tiles[l][1] - tiles[l][0] + 1;
+                l++;
+                tot = tiles[r][1] - tiles[l][0] + 1;
+            }
+
+            ans = Math.max(ans, cur);
+            r++;
+        }
+
+        return ans;
+    }
+
+    public int maximumWhiteTiles1(int[][] tiles, int carpetLen) {
+        Arrays.sort(tiles, (o1, o2) -> o1[0] - o2[0]);
+
+        int n = tiles.length;
+        // 代表毯子覆盖的开始和结束区间
+        int l = 0, r = 0;
+        int ans = 0;
+        int cur = 0;
+        int tot = 0;
+        while (r < n) {
+            tot = tiles[r][1] - tiles[l][0] + 1;
+            cur += tiles[r][1] - tiles[r][0] + 1;
+
+            while (tot > carpetLen) {
+                cur -= tiles[l][1] - tiles[l][0] + 1;
+                l++;
+                tot = tiles[r][1] - tiles[l][0] + 1;
+            }
+
+            // 多的部分（这部分用来覆盖前面）
+            int left = 0;
+            if (l > 0)
+                left = Math.max(0, carpetLen - tot - (tiles[l][0] - tiles[l - 1][1] - 1));
+
+            ans = Math.max(ans, cur + left);
+            r++;
+        }
+
+        return ans;
+    }
+
+    public int maximumWhiteTiles(int[][] tiles, int carpetLen) {
+        Arrays.sort(tiles, (o1, o2) -> o1[0] - o2[0]);
+
+        int n = tiles.length;
+        // 代表毯子覆盖的开始和结束区间
+        int l = 0, r = 0;
+        int ans = 0;
+        int cur = 0;
+        while (r < n) {
+            cur += tiles[r][1] - tiles[r][0] + 1;
+            // 保证在覆盖到tiles[l]一部分的情况下（至少右端点要被覆盖），右侧完全覆盖了tiles[r]
+            // 如果未能满足这个条件，则l++
+            while (tiles[l][1] + carpetLen - 1 < tiles[r][1]) {
+                cur -= tiles[l][1] - tiles[l][0] + 1;
+                l++;
+            }
+
+            // 最左侧的区间多算(tiles[r][1]-carpetLen+1是毯子的实际左端点,tiles[l][0]是1毯子覆盖到的最左区间的左端点)
+            int uncover = Math.max(0, tiles[r][1] - carpetLen + 1 - tiles[l][0]);
+            ans = Math.max(ans, cur - uncover);
+            r++;
+        }
+
+        return ans;
+    }
+
+    /*
+     * 2106. 摘水果 [Hard] <Star>
+     * 
+     * 首先使用二分找到满足移动距离k的最左水果fruits[minL][0]和最右水果fruits[maxR][0]
+     * 那么显然移动的范围在[minL, maxR]之间
+     * (这里很巧妙的是其实不用计算maxR，只用在滑动窗口的右边界扩展时保证fruits[r][0]<=startPos+k即可)
+     * 
+     * 初始设l = minL, r = startPos
+     * 如果是先往左再往右：s = (startPos-fruits[l][0])*2 + (fruits[r][0]-startPos)
+     * 如果是先往右再往左：s = (startPos-fruits[l][0]) + (fruits[r][0]-startPos)*2
+     * 当上面两个值都>k时，证明我们的距离是到达不了的，需要l++
+     * 在此过程中，记录摘到的水果最大总数
+     */
+    public int maxTotalFruits(int[][] fruits, int startPos, int k) {
+        int n = fruits.length;
+        int l = 0, r = n - 1;
+        // 需要找到>=startPos-k的最小值
+        while (l <= r) {
+            int mid = (l + r) / 2;
+            if (fruits[mid][0] < startPos - k) {
+                l = mid + 1;
+            } else {
+                r = mid - 1;
+            }
+        }
+
+        // cur是当前采到的果子，right是滑动窗口的右边界
+        int cur = 0;
+        r = l;
+        for (; r < n && fruits[r][0] <= startPos; r++) {
+            cur += fruits[r][1];
+        }
+
+        int ans = cur;
+        while (r < n && fruits[r][0] <= startPos + k) {
+            cur += fruits[r][1];
+            while ((startPos - fruits[l][0]) * 2 + (fruits[r][0] - startPos) > k
+                    && (startPos - fruits[l][0]) + (fruits[r][0] - startPos) * 2 > k) {
+                cur -= fruits[l][1];
+                l++;
+            }
+
+            ans = Math.max(ans, cur);
+            r++;
         }
 
         return ans;
