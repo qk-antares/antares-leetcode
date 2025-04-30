@@ -3,8 +3,10 @@ package leetcode.slidewindow.varT;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /*
  * [变长滑动窗口] / [求最长/最短]
@@ -633,6 +635,7 @@ public class LongShortEstT {
         int ans = cur;
         while (r < n && fruits[r][0] <= startPos + k) {
             cur += fruits[r][1];
+
             while ((startPos - fruits[l][0]) * 2 + (fruits[r][0] - startPos) > k
                     && (startPos - fruits[l][0]) + (fruits[r][0] - startPos) * 2 > k) {
                 cur -= fruits[l][1];
@@ -640,6 +643,168 @@ public class LongShortEstT {
             }
 
             ans = Math.max(ans, cur);
+            r++;
+        }
+
+        return ans;
+    }
+
+    /*
+     * 2555. 两个线段获得的最多奖品 [Medium] <Star>
+     * 
+     * 首先考虑一条线段的情况：
+     * 枚举prizePositions[i]作为最右端，然后找到对应的最左端来计算覆盖奖品个数
+     * 随着枚举的右端逐渐向左收窄，对饮的最左端也一定向左移动
+     * 两条线段时；
+     * 枚举第二条线段（右线段），同时维护第一条线段（左线段）能覆盖的最多奖品数
+     * 对于第二条线段，假设枚举右端点prizePositions[r]，它对应的最远左端点prizePositions[l]
+     * 则第一条线段应位于prizePositions[l]的左边（右端点<prizePositions[l]）
+     * 现在我们考虑第一条线段
+     * 用dp[i+1]表示第一条线段的右端点<=prizePositions[i]时，最多可以覆盖的奖品数
+     * 初始条件：dp[0]=0 （这是因为prizePositions[i]的范围，它是>=1的）
+     * 状态转移方程：dp[i+1]=max(i-lefti+1, dp[i])
+     * 如何理解上述状态转移方程？
+     * i-lefti+1表示使用prizePositions[i]作为右端点，而lefti是对应的最左端点
+     * dp[i]表示不使用prizePositions[i]作为最右端点
+     * 综上，我们需要首先构造出dp（注意lefti是单调递增的）
+     * 然后，枚举第二条线段的最右端点r，同时计算出其最左端点l（注意l是单调的，不用重复计算）
+     * 那么第一条线段的最左端点<l，也即<=l-1，这相当于取dp[l]
+     * 最终的结果是r-l+1+dp[l]
+     * 在枚举的过程中记录上述的最大值
+     * 
+     * 写完后我们会发现两个for循环的结构非常类似，实际上可以进行合并
+     */
+    public int maximizeWin0(int[] prizePositions, int k) {
+        // 首先来构造dp
+        int n = prizePositions.length;
+        int[] dp = new int[n + 1];
+        int lefti = 0;
+        for (int i = 0; i < n; i++) {
+            while (prizePositions[i] - prizePositions[lefti] > k) {
+                lefti++;
+            }
+            dp[i + 1] = Math.max(dp[i], i - lefti + 1);
+        }
+
+        // 接下来枚举第二条线段，同时加上第一条线段（dp）
+        int ans = 0;
+        int l = 0;
+        for (int r = 0; r < n; r++) {
+            while (prizePositions[r] - prizePositions[l] > k) {
+                l++;
+            }
+            ans = Math.max(ans, r - l + 1 + dp[l]);
+        }
+        return ans;
+    }
+
+    public int maximizeWin(int[] prizePositions, int k) {
+        int n = prizePositions.length;
+        int[] dp = new int[n + 1];
+        int l = 0;
+        int ans = 0;
+
+        for (int i = 0; i < n; i++) {
+            while (prizePositions[i] - prizePositions[l] > k) {
+                l++;
+            }
+            // 更新dp数组，表示第一条线段的最大覆盖
+            dp[i + 1] = Math.max(dp[i], i - l + 1);
+            // 计算当前答案，结合第一条线段的最大覆盖
+            ans = Math.max(ans, i - l + 1 + dp[l]);
+        }
+
+        return ans;
+    }
+
+    /*
+     * 2009. 使数组连续的最少操作数 [Hard] <Star>
+     * 
+     * 倒过来想，想达到最少操作=n-最多不操作
+     * 元素顺序不影响答案，所以首先对nums进行排序
+     * 之后对nums进行去重
+     * 在排序并去重后的nums上使用滑动窗口
+     * 枚举nums[i]作为区间的右边界r（最大元素）
+     * 则左边界（最小元素）=r-(n-1)，保留的l>=r-(n-1)
+     * [l,r]之间的元素可以被保留，即r-l+1个
+     */
+    public int minOperations(int[] nums) {
+        Arrays.sort(nums);
+        int n = nums.length;
+        // 去重，结束后cur指向最大的元素
+        int cur = 0;
+        for (int i = 1; i < n; i++) {
+            if (nums[i] != nums[i - 1])
+                nums[++cur] = nums[i];
+        }
+
+        int ans = 0;
+        int l = 0;
+        for (int r = 0; r <= cur; r++) {
+            while (nums[r] - nums[l] > n - 1)
+                l++;
+            ans = Math.max(ans, r - l + 1);
+        }
+
+        return n - ans;
+    }
+
+    /*
+     * 2781. 最长合法子字符串的长度 [Hard]  <Star>
+     * 
+     * 判断是否是子串可以直接调用String的contains方法
+     * 之后就是一个变长滑动窗口
+     * verify函数判断子串关系，里面有一个for循环
+     * 超时
+     * 移动窗口的右边界时，只可能是新的右边界为右端点的子串出现在forbidden中
+     * 同时注意forbidden的最大长度是10
+     * 所以扩展窗口的右边界时，判断右边界为右端点的10个子串（[i..r]），是否出现（i要从r开始，逐渐--）
+     * 如果出现，则更新l = i+1
+     */
+    public int longestValidSubstring0(String word, List<String> forbidden) {
+        int l = 0, r = 0;
+        int ans = 0;
+        int n = word.length();
+        while (r < n) {
+            String substr = word.substring(l, r + 1);
+            while (!verify(substr, forbidden)) {
+                l++;
+                substr = word.substring(l, r + 1);
+            }
+            ;
+
+            ans = Math.max(ans, r - l + 1);
+            r++;
+        }
+
+        return ans;
+    }
+
+    boolean verify(String substr, List<String> forbidden) {
+        for (String s : forbidden) {
+            if (substr.contains(s))
+                return false;
+        }
+        return true;
+    }
+
+    public int longestValidSubstring(String word, List<String> forbidden) {
+        Set<String> set = new HashSet<>();
+        set.addAll(forbidden);
+
+        int l = 0, r = 0;
+        int ans = 0;
+        int n = word.length();
+        while (r < n) {
+            // 循环判断以r为右端点的10个子串
+            for (int i = r; i >= l && i > r - 10; i--) {
+                if (set.contains(word.substring(i, r + 1))) {
+                    l = i + 1;
+                    break;
+                }
+            }
+
+            ans = Math.max(ans, r - l + 1);
             r++;
         }
 
