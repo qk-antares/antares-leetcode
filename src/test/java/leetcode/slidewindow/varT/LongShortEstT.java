@@ -1,12 +1,17 @@
 package leetcode.slidewindow.varT;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.junit.jupiter.api.Test;
 
 /*
  * [变长滑动窗口] / [求最长/最短]
@@ -750,7 +755,58 @@ public class LongShortEstT {
     }
 
     /*
-     * 2781. 最长合法子字符串的长度 [Hard]  <Star>
+     * 1610. 可见点的最大数目 [Hard] <Star>
+     * 
+     * 这道题的思路是，首先将所有点的坐标转换为极坐标
+     * 这里使用atan2函数来计算极坐标的角度，它的几何含义是【与原点的连线】和【正x轴】之间的夹角
+     * 值域是[-π, π]，当y>0时，atan2(y, x)是正值，反之是负值
+     * 然后将极坐标按角度升序排列
+     * 
+     * 接下来我们需要将-π和+π区间连接起来，具体的实现方式就是将thetas中每个元素加上2π
+     * 
+     * 最后使用经典的变长滑动窗口-求最长/最大
+     * 
+     * 这里有个小细节，注意点的个数(n=points.size)和极坐标的个数(m=thetas.size)是不一样的
+     * 这是因为有一些点和原点location重合了（重合的点单独统计cnt）
+     */
+    public int visiblePoints(List<List<Integer>> points, int angle, List<Integer> location) {
+        int x = location.get(0), y = location.get(1);
+        int n = points.size();
+        List<Double> thetas = new ArrayList<>();
+        int cnt = 0;
+        for (int i = 0; i < n; i++) {
+            int deltaX = points.get(i).get(0) - x;
+            int deltaY = points.get(i).get(1) - y;
+            if (deltaX == 0 && deltaY == 0) {
+                cnt++;
+                continue;
+            }
+            thetas.add(Math.atan2(deltaY, deltaX));
+        }
+
+        Collections.sort(thetas);
+        Double pi = Math.PI, deltaTheta = angle / 180.0 * pi;
+
+        // 将-180和+180连接起来
+        int m = thetas.size();
+        for (int i = 0; i < m; i++) {
+            thetas.add(thetas.get(i) + 2 * pi);
+        }
+
+        // 接下来使用滑动窗口
+        int l = 0, r = 0;
+        int max = 0;
+        while (r < 2 * m) {
+            while (thetas.get(r) - thetas.get(l) > deltaTheta)
+                l++;
+            r++;
+            max = Math.max(max, r - l);
+        }
+        return cnt + max;
+    }
+
+    /*
+     * 2781. 最长合法子字符串的长度 [Hard] <Star>
      * 
      * 判断是否是子串可以直接调用String的contains方法
      * 之后就是一个变长滑动窗口
@@ -812,7 +868,123 @@ public class LongShortEstT {
     }
 
     /*
+     * 3411. 最长乘积等价子数组 [Easy]
+     * 
+     * 只掌握暴力解法
+     * 需要注意的点就是最大公因数的求法，依据定理：gcd(a,b)=gcd(b%a, a)=gcd(b,a mod b)
+     * 然后Java还需要注意溢出，所以需要判断l*g是否已经超出了最大值（allLcm * max）
+     */
+    public int maxLength(int[] nums) {
+        // 计算nums中所有元素的最小公倍数
+        int allLcm = 1;
+        for (int num : nums)
+            allLcm = lcm(allLcm, num);
+
+        int max = Arrays.stream(nums).max().getAsInt();
+
+        // 通过双层循环来枚举左右边界
+        int n = nums.length;
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            int p = 1;
+            int g = 0;
+            int l = 1;
+            for (int j = i; j < n && l * g <= allLcm * max; j++) {
+                p = p * nums[j];
+                g = gcd(g, nums[j]);
+                l = lcm(l, nums[j]);
+                if (p == l * g)
+                    ans = Math.max(ans, j - i + 1);
+            }
+        }
+
+        return ans;
+    }
+
+    int gcd(int a, int b) {
+        while (a != 0) {
+            int tmp = a;
+            a = b % a;
+            b = tmp;
+        }
+        return b;
+    }
+
+    int lcm(int a, int b) {
+        return a / gcd(a, b) * b;
+    }
+
+    /*
+     * 3413. 收集连续 K 个袋子可以获得的最多硬币数量    [Medium]    <Star>
+     * 
+     * 相当于带权的"毯子覆盖的最多白色砖块数"
+     * 细微的差别是，由于袋子是有权重的，有可能是区间的右端点一定被覆盖，也可能是区间的左端点一定被覆盖
+     * 在右端点一定被覆盖的场景下，我们直接复用之前的代码即可
+     * 而对于左端点一定被覆盖，可已经coins（包括其中的区间）反转，然后再调用一遍上面的函数
+     */
+    public long maximumCoins(int[][] coins, int k) {
+        Arrays.sort(coins, (o1, o2)->o1[0]-o2[0]);
+        long ans = maximumCoinsRightCover(coins, k);
+
+        //反转数组
+        for(int i = 0, j = coins.length-1; i < j; i++, j--) {
+            int[] tmp = coins[i];
+            coins[i] = coins[j];
+            coins[j] = tmp;
+        }
+
+        //反转区间，例如对于[1,3]这个区间要反转成[-3,-1]-
+        for(int i = 0; i < coins.length; i++) {
+            int tmp = coins[i][0];
+            coins[i][0] = -coins[i][1];
+            coins[i][1] = -tmp; 
+        }
+
+        return Math.max(ans, maximumCoinsRightCover(coins, k));
+    }
+
+    public long maximumCoinsRightCover(int[][] coins, int k) {
+        int n = coins.length;
+        //覆盖的开始和结束区间
+        int l = 0, r = 0;
+        long ans = 0;    //能获取的最多硬币
+        long cur = 0;    //当前获取的硬币
+        while(r < n) {
+            //扩展窗口右边界
+            cur += (long)(coins[r][1] - coins[r][0] + 1) * coins[r][2];
+
+            //如果窗口的左边界未能被覆盖，则向右移动左边界
+            while(coins[r][1] - k + 1 > coins[l][1]) {
+                cur -= (long)(coins[l][1] - coins[l][0] + 1) * coins[l][2];
+                l++;
+            }
+
+            //最左侧区间有一部分并没有被覆盖
+            long uncover = Math.max(0, coins[r][1] - k + 1 - coins[l][0]);
+            ans = Math.max(ans, cur-uncover*coins[l][2]);
+            r++;
+        }
+        return ans;
+    }
+
+    /*
      * ========================== 分割线 ==========================
      */
 
+    @Test
+    public void test() {
+        // List<List<Integer>> points1 = Arrays.asList(
+        //         Arrays.asList(2, 1),
+        //         Arrays.asList(2, 2),
+        //         Arrays.asList(3, 4),
+        //         Arrays.asList(1, 1));
+        // int angle1 = 90;
+        // List<Integer> location1 = Arrays.asList(1, 1);
+        // assertEquals(3, visiblePoints(points1, angle1, location1));
+
+        LongShortEstT longShortEstT = new LongShortEstT();
+        int[][] coins = {{20,27,18},{37,40,19},{11,14,18},{8,10,9},{28,32,14},{1,7,5}};
+        int k = 32;
+        assertEquals(14, longShortEstT.maximumCoins(coins, k));
+    }
 }
