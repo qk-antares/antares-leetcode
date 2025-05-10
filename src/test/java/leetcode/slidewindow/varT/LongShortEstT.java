@@ -1,7 +1,5 @@
 package leetcode.slidewindow.varT;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -915,7 +913,7 @@ public class LongShortEstT {
     }
 
     /*
-     * 3413. 收集连续 K 个袋子可以获得的最多硬币数量    [Medium]    <Star>
+     * 3413. 收集连续 K 个袋子可以获得的最多硬币数量 [Medium] <Star>
      * 
      * 相当于带权的"毯子覆盖的最多白色砖块数"
      * 细微的差别是，由于袋子是有权重的，有可能是区间的右端点一定被覆盖，也可能是区间的左端点一定被覆盖
@@ -923,21 +921,21 @@ public class LongShortEstT {
      * 而对于左端点一定被覆盖，可已经coins（包括其中的区间）反转，然后再调用一遍上面的函数
      */
     public long maximumCoins(int[][] coins, int k) {
-        Arrays.sort(coins, (o1, o2)->o1[0]-o2[0]);
+        Arrays.sort(coins, (o1, o2) -> o1[0] - o2[0]);
         long ans = maximumCoinsRightCover(coins, k);
 
-        //反转数组
-        for(int i = 0, j = coins.length-1; i < j; i++, j--) {
+        // 反转数组
+        for (int i = 0, j = coins.length - 1; i < j; i++, j--) {
             int[] tmp = coins[i];
             coins[i] = coins[j];
             coins[j] = tmp;
         }
 
-        //反转区间，例如对于[1,3]这个区间要反转成[-3,-1]-
-        for(int i = 0; i < coins.length; i++) {
+        // 反转区间，例如对于[1,3]这个区间要反转成[-3,-1]-
+        for (int i = 0; i < coins.length; i++) {
             int tmp = coins[i][0];
             coins[i][0] = -coins[i][1];
-            coins[i][1] = -tmp; 
+            coins[i][1] = -tmp;
         }
 
         return Math.max(ans, maximumCoinsRightCover(coins, k));
@@ -945,25 +943,107 @@ public class LongShortEstT {
 
     public long maximumCoinsRightCover(int[][] coins, int k) {
         int n = coins.length;
-        //覆盖的开始和结束区间
+        // 覆盖的开始和结束区间
         int l = 0, r = 0;
-        long ans = 0;    //能获取的最多硬币
-        long cur = 0;    //当前获取的硬币
-        while(r < n) {
-            //扩展窗口右边界
-            cur += (long)(coins[r][1] - coins[r][0] + 1) * coins[r][2];
+        long ans = 0; // 能获取的最多硬币
+        long cur = 0; // 当前获取的硬币
+        while (r < n) {
+            // 扩展窗口右边界
+            cur += (long) (coins[r][1] - coins[r][0] + 1) * coins[r][2];
 
-            //如果窗口的左边界未能被覆盖，则向右移动左边界
-            while(coins[r][1] - k + 1 > coins[l][1]) {
-                cur -= (long)(coins[l][1] - coins[l][0] + 1) * coins[l][2];
+            // 如果窗口的左边界未能被覆盖，则向右移动左边界
+            while (coins[r][1] - k + 1 > coins[l][1]) {
+                cur -= (long) (coins[l][1] - coins[l][0] + 1) * coins[l][2];
                 l++;
             }
 
-            //最左侧区间有一部分并没有被覆盖
+            // 最左侧区间有一部分并没有被覆盖
             long uncover = Math.max(0, coins[r][1] - k + 1 - coins[l][0]);
-            ans = Math.max(ans, cur-uncover*coins[l][2]);
+            ans = Math.max(ans, cur - uncover * coins[l][2]);
             r++;
         }
+        return ans;
+    }
+
+    /*
+     * 2968. 执行操作使频率分数最大 [Hard] <Star>
+     * 
+     * 首先对nums进行排序，则执行操作后，众数一定出现在nums中一个连续的序列中
+     * 在nums上使用变长滑动窗口，以窗口中的中位数为基准，计算需要的操作次数
+     * 如果这个操作次数>k，则收缩窗口的左边界
+     * 
+     * 关联笔记中的【中位数贪心】
+     */
+    public int maxFrequencyScore(int[] nums, long k) {
+        Arrays.sort(nums);
+        int l = 0, r = 0;
+        long edit = 0;
+        int ans = 0;
+        while (r < nums.length) {
+            edit += nums[r] - nums[(l + r) / 2];
+
+            while (edit > k) {
+                edit -= nums[(l + r + 1) / 2] - nums[l];
+                l++;
+            }
+
+            r++;
+            ans = Math.max(ans, r - l);
+        }
+        return ans;
+    }
+
+    /*
+     * 1040. 移动石子直到连续 II    [Medium]
+     * 
+     * 首先考虑移动的最大次数
+     * ...o1...o2..o3..
+     * 在第一次移动时，我们可以选择o1，把它塞到o2..o3这一段里，然后还剩1个空位置，也就是最多移动2次
+     * 另一种方法是选择o3，把它塞到o1...o2这一段里，还剩2个空位置，尽可能缓慢地填充这些位置，最多移动3次
+     * ...o1...o2..o3....o4..
+     * 推广到4个石子的情况，也是类似的
+     * 总的来说，我们需要计算s[0..n-2]以及s[1..n-1]这两段里的空位置，最大者就是移动的最大次数
+     * 
+     * 考虑移动的最少次数
+     * 因为最终所有的石子肯定是聚到一起了，假设石子数n=stones.length
+     * 可以用一个大小固定为n的窗口，判断窗口中的最少空位置，即为最少移动次数(反过来，最多石子数)
+     * 特殊情况1：
+     * ...o1..[.o2o3]...
+     * 对于这种情况，尽管窗口中最少空位置为1，但无法直接将1移动到空位置，移动次数为2
+     * 该情况的特征是s[0..n-2]或者s[1..n-1]这两段的空位置有一个为0
+     * 特殊情况2：
+     * ...o1[.o2o3]
+     * 尽管满足特殊情况1，但可以将o3移动到o1.o2之间的空位置，移动次数为1
+     * 综合特殊情况1和特殊情况2，如果s[0..n-2]或s[1..n-1]的空位置为0，最少移动次数为min(2,maxMove)
+     */
+    public int[] numMovesStonesII(int[] stones) {
+        int[] ans = new int[2];
+
+        int n = stones.length;
+        Arrays.sort(stones);
+        
+        //计算移动的最大次数
+        int lEmpty = stones[n-2]-stones[0]-n+2;
+        int rEmpty = stones[n-1]-stones[1]-n+2;
+        ans[1] = Math.max(lEmpty, rEmpty);
+
+        //计算移动的最少次数
+        if(lEmpty == 0 || rEmpty == 0) {
+            ans[0] = Math.min(2, ans[1]);
+            return ans;
+        }
+
+        int l = 0, r = 0;
+        int maxCnt = 0;
+        while(r < n) {
+            while(stones[r] - stones[l] + 1 > n) {
+                l++;
+            }
+
+            r++;
+            maxCnt = Math.max(maxCnt, r-l);
+        }
+        ans[0] = n-maxCnt;
         return ans;
     }
 
@@ -974,17 +1054,20 @@ public class LongShortEstT {
     @Test
     public void test() {
         // List<List<Integer>> points1 = Arrays.asList(
-        //         Arrays.asList(2, 1),
-        //         Arrays.asList(2, 2),
-        //         Arrays.asList(3, 4),
-        //         Arrays.asList(1, 1));
+        // Arrays.asList(2, 1),
+        // Arrays.asList(2, 2),
+        // Arrays.asList(3, 4),
+        // Arrays.asList(1, 1));
         // int angle1 = 90;
         // List<Integer> location1 = Arrays.asList(1, 1);
         // assertEquals(3, visiblePoints(points1, angle1, location1));
 
-        LongShortEstT longShortEstT = new LongShortEstT();
-        int[][] coins = {{20,27,18},{37,40,19},{11,14,18},{8,10,9},{28,32,14},{1,7,5}};
-        int k = 32;
-        assertEquals(14, longShortEstT.maximumCoins(coins, k));
+        // LongShortEstT longShortEstT = new LongShortEstT();
+        // int[][] coins =
+        // {{20,27,18},{37,40,19},{11,14,18},{8,10,9},{28,32,14},{1,7,5}};
+        // int k = 32;
+        // assertEquals(14, longShortEstT.maximumCoins(coins, k));
+
+        maxFrequencyScore(new int[] { 1, 2, 6, 4 }, 3);
     }
 }
