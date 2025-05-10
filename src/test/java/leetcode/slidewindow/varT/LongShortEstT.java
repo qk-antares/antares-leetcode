@@ -1048,6 +1048,125 @@ public class LongShortEstT {
     }
 
     /*
+     * 395. 至少有 K 个重复字符的最长子串 [Medium] <Star>
+     * 
+     * 这题的难点在于判断窗口扩展和收缩的时机：
+     * 当窗口中某些字符的出现次数<k时：
+     * 一方面，我们可以扩展右边界，从而让这些字符的出现次数达到k；
+     * 另一方面，扩展右边界可能引入新的字符
+     * 如果我们收缩左边界也面临同样的困境
+     * 
+     * 因此我们可以引入一个额外的变量diff，约束窗口中出现的不同字符的个数
+     * 当且仅当unique>diff时收缩窗口左边界，其他情况我们都扩展右边界
+     * 
+     * 这道题还有一个精妙之处：使用valid来表示符合条件（>=k）的字符数量，
+     * 从而不必再像之前那样写个verify函数判断窗口中的字符是否符合条件
+     */
+    public int longestSubstring(String s, int k) {
+        int ans = 0;
+        char[] arr = s.toCharArray();
+        for(int i = 1; i <= 26; i++) ans = Math.max(ans, longestSubstringDiff(arr, k, i));
+        return ans;
+    }
+
+    //窗口中应该出现diff种字符
+    public int longestSubstringDiff(char[] arr, int k, int diff) {
+        int[] cnt = new int[26];
+        //valid代表符合条件（>=k）的字符，这里使用valid可以减少再写一个verify函数
+        int l = 0, r = 0, unique = 0, valid = 0;
+        int ans = 0;
+        while(r < arr.length) {
+            //扩展右边界
+            int add = arr[r++]-'a';
+            //进入窗口的是新字符
+            if(cnt[add] == 0) unique++;
+            cnt[add]++;
+            //有一个字符符合条件
+            if(cnt[add] == k) valid++;
+
+            //当且仅当unique>diff时收缩窗口左边界
+            while(unique > diff) {
+                int remove = arr[l++]-'a';
+                //该字符不再符合条件
+                if(cnt[remove] == k) valid--;
+                cnt[remove]--;
+                if(cnt[remove] == 0) unique--;
+            }
+
+            if(valid == diff) ans = Math.max(ans, r-l);
+        }
+        return ans;
+    }
+
+    /*
+     * 1763. 最长的美好子字符串 [Easy] <Star>
+     * 
+     * 思路和[395. 至少有 K 个重复字符的最长子串]类似，同样需要枚举窗口中的字符种类数
+     * 
+     * 需要注意的是unique++、valid++以及unique--、valid--的时机
+     * 
+     * 例如之前写的错误的valid++的时机：
+     * if(aCnt[add] != 0 && ACnt[add] != 0) valid++;
+     * 这样写会造成valid重复++，因该是其中一个!=0，另一个在aCnt/ACnt[add]++后恰好等于1时才执行valid++
+     * valid--是同样的道理
+     */
+    public String longestNiceSubstring(String s) {
+        char[] arr = s.toCharArray();
+        String ans = "";
+        for(int i = 1; i <= 26; i++) {
+            String tmp = longestNiceSubstringDiff(s, arr, i);
+            if(tmp.length() > ans.length()) {
+                ans = tmp;
+            }
+        }
+        return ans;
+    }
+
+    public String longestNiceSubstringDiff(String s, char[] arr, int diff) {
+        int l = 0, r = 0, unique = 0, valid = 0;
+        int maxLen = 0, ansL = 0, ansR = 0;
+        int[] aCnt = new int[26];
+        int[] ACnt = new int[26];
+        while(r < arr.length) {
+            if(arr[r] <= 'Z') {
+                int add = arr[r++] - 'A';
+                if(aCnt[add] == 0 && ACnt[add] == 0) unique++;
+                ACnt[add]++;
+                if(aCnt[add] != 0 && ACnt[add] == 1) valid++;
+            }
+            else {
+                int add = arr[r++] - 'a';
+                if(aCnt[add] == 0 && ACnt[add] == 0) unique++;
+                aCnt[add]++;
+                if(aCnt[add] == 1 && ACnt[add] != 0) valid++;
+            }
+
+            while(unique > diff) {
+                if(arr[l] <= 'Z') {
+                    int remove = arr[l++] - 'A';
+                    ACnt[remove]--;
+                    if(aCnt[remove] == 0 && ACnt[remove] == 0) unique--;
+                    if(aCnt[remove] != 0 && ACnt[remove] == 0) valid--;
+                } else {
+                    int remove = arr[l++] - 'a';
+                    aCnt[remove]--;
+                    if(aCnt[remove] == 0 && ACnt[remove] == 0) unique--;
+                    if(aCnt[remove] == 0 && ACnt[remove] != 0) valid--;
+                }
+            }
+
+            if(valid == diff && r - l > maxLen) {
+                maxLen = r-l;
+                ansL = l;
+                ansR = r;
+            }
+        }
+
+        return s.substring(ansL, ansR);
+    }
+
+
+    /*
      * ========================== 分割线 ==========================
      */
 
@@ -1068,6 +1187,10 @@ public class LongShortEstT {
         // int k = 32;
         // assertEquals(14, longShortEstT.maximumCoins(coins, k));
 
-        maxFrequencyScore(new int[] { 1, 2, 6, 4 }, 3);
+        // maxFrequencyScore(new int[] { 1, 2, 6, 4 }, 3);
+
+        // longestSubstring("aaabb", 3);
+
+        longestNiceSubstring("YazaAay");
     }
 }
