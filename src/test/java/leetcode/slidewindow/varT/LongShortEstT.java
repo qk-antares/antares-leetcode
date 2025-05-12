@@ -994,7 +994,7 @@ public class LongShortEstT {
     }
 
     /*
-     * 1040. 移动石子直到连续 II    [Medium]
+     * 1040. 移动石子直到连续 II [Medium]
      * 
      * 首先考虑移动的最大次数
      * ...o1...o2..o3..
@@ -1021,29 +1021,29 @@ public class LongShortEstT {
 
         int n = stones.length;
         Arrays.sort(stones);
-        
-        //计算移动的最大次数
-        int lEmpty = stones[n-2]-stones[0]-n+2;
-        int rEmpty = stones[n-1]-stones[1]-n+2;
+
+        // 计算移动的最大次数
+        int lEmpty = stones[n - 2] - stones[0] - n + 2;
+        int rEmpty = stones[n - 1] - stones[1] - n + 2;
         ans[1] = Math.max(lEmpty, rEmpty);
 
-        //计算移动的最少次数
-        if(lEmpty == 0 || rEmpty == 0) {
+        // 计算移动的最少次数
+        if (lEmpty == 0 || rEmpty == 0) {
             ans[0] = Math.min(2, ans[1]);
             return ans;
         }
 
         int l = 0, r = 0;
         int maxCnt = 0;
-        while(r < n) {
-            while(stones[r] - stones[l] + 1 > n) {
+        while (r < n) {
+            while (stones[r] - stones[l] + 1 > n) {
                 l++;
             }
 
             r++;
-            maxCnt = Math.max(maxCnt, r-l);
+            maxCnt = Math.max(maxCnt, r - l);
         }
-        ans[0] = n-maxCnt;
+        ans[0] = n - maxCnt;
         return ans;
     }
 
@@ -1065,35 +1065,41 @@ public class LongShortEstT {
     public int longestSubstring(String s, int k) {
         int ans = 0;
         char[] arr = s.toCharArray();
-        for(int i = 1; i <= 26; i++) ans = Math.max(ans, longestSubstringDiff(arr, k, i));
+        for (int i = 1; i <= 26; i++)
+            ans = Math.max(ans, longestSubstringDiff(arr, k, i));
         return ans;
     }
 
-    //窗口中应该出现diff种字符
+    // 窗口中应该出现diff种字符
     public int longestSubstringDiff(char[] arr, int k, int diff) {
         int[] cnt = new int[26];
-        //valid代表符合条件（>=k）的字符，这里使用valid可以减少再写一个verify函数
+        // valid代表符合条件（>=k）的字符，这里使用valid可以减少再写一个verify函数
         int l = 0, r = 0, unique = 0, valid = 0;
         int ans = 0;
-        while(r < arr.length) {
-            //扩展右边界
-            int add = arr[r++]-'a';
-            //进入窗口的是新字符
-            if(cnt[add] == 0) unique++;
+        while (r < arr.length) {
+            // 扩展右边界
+            int add = arr[r++] - 'a';
+            // 进入窗口的是新字符
+            if (cnt[add] == 0)
+                unique++;
             cnt[add]++;
-            //有一个字符符合条件
-            if(cnt[add] == k) valid++;
+            // 有一个字符符合条件
+            if (cnt[add] == k)
+                valid++;
 
-            //当且仅当unique>diff时收缩窗口左边界
-            while(unique > diff) {
-                int remove = arr[l++]-'a';
-                //该字符不再符合条件
-                if(cnt[remove] == k) valid--;
+            // 当且仅当unique>diff时收缩窗口左边界
+            while (unique > diff) {
+                int remove = arr[l++] - 'a';
+                // 该字符不再符合条件
+                if (cnt[remove] == k)
+                    valid--;
                 cnt[remove]--;
-                if(cnt[remove] == 0) unique--;
+                if (cnt[remove] == 0)
+                    unique--;
             }
 
-            if(valid == diff) ans = Math.max(ans, r-l);
+            if (valid == diff)
+                ans = Math.max(ans, r - l);
         }
         return ans;
     }
@@ -1113,9 +1119,9 @@ public class LongShortEstT {
     public String longestNiceSubstring(String s) {
         char[] arr = s.toCharArray();
         String ans = "";
-        for(int i = 1; i <= 26; i++) {
+        for (int i = 1; i <= 26; i++) {
             String tmp = longestNiceSubstringDiff(s, arr, i);
-            if(tmp.length() > ans.length()) {
+            if (tmp.length() > ans.length()) {
                 ans = tmp;
             }
         }
@@ -1127,36 +1133,43 @@ public class LongShortEstT {
         int maxLen = 0, ansL = 0, ansR = 0;
         int[] aCnt = new int[26];
         int[] ACnt = new int[26];
-        while(r < arr.length) {
-            if(arr[r] <= 'Z') {
+        while (r < arr.length) {
+            if (arr[r] <= 'Z') {
                 int add = arr[r++] - 'A';
-                if(aCnt[add] == 0 && ACnt[add] == 0) unique++;
+                if (aCnt[add] == 0 && ACnt[add] == 0)
+                    unique++;
                 ACnt[add]++;
-                if(aCnt[add] != 0 && ACnt[add] == 1) valid++;
-            }
-            else {
+                if (aCnt[add] != 0 && ACnt[add] == 1)
+                    valid++;
+            } else {
                 int add = arr[r++] - 'a';
-                if(aCnt[add] == 0 && ACnt[add] == 0) unique++;
+                if (aCnt[add] == 0 && ACnt[add] == 0)
+                    unique++;
                 aCnt[add]++;
-                if(aCnt[add] == 1 && ACnt[add] != 0) valid++;
+                if (aCnt[add] == 1 && ACnt[add] != 0)
+                    valid++;
             }
 
-            while(unique > diff) {
-                if(arr[l] <= 'Z') {
+            while (unique > diff) {
+                if (arr[l] <= 'Z') {
                     int remove = arr[l++] - 'A';
                     ACnt[remove]--;
-                    if(aCnt[remove] == 0 && ACnt[remove] == 0) unique--;
-                    if(aCnt[remove] != 0 && ACnt[remove] == 0) valid--;
+                    if (aCnt[remove] == 0 && ACnt[remove] == 0)
+                        unique--;
+                    if (aCnt[remove] != 0 && ACnt[remove] == 0)
+                        valid--;
                 } else {
                     int remove = arr[l++] - 'a';
                     aCnt[remove]--;
-                    if(aCnt[remove] == 0 && ACnt[remove] == 0) unique--;
-                    if(aCnt[remove] == 0 && ACnt[remove] != 0) valid--;
+                    if (aCnt[remove] == 0 && ACnt[remove] == 0)
+                        unique--;
+                    if (aCnt[remove] == 0 && ACnt[remove] != 0)
+                        valid--;
                 }
             }
 
-            if(valid == diff && r - l > maxLen) {
-                maxLen = r-l;
+            if (valid == diff && r - l > maxLen) {
+                maxLen = r - l;
                 ansL = l;
                 ansR = r;
             }
@@ -1165,6 +1178,83 @@ public class LongShortEstT {
         return s.substring(ansL, ansR);
     }
 
+    /*
+     * ========================== 分割线 ==========================
+     */
+
+    /*
+     * 209. 长度最小的子数组 [Medium]
+     */
+    public int minSubArrayLen(int target, int[] nums) {
+        int n = nums.length;
+        int l = 0, r = 0;
+        int sum = 0;
+        int ans = Integer.MAX_VALUE;
+        while (r < n) {
+            sum += nums[r++];
+            while (sum >= target) {
+                ans = Math.min(ans, r - l);
+                sum -= nums[l++];
+            }
+        }
+        return ans == Integer.MAX_VALUE ? 0 : ans;
+    }
+
+    /*
+     * 2904. 最短且字典序最小的美丽子字符串 [Medium]
+     */
+    public String shortestBeautifulSubstring(String s, int k) {
+        char[] arr = s.toCharArray();
+        int l = 0, r = 0;
+        int minL = Integer.MAX_VALUE;
+        int ansL = 0, ansR = 0;
+        while (r < arr.length) {
+            if (arr[r++] == '1')
+                k--;
+
+            while (k == 0) {
+                if (r - l < minL || r - l == minL && s.substring(l, r).compareTo(s.substring(ansL, ansR)) < 0) {
+                    minL = r - l;
+                    ansL = l;
+                    ansR = r;
+                }
+
+                if (arr[l++] == '1')
+                    k++;
+            }
+        }
+
+        return s.substring(ansL, ansR);
+    }
+
+    /*
+     * 1234. 替换子串得到平衡字符串 [Medium]    <Star>
+     * 
+     * 假设要替换的子串位于一个窗口内，则窗口之外4种字符的出现次数必须<=n/4
+     * 在s上应用滑动窗口，统计窗口的最小长度
+     */
+    public int balancedString(String s) {
+        char[] arr = s.toCharArray();
+        int[] cnt = new int[128];
+        for (char ch : arr)
+            cnt[ch]++;
+
+        int n = arr.length, m = n / 4;
+        if (cnt['Q'] == m && cnt['W'] == m && cnt['E'] == m && cnt['R'] == m)
+            return 0;
+
+        int l = 0, r = 0;
+        int ans = Integer.MAX_VALUE;
+        while (r < n) {
+            cnt[arr[r++]]--;
+
+            while (cnt['Q'] <= m && cnt['W'] <= m && cnt['E'] <= m && cnt['R'] <= m) {
+                ans = Math.min(ans, r - l);
+                cnt[arr[l++]]++;
+            }
+        }
+        return ans;
+    }
 
     /*
      * ========================== 分割线 ==========================

@@ -1,10 +1,10 @@
 package leetcode.algorithm;
 
-import org.junit.jupiter.api.Test;
-
 import java.util.HashMap;
 import java.util.PriorityQueue;
 import java.util.Set;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Antares
@@ -183,41 +183,11 @@ public class DoublePointer {
         }
     }
 
-    /**
-     * 长度最小的子数组（滑动窗口算法？左端点要用一个for循环）
-     */
-    class MinSubArrayLen {
-        public int minSubArrayLen(int target, int[] nums) {
-            int ans = Integer.MAX_VALUE;
-            //窗口内的总和
-            int sum = 0;
-            int start = 0, end = 0;
-
-            while (start < nums.length && end <= nums.length){
-                while (sum < target){
-                    if(end < nums.length)
-                        sum += nums[end++];
-                    else
-                        break;
-                }
-
-                if(sum >= target){
-                    ans = (end - start) < ans ? (end - start) : ans;
-                }
-
-                sum -= nums[start++];
-            }
-
-            return ans == Integer.MAX_VALUE ? 0 : ans;
-        }
-    }
-
     @Test
     public void invoke(){
 //        new ReverseWords().reverseWords("a good   example");
 //        new StrStr().buildNext("AATGPACY");
 //        new StrStr().strStr("babba", "bbb");
 //        new ArrayPairSum().arrayPairSum(new int[]{6,2,6,5,1,2});
-//        new MinSubArrayLen().minSubArrayLen(7, new int[]{2,3,1,2,4,3});
     }
 }

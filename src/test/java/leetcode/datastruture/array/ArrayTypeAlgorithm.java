@@ -124,46 +124,11 @@ public class ArrayTypeAlgorithm {
         }
     }
 
-    /**
-     * 长度最小的子数组
-     */
-    class MinSubArrayLen {
-        public int minSubArrayLen(int target, int[] nums) {
-            int sum = 0;
-            //right指向即将添加的元素
-            int left = 0, right = 0;
-
-            while (sum < target && right < nums.length) {
-                sum += nums[right++];
-            }
-            if (sum < target) {
-                return 0;
-            }
-
-            int ans = right - left;
-
-            //开始向右移动窗口
-            while (right < nums.length && left < right) {
-                sum -= nums[left++];
-                if (sum >= target) {
-                    ans = Math.min(ans, right - left);
-                } else {
-                    while (sum < target && right < nums.length) {
-                        sum += nums[right++];
-                    }
-                }
-            }
-
-            return ans;
-        }
-    }
-
     @Test
     void invoke(){
         // new RemoveDuplicates().removeDuplicates(new int[]{1,1,1,1,2,2,3,3,4});
         // new ReverseVowels().reverseVowels("hello");
         // new MaxArea().maxArea0(new int[]{1,8,6,2,5,4,8,3,7});
         // new MaxArea().maxArea0(new int[]{1,1});
-        new MinSubArrayLen().minSubArrayLen(7 ,new int[]{2,3,1,2,4,3});
     }
 }

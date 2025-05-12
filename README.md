@@ -30,6 +30,23 @@ List<Integer> list = new ArrayList<>();
 Collections.sort(list);
 ```
 
+#### 1.2.2 `Collection.stream()`
+
+```java
+//将List转成Array
+List<Integer> list = new ArrayList<>();
+int[] arr = list.stream().mapToInt(Integer::intValue).toArray();
+```
+
+### 1.3 String
+
+#### 1.3.1 `compareTo`
+
+```java
+//比较两个字符串的字典序，不能直接使用比较符(==,<,>)，应该使用compareTo，当s1字典序小于s2时，返回负数
+s1.compareTo(s2);
+```
+
 ## 2. 数学知识
 
 ### 2.1 数论

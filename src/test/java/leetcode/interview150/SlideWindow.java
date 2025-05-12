@@ -8,33 +8,6 @@ import org.junit.jupiter.api.Test;
 
 public class SlideWindow {
     /**
-     * 209. 长度最小的子数组
-     */
-    public int minSubArrayLen(int target, int[] nums) {
-        int sum = 0, l = 0, r = 0;
-        while (sum < target && r < nums.length){
-            sum += nums[r++];
-        }
-        if(sum < target){
-            return 0;
-        }
-
-        int ans = r;
-        //窗口左边界右移
-        while (r <= nums.length && l < r){
-            sum -= nums[l++];
-            if(sum >= target){
-                ans = Math.min(ans, r-l);
-            }
-            while (sum < target && r < nums.length){
-                sum += nums[r++];
-            }
-        }
-
-        return ans;
-    }
-
-    /**
      * 30. 串联所有单词的子串
      */
     public List<Integer> findSubstring(String s, String[] words) {
