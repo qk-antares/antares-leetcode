@@ -1228,7 +1228,7 @@ public class LongShortEstT {
     }
 
     /*
-     * 1234. 替换子串得到平衡字符串 [Medium]    <Star>
+     * 1234. 替换子串得到平衡字符串 [Medium] <Star>
      * 
      * 假设要替换的子串位于一个窗口内，则窗口之外4种字符的出现次数必须<=n/4
      * 在s上应用滑动窗口，统计窗口的最小长度
@@ -1254,6 +1254,38 @@ public class LongShortEstT {
             }
         }
         return ans;
+    }
+
+    /*
+     * 2875. 无限数组的最短子数组
+     * 
+     * 统计nums的sum，target%=sum，然后在"两次重复的nums"上使用普通的"变长滑动窗口-求最短/最小"即可
+     */
+    public int minSizeSubarray(int[] nums, int target) {
+        int ans = 0;
+        int n = nums.length;
+
+        int sum = 0;
+        for (int num : nums)
+            sum += num;
+        ans += n * (target / sum);
+        target %= sum;
+
+        int l = 0, r = 0;
+        int minLen = Integer.MAX_VALUE;
+        sum = 0;
+        while (r < 2 * nums.length) {
+            sum += nums[(r++) % n];
+
+            while (sum > target) {
+                sum -= nums[(l++) % n];
+            }
+
+            if (sum == target)
+                minLen = Math.min(minLen, r - l);
+        }
+
+        return minLen == Integer.MAX_VALUE ? -1 : ans + minLen;
     }
 
     /*
