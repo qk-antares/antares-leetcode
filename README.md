@@ -13,13 +13,6 @@ Object[] objs = new Object[n];
 Arrays.setAll(objs, i -> new Object());
 ```
 
-#### 1.1.2 `Arrays.stream()`
-
-```java
-//快速获取数组中的最大值
-int max = Arrays.stream(nums).max().getAsInt();
-```
-
 ### 1.2 Collections
 
 #### 1.2.1 `Collections.sort`
@@ -28,14 +21,6 @@ int max = Arrays.stream(nums).max().getAsInt();
 List<Integer> list = new ArrayList<>();
 //用来对List进行排序
 Collections.sort(list);
-```
-
-#### 1.2.2 `Collection.stream()`
-
-```java
-//将List转成Array
-List<Integer> list = new ArrayList<>();
-int[] arr = list.stream().mapToInt(Integer::intValue).toArray();
 ```
 
 ### 1.3 String
@@ -47,10 +32,52 @@ int[] arr = list.stream().mapToInt(Integer::intValue).toArray();
 s1.compareTo(s2);
 ```
 
+### 1.4 `stream()`
+
+Java中只要是实现了`Collection`接口的类，都可以使用`stream()`。另外，一些特定类（如`Array`、`Map`）虽然不是`Collection`，也可以通过辅助方法转换成`Stream`。
+
+`Collection`接口的实现类：
+
+| 类型          | 示例类                                      |
+| ------------- | ------------------------------------------- |
+| `List`        | `ArrayList`, `LinkedList`, `Vector`         |
+| `Set`         | `HashSet`, `LinkedHashSet`, `TreeSet`       |
+| `Queue/Deque` | `ArrayDeque`, `LinkedList`, `PriorityQueue` |
+
+`Array`（数组）：
+```java
+int[] nums = new int[10];
+Arrays.stream(nums);
+```
+
+`Map`的`keySet()`、`values()`、`entrySet()`方法都返回一个`Set`，可以使用`stream()`方法：
+```java
+Map<String, Integer> map = Map.of("a", 1, "b", 2);
+
+map.keySet().stream();         // Stream<String>
+map.values().stream();         // Stream<Integer>
+map.entrySet().stream();       // Stream<Map.Entry<String, Integer>>
+```
+
+#### 1.4.1 `max().getAsInt()`
+
+```java
+//快速获取数组中的最大值
+int max = Arrays.stream(nums).max().getAsInt();
+```
+
+#### 1.4.2 `mapToInt(Integer::intValue).toArray()`
+
+```java
+//将List转成Array
+List<Integer> list = new ArrayList<>();
+int[] arr = list.stream().mapToInt(Integer::intValue).toArray();
+```
+
 ### 1.4 运算符优先级
 
-| 优先级 | 运算符                                                          | 结合性     |
-|--------|------------------------------------------------------------------|------------|
+| 优先级 | 运算符                                                           | 结合性     |
+|--------|-----------------------------------------------------------------|------------|
 | 1      | `()` `[]` `.`                                                   | 从左到右   |
 | 2      | `!` `~` `++` `--` `+` `-`                                       | 从右到左   |
 | 3      | `*` `/` `%`                                                     | 从左到右   |

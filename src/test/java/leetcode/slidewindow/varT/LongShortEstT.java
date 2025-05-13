@@ -1048,7 +1048,7 @@ public class LongShortEstT {
     }
 
     /*
-     * 395. 至少有 K 个重复字符的最长子串 [Medium] <Star>
+     * 395. 至少有 K 个重复字符的最长子串 [Medium] <Star> [Link: 1763. 最长的美好子字符串; 76. 最小覆盖子串]
      * 
      * 这题的难点在于判断窗口扩展和收缩的时机：
      * 当窗口中某些字符的出现次数<k时：
@@ -1105,7 +1105,7 @@ public class LongShortEstT {
     }
 
     /*
-     * 1763. 最长的美好子字符串 [Easy] <Star>
+     * 1763. 最长的美好子字符串 [Easy] <Star> [Link: 395. 至少有 K 个重复字符的最长子串; 76. 最小覆盖子串]
      * 
      * 思路和[395. 至少有 K 个重复字符的最长子串]类似，同样需要枚举窗口中的字符种类数
      * 
@@ -1257,7 +1257,7 @@ public class LongShortEstT {
     }
 
     /*
-     * 2875. 无限数组的最短子数组
+     * 2875. 无限数组的最短子数组 [Medium]
      * 
      * 统计nums的sum，target%=sum，然后在"两次重复的nums"上使用普通的"变长滑动窗口-求最短/最小"即可
      */
@@ -1286,6 +1286,146 @@ public class LongShortEstT {
         }
 
         return minLen == Integer.MAX_VALUE ? -1 : ans + minLen;
+    }
+
+    /*
+     * 76. 最小覆盖子串 [Hard] [Link: 395. 至少有 K 个重复字符的最长子串; 1763. 最长的美好子字符串]
+     * 
+     * 和395和1763的思路类似，这里可以用diff统计目标串t中不同字符的数量，用valid统计窗口中符合条件的字符数量
+     * 这样做避免了再写一个verify函数，而且verify函数的时间复杂度是O(128)
+     * 优化后显著提高了算法效率
+     */
+    public String minWindow0(String s, String t) {
+        char[] sArr = s.toCharArray();
+        char[] tArr = t.toCharArray();
+        String ans = "";
+
+        if (sArr.length < tArr.length)
+            return ans;
+
+        int[] cnt = new int[128];
+        for (char ch : tArr)
+            cnt[ch]++;
+
+        int l = 0, r = 0;
+        int minLen = Integer.MAX_VALUE;
+        int ansL = 0, ansR = 0;
+        while (r < sArr.length) {
+            cnt[sArr[r++]]--;
+
+            while (verify(cnt)) {
+                if (r - l < minLen) {
+                    minLen = Math.min(minLen, r - l);
+                    ansL = l;
+                    ansR = r;
+                }
+                cnt[sArr[l++]]++;
+            }
+        }
+
+        return s.substring(ansL, ansR);
+    }
+
+    boolean verify(int[] cnt) {
+        for (int c : cnt) {
+            if (c > 0)
+                return false;
+        }
+        return true;
+    }
+
+    public String minWindow(String s, String t) {
+        char[] sArr = s.toCharArray();
+        char[] tArr = t.toCharArray();
+        String ans = "";
+
+        if (sArr.length < tArr.length)
+            return ans;
+
+        int[] cnt = new int[128];
+        // t中不同字符的数量
+        int diff = 0;
+        for (char ch : tArr) {
+            if (cnt[ch] == 0)
+                diff++;
+            cnt[ch]++;
+        }
+
+        int l = 0, r = 0;
+        int minLen = Integer.MAX_VALUE;
+        int ansL = 0, ansR = 0;
+        // 窗口中有效的字符数量
+        int valid = 0;
+        while (r < sArr.length) {
+            cnt[sArr[r]]--;
+            if (cnt[sArr[r]] == 0)
+                valid++;
+            r++;
+
+            while (valid == diff) {
+                if (r - l < minLen) {
+                    minLen = Math.min(minLen, r - l);
+                    ansL = l;
+                    ansR = r;
+                }
+                if (cnt[sArr[l]] == 0)
+                    valid--;
+                cnt[sArr[l]]++;
+                l++;
+            }
+        }
+
+        return s.substring(ansL, ansR);
+    }
+
+    /*
+     * 632. 最小区间    [Hard]  [Link: 76. 最小覆盖子串]
+     * 
+     * 首先对nums中所有的区间进行合并，合并的同时需要标记元素来自于那个区间，
+     * 用List<int[]> merge来存储，[val, idx]
+     * 合并后按val进行排序，然后在排序后的merge上使用变长滑动窗口-求最短/最小
+     */
+    public int[] smallestRange(List<List<Integer>> nums) {
+        List<int[]> merge = new ArrayList<>();
+        // 区间总数
+        int diff = nums.size();
+        for (int i = 0; i < diff; i++) {
+            List<Integer> range = nums.get(i);
+            for (int j = 0; j < range.size(); j++) {
+                merge.add(new int[] { range.get(j), i });
+            }
+        }
+
+        Collections.sort(merge, (o1, o2) -> o1[0] - o2[0]);
+
+        int l = 0, r = 0, n = merge.size();
+        // 统计各个区间中数的出现次数
+        int[] cnt = new int[diff];
+        // 出现过的区间（避免再写一个verify函数）
+        int valid = 0;
+        int ansL = merge.get(0)[0], ansR = merge.getLast()[0];
+        while (r < n) {
+            int addIdx = merge.get(r)[1];
+            if (cnt[addIdx] == 0)
+                valid++;
+            cnt[addIdx]++;
+
+            while (valid == diff) {
+                if (merge.get(r)[0] - merge.get(l)[0] < ansR - ansL) {
+                    ansR = merge.get(r)[0];
+                    ansL = merge.get(l)[0];
+                }
+                int removeIdx = merge.get(l)[1];
+                cnt[removeIdx]--;
+                if (cnt[removeIdx] == 0)
+                    valid--;
+                l++;
+            }
+
+            r++;
+        }
+
+        return new int[] { ansL, ansR };
     }
 
     /*
