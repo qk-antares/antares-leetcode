@@ -83,4 +83,73 @@ public class DigitDpT {
 
         return ans;
     }
+
+    /*
+     * 552. 学生出勤记录 II [Hard]  <Star>
+     * 
+     * 类似数位dp
+     * dfs(i,pre,a)
+     * i表示当前填写的数位
+     * preL表示前面的连续L个数（至多2个，3种状态）
+     * a表示前面A的个数（至多1个，2种状态）
+     * 
+     * 由于本题的范围比较小，所以可以将memo设置为static，这样在不同的测试用例之间避免了重复计算，提高通过效率
+     * 需要注意的是，此时dfs的参数需要从n开始递减
+     */
+    public int checkRecord0(int n) {
+        int[][][] memo = new int[n][3][2];
+        for (int[][] m : memo) {
+            for (int[] row : m)
+                Arrays.fill(row, -1);
+        }
+
+        return dfs0(0, 0, 0, memo, n);
+    }
+
+    public int dfs0(int i, int preL, int a, int[][][] memo, int n) {
+        // 填到了最后一个数位
+        if (i == n)
+            return 1;
+        // 当前状态已经计算过
+        if (memo[i][preL][a] > -1)
+            return memo[i][preL][a];
+
+        int ans = 0;
+        // 当前位填写A
+        ans = (ans + dfs0(i + 1, 0, a, memo, n)) % MOD;
+        // 当前位填写L（前提是前面连续的L<2）
+        if (preL < 2)
+            ans = (ans + dfs0(i + 1, preL + 1, a, memo, n)) % MOD;
+        // 当前位填写a（前提是前面的a<1）
+        if (a < 1)
+            ans = (ans + dfs0(i + 1, 0, a + 1, memo, n)) % MOD;
+
+        memo[i][preL][a] = ans;
+        return ans;
+    }
+
+    static final int MOD = 1_000_000_007;
+    static final int N = 100_001;
+    static final int[][][] memo = new int[N][3][2];
+    public int checkRecord(int n) {
+        return dfs(n,0,0);
+    }
+
+    public int dfs(int i, int preL, int a) {
+        //填到了最后一个数位
+        if(i == 0) return 1;
+        //当前状态已经计算过
+        if(memo[i][preL][a] > 0) return memo[i][preL][a];
+
+        int ans = 0;
+        //当前位填写A
+        ans = (ans + dfs(i-1, 0, a)) % MOD;
+        //当前位填写L（前提是前面连续的L<2）
+        if(preL < 2) ans = (ans + dfs(i-1, preL+1, a)) % MOD;
+        //当前位填写a（前提是前面的a<1）
+        if(a < 1) ans = (ans + dfs(i-1, 0, a+1)) % MOD;
+
+        memo[i][preL][a] = ans;
+        return ans;
+    }
 }

@@ -98,6 +98,18 @@ int[] arr = list.stream().mapToInt(Integer::intValue).toArray();
 
 根据上表可以发现，位运算符（`<<` `>>` `&` `^` `|`）以及三目运算符（`?:`）的优先级都比较低（低于`+` `-`），因此在使用的时候要特别注意带括号
 
+### 1.5 溢出
+
+```java
+int a, b;
+int MOD;
+//这种避免溢出的方式是无效的，存在一个运算优先级的问题，计算a*b时已经溢出了，再转成long是负数
+long tmp = (long) (a*b);
+//下面这种方法是正确的，它本质是先把a转成long类型，再进行乘法时b会被提升为long类型
+long tmp = (long) a * b;
+int ans = (int) (tmp % MOD);
+```
+
 ## 2. 数学知识
 
 ### 2.1 数论

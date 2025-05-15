@@ -1,10 +1,11 @@
 package leetcode.dp;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class MatrixQuickPowDpT {
     /*
-     * 3337. 字符串转换后的长度 II  [Hard]  <Star>
+     * 3337. 字符串转换后的长度 II [Hard] <Star>
      * 
      * 下面是错误的解：
      * 转换后的结果同样只跟初始时s中各个字符的数量有关
@@ -55,37 +56,39 @@ public class MatrixQuickPowDpT {
         return ans;
     }
 
-    int MOD = 1_000_000_007;
     public int lengthAfterTransformations(String s, int t, List<Integer> nums) {
         int SIZE = 26;
-        
+
         int[][] F = new int[SIZE][1];
-        for(int i = 0; i < SIZE; i++) F[i][0] = 1;
+        for (int i = 0; i < SIZE; i++)
+            F[i][0] = 1;
         int[][] M = new int[SIZE][SIZE];
-        //初始化M
-        for(int i = 0; i < SIZE; i++) {
-            for(int j = i+1; j <= i+nums.get(i); j++) {
-                M[i][j%SIZE] = 1;
+        // 初始化M
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = i + 1; j <= i + nums.get(i); j++) {
+                M[i][j % SIZE] = 1;
             }
         }
-        //计算M^t*F
-        F = matrixPow(M, t, F);    
+        // 计算M^t*F
+        F = matrixPow(M, t, F);
 
-        //统计s中字符的出现次数
+        // 统计s中字符的出现次数
         int[] cnt = new int[SIZE];
         char[] arr = s.toCharArray();
-        for(char ch : arr) cnt[ch-'a']++;
+        for (char ch : arr)
+            cnt[ch - 'a']++;
 
         long ans = 0;
-        for(int i = 0; i < SIZE; i++) {
+        for (int i = 0; i < SIZE; i++) {
             ans += (long) cnt[i] * F[i][0];
         }
         return (int) (ans % 1_000_000_007);
     }
 
     public int[][] matrixPow(int[][] M, int t, int[][] F) {
-        while(t != 0) {
-            if((t&1)==1) F = matrixMul(M, F);
+        while (t != 0) {
+            if ((t & 1) == 1)
+                F = matrixMul(M, F);
             M = matrixMul(M, M);
             t >>= 1;
         }
@@ -94,17 +97,116 @@ public class MatrixQuickPowDpT {
 
     public int[][] matrixMul(int[][] A, int[][] B) {
         int[][] ans = new int[A.length][B[0].length];
-        for(int i = 0; i < A.length; i++) {
-            for(int j = 0; j < B[0].length; j++) {
-                //ans[i][j] = A[i][..] * B[..][j]
-                for(int k = 0; k < B.length; k++) {
-                    //这行代码可以稍微提高实际效率
-                    if(A[i][k] == 0 || B[k][j] == 0) continue;
+        for (int i = 0; i < A.length; i++) {
+            for (int j = 0; j < B[0].length; j++) {
+                // ans[i][j] = A[i][..] * B[..][j]
+                for (int k = 0; k < B.length; k++) {
+                    // 这行代码可以稍微提高实际效率
+                    if (A[i][k] == 0 || B[k][j] == 0)
+                        continue;
 
-                    //这里防溢出
+                    // 这里防溢出
                     ans[i][j] = (int) ((ans[i][j] + (long) A[i][k] * B[k][j]) % 1_000_000_007);
                 }
             }
+        }
+        return ans;
+    }
+
+    /*
+     * 1220. 统计元音字母序列的数目 [Hard] <Star>
+     * 
+     * 用一个矩阵M来表示每个字母后面可以跟的字母
+     * a [0 1 0 0 0]
+     * e [1 0 1 0 0]
+     * i [1 1 0 1 1]
+     * o [0 0 1 0 1]
+     * u [1 0 0 0 0]
+     * 用f[i][j]表示长度为i，结尾为字符j时的方案数
+     * f[i]['a'] = f[i-1]['e'] + f[i-1]['i']+f[i-1]['u'] (这里相当于一个矩阵乘法)
+     * F[i] = F[1] * M^(i-1)
+     * F[1]是全为1的列向量
+     * 
+     * 这道题的数据量比较小，所以进行n次循环的普通解法也能够通过
+     */
+    public int countVowelPermutation(int n) {
+        int SIZE = 5;
+        int[][] F = new int[1][SIZE];
+        Arrays.fill(F[0], 1);
+
+        int[][] M = {
+                { 0, 1, 0, 0, 0 },
+                { 1, 0, 1, 0, 0 },
+                { 1, 1, 0, 1, 1 },
+                { 0, 0, 1, 0, 1 },
+                { 1, 0, 0, 0, 0 }
+        };
+
+        F = matrixPow(F, M, n - 1);
+
+        int ans = 0;
+        for (int i = 0; i < SIZE; i++) {
+            ans = (ans + F[0][i]) % 1_000_000_007;
+        }
+
+        return ans;
+    }
+
+    public int[][] matrixPow(int[][] F, int[][] M, int n) {
+        while (n != 0) {
+            if ((n & 1) == 1)
+                F = matrixMul(F, M);
+            M = matrixMul(M, M);
+            n >>= 1;
+        }
+        return F;
+    }
+
+    /*
+     * 935. 骑士拨号器  [Medium]
+     * 
+     * 蓝色单元格代表"状态"，总共有10种状态
+     * 状态之间的转移矩阵M为
+     * 1 [0,0,0,0,0,1,0,1,0,0]
+     * 2 [0,0,0,0,0,0,1,0,1,0]
+     * 3 [0,0,0,1,0,0,0,1,0,0]
+     * 4 [0,0,1,0,0,0,0,0,1,1]
+     * 5 [0,0,0,0,0,0,0,0,0,0]
+     * 6 [1,0,0,0,0,0,1,0,0,1]
+     * 7 [0,1,0,0,0,1,0,0,0,0]
+     * 8 [1,0,1,0,0,0,0,0,0,0]
+     * 9 [0,1,0,1,0,0,0,0,0,0]
+     * 0 [0,0,0,1,0,1,0,0,0,0]
+     * 用f[i][j]表示数字j移动i步之后的状态数
+     * f[i][1] = f[i-1][6] + f[i-1][8]
+     * ...
+     * f[i][0] = f[i-1][4] + f[i-1][6]
+     * F[i] = F[i-1] * M
+     * F[i] = F[0] * M^i
+     */
+    public int knightDialer(int n) {
+        // 10个状态
+        int SIZE = 10;
+        int[][] M = {
+                { 0, 0, 0, 0, 0, 1, 0, 1, 0, 0 },
+                { 0, 0, 0, 0, 0, 0, 1, 0, 1, 0 },
+                { 0, 0, 0, 1, 0, 0, 0, 1, 0, 0 },
+                { 0, 0, 1, 0, 0, 0, 0, 0, 1, 1 },
+                { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+                { 1, 0, 0, 0, 0, 0, 1, 0, 0, 1 },
+                { 0, 1, 0, 0, 0, 1, 0, 0, 0, 0 },
+                { 1, 0, 1, 0, 0, 0, 0, 0, 0, 0 },
+                { 0, 1, 0, 1, 0, 0, 0, 0, 0, 0 },
+                { 0, 0, 0, 1, 0, 1, 0, 0, 0, 0 }
+        };
+        int[][] F = new int[1][SIZE];
+        Arrays.fill(F[0], 1);
+
+        F = matrixPow(F, M, n - 1);
+
+        int ans = 0;
+        for (int i = 0; i < SIZE; i++) {
+            ans = (ans + F[0][i]) % 1_000_000_007;
         }
         return ans;
     }
