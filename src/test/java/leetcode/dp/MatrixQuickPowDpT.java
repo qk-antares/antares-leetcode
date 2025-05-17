@@ -163,7 +163,7 @@ public class MatrixQuickPowDpT {
     }
 
     /*
-     * 935. 骑士拨号器  [Medium]
+     * 935. 骑士拨号器 [Medium]
      * 
      * 蓝色单元格代表"状态"，总共有10种状态
      * 状态之间的转移矩阵M为
@@ -209,5 +209,39 @@ public class MatrixQuickPowDpT {
             ans = (ans + F[0][i]) % 1_000_000_007;
         }
         return ans;
+    }
+
+    /*
+     * 790. 多米诺和托米诺平铺  [Medium]    <Star>
+     * 
+     * f[i]表示i列的排列情况
+     * 状态转移方程f[i]=f[i-1]+f[i-2]+2(f[i-3]...f[1]+f[0])
+     * =f[i-1]+f[i-3]+(f[i-2]+f[i-3]+2(f[i-4]...f[1]+f[0]))
+     * =2*f[i-1]+f[i-3]
+     * f[0]=1,f[1]=1,f[2]=2,f[3]=5
+     * 
+     * 也可以用矩阵快速幂来解决，适用于N特别大的场景
+     * f[i] = 2*f[i-1]+f[i-3]
+     * [f[i],f[i-1],f[i-2]] 与 [f[i-1],f[i-2],f[i-3]]的状态转移矩阵M可以表示为：
+     * [2 0 1]
+     * [1 0 0]
+     * [0 1 0]
+     */
+    static final int N = 1001;
+    static final int[] f;
+    static final int MOD = 1_000_000_007;
+
+    static {
+        f = new int[N];
+        f[0] = 1;
+        f[1] = 1;
+        f[2] = 2;
+        for (int i = 3; i < N; i++) {
+            f[i] = ((f[i - 1] << 1) % MOD + f[i - 3]) % MOD;
+        }
+    }
+
+    public int numTilings(int n) {
+        return f[n];
     }
 }

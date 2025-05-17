@@ -9,8 +9,31 @@ import org.junit.jupiter.api.Test;
 
 /*
  * 最长递增子序列
+ * 
+ * 这类题都有两种解法：
+ * 第一种是动态规划，时间复杂度O(n^2)
+ * 第二种是"新员工替代老员工"的方法(一次遍历+二分)，时间复杂度O(nlogn)
+ * 
+ * 对于n范围较大的题，只能使用第二种解法
  */
 public class LIST {
+    int lower_bound(int[] subSeq, int cur, int target) {
+        int l = 0, r = cur - 1;
+        while (l <= r) {
+            int mid = (l + r) / 2;
+            if (subSeq[mid] < target) {
+                l = mid + 1;
+            } else {
+                r = mid - 1;
+            }
+        }
+        return l;
+    }
+
+    int upper_bound(int[] subSeq, int cur, int target) {
+        return lower_bound(subSeq, cur, target + 1);
+    }
+
     /*
      * 300. 最长递增子序列 [Medium] <Star> [Link: 354. 俄罗斯套娃信封问题]
      * 
@@ -56,16 +79,8 @@ public class LIST {
                 d[len++] = nums[i];
             } else {
                 // 找到第一个>=nums[i]的数进行替换
-                int l = 0, r = len - 1;
-                while (l <= r) {
-                    int mid = (l + r) / 2;
-                    if (d[mid] < nums[i]) {
-                        l = mid + 1;
-                    } else {
-                        r = mid - 1;
-                    }
-                }
-                d[l] = nums[i];
+                int idx = lower_bound(d, len, nums[i]);
+                d[idx] = nums[i];
             }
         }
         return len;
@@ -139,7 +154,7 @@ public class LIST {
     }
 
     /*
-     * 1671. 得到山形数组的最少删除次数
+     * 1671. 得到山形数组的最少删除次数 [Hard]
      * 
      * 本质是之前的题进行两次计算
      * dp0[i]代表以nums[i]结尾的最长(严格)递增子序列
@@ -191,58 +206,99 @@ public class LIST {
         int[] dp0 = new int[n];
         dp0[0] = 1;
         int cur = 1;
-        for(int i = 1; i < n; i++) {
-            if(nums[i] > d[cur-1]) {
+        for (int i = 1; i < n; i++) {
+            if (nums[i] > d[cur - 1]) {
                 d[cur++] = nums[i];
                 dp0[i] = cur;
             } else {
-                //nums[i] <= d[cur-1]
-                //使用二分将nums[i]插入到d中，找到最后一个>=nums[i]的元素，替换它后面的元素
-                int idx = binarySearch(nums[i], d, cur);
+                // nums[i] <= d[cur-1]
+                // 使用二分将nums[i]插入到d中，找到最后一个>=nums[i]的元素，替换它后面的元素
+                int idx = lower_bound(d, cur, nums[i]);
                 d[idx] = nums[i];
-                dp0[i] = idx+1;
+                dp0[i] = idx + 1;
             }
         }
 
-        d[0] = nums[n-1];
+        d[0] = nums[n - 1];
         int[] dp1 = new int[n];
-        dp1[n-1]=1;
+        dp1[n - 1] = 1;
         cur = 1;
-        for(int i = n-2; i >= 0; i--) {
-            if(nums[i] > d[cur-1]) {
+        for (int i = n - 2; i >= 0; i--) {
+            if (nums[i] > d[cur - 1]) {
                 d[cur++] = nums[i];
                 dp1[i] = cur;
             } else {
-                int idx = binarySearch(nums[i], d, cur);
+                int idx = lower_bound(d, cur, nums[i]);
                 d[idx] = nums[i];
-                dp1[i] = idx+1;
+                dp1[i] = idx + 1;
             }
 
         }
 
         int max = 0;
-        for(int i = 0; i < n; i++) {
-            if(dp0[i] != 1 && dp1[i] != 1)
-                max = Math.max(max, dp0[i]+dp1[i]);
+        for (int i = 0; i < n; i++) {
+            if (dp0[i] != 1 && dp1[i] != 1)
+                max = Math.max(max, dp0[i] + dp1[i]);
         }
-        return n-max+1;
-    }
-    
-    public int binarySearch(int num, int[] d, int cur) {
-        int l = 0, r = cur-1;
-        while(l <= r) {
-            int mid = (l+r)/2;
-            if(d[mid] < num) {
-                l = mid+1;
-            } else {
-                r = mid-1;
-            }
-        }
-        return l;
+        return n - max + 1;
     }
 
     /*
-     * 354. 俄罗斯套娃信封问题 [Hard] [Link: 300. 最长递增子序列]
+     * 1964. 找出到每个位置为止最长的有效障碍赛跑路线
+     * 
+     * 最终返回的就是之前的dp[i]
+     * dp[i]表示obstacles[i]结尾的最长障碍
+     * dp[i] = 1 + max(dp[j]) (0<=j<i)
+     * 
+     * 因为此题n的范围较大，所以只能使用一遍扫描+二分的"新员工替代老员工"
+     */
+    public int[] longestObstacleCourseAtEachPosition(int[] obstacles) {
+        int n = obstacles.length;
+        int[] dp = new int[n];
+        dp[0] = 1;
+        int cur = 1;
+        for (int i = 1; i < n; i++) {
+            if (obstacles[i] >= obstacles[cur - 1]) {
+                obstacles[cur++] = obstacles[i];
+                dp[i] = cur;
+            } else {
+                // 将obstacles[i]插入到obstacles[0..cur-1]，找到>obstacles[i]的第一个元素，替换它
+                int idx = lower_bound(obstacles, cur, obstacles[i]+1);
+                obstacles[idx] = obstacles[i];
+                dp[i] = idx + 1;
+            }
+        }
+
+        return dp;
+    }
+
+    public int kIncreasing(int[] arr, int k) {
+        int n = arr.length;
+        int sum = 0;
+        int[] subSeq = new int[n];
+        int cur = 0;
+        int max = 0;
+        for (int i = 0; i < k; i++) {
+            subSeq[0] = arr[i];
+            cur = 1;
+            max = 1;
+            for (int j = i + k; j < n; j += k) {
+                if (arr[j] >= subSeq[cur - 1]) {
+                    subSeq[cur++] = arr[j];
+                    max = Math.max(max, cur);
+                } else {
+                    int idx = lower_bound(subSeq, cur, arr[j]+1);
+                    subSeq[idx] = arr[j];
+                }
+            }
+            sum += max;
+        }
+
+        return n - sum;
+    }
+
+    /*
+     * 354. 俄罗斯套娃信封问题 [Hard] <Star> [Link: 300. 最长递增子序列]
      * 
      * 首先对envelopes进行排序，排序的规则为：（首要）wi从小到大，（次要）hi从大到小。
      * 经过如此排序后，按照hi进行比较，如果hi<hj（i<j），可以保证(wi,hi)一定能够放入(wj,hj)
@@ -340,6 +396,7 @@ public class LIST {
 
     @Test
     public void test() {
-        minimumMountainRemovals(new int[] { 2, 1, 1, 5, 6, 2, 3, 1 });
+        // minimumMountainRemovals(new int[] { 2, 1, 1, 5, 6, 2, 3, 1 });
+        kIncreasing(new int[] { 5, 4, 3, 2, 1 }, 1);
     }
 }
