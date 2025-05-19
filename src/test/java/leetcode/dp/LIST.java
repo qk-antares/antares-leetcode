@@ -263,7 +263,7 @@ public class LIST {
                 dp[i] = cur;
             } else {
                 // 将obstacles[i]插入到obstacles[0..cur-1]，找到>obstacles[i]的第一个元素，替换它
-                int idx = lower_bound(obstacles, cur, obstacles[i]+1);
+                int idx = lower_bound(obstacles, cur, obstacles[i] + 1);
                 obstacles[idx] = obstacles[i];
                 dp[i] = idx + 1;
             }
@@ -272,6 +272,16 @@ public class LIST {
         return dp;
     }
 
+    /*
+     * 2111. 使数组 K 递增的最少操作次数
+     * 
+     * 必须使用新员工替代老员工
+     * k实际上把arr切分成了k个子序列
+     * 遍历这k个子序列，求子序列的"最长递增子序列"
+     * 把它们加起来得到sum
+     * 再用arr.length减去sum
+     * 注意本题是非严格递增
+     */
     public int kIncreasing(int[] arr, int k) {
         int n = arr.length;
         int sum = 0;
@@ -287,7 +297,7 @@ public class LIST {
                     subSeq[cur++] = arr[j];
                     max = Math.max(max, cur);
                 } else {
-                    int idx = lower_bound(subSeq, cur, arr[j]+1);
+                    int idx = lower_bound(subSeq, cur, arr[j] + 1);
                     subSeq[idx] = arr[j];
                 }
             }
@@ -295,6 +305,49 @@ public class LIST {
         }
 
         return n - sum;
+    }
+
+    /*
+     * 673. 最长递增子序列的个数 [Medium]
+     * 
+     * len[i]代表以nums[i]结尾的最长递增子序列的长度
+     * cnt[i]代表以nums[i]结尾的最长递增子序列的个数
+     * len[i]=1+max(len[j]) (0<=j<i)
+     * 在遍历len[j]的同时，统计==max(len[j])的个数，这个个数即为cnt[i]
+     * 此题nums.length的范围较小，因此上述方法不会超时
+     */
+    public int findNumberOfLIS(int[] nums) {
+        int n = nums.length;
+        int[] len = new int[n];
+        int[] cnt = new int[n];
+
+        int maxLen = 0;
+        for (int i = 0; i < n; i++) {
+            int c = 0;
+            for (int j = i - 1; j >= 0; j--) {
+                if (nums[i] <= nums[j])
+                    continue;
+
+                if (len[j] == len[i])
+                    c += cnt[j];
+                else if (len[j] > len[i]) {
+                    c = cnt[j];
+                    len[i] = len[j];
+                }
+            }
+            len[i]++;
+            maxLen = Math.max(maxLen, len[i]);
+            cnt[i] = c > 0 ? c : 1;
+        }
+
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            if (len[i] == maxLen) {
+                ans += cnt[i];
+            }
+        }
+
+        return ans;
     }
 
     /*
@@ -397,6 +450,7 @@ public class LIST {
     @Test
     public void test() {
         // minimumMountainRemovals(new int[] { 2, 1, 1, 5, 6, 2, 3, 1 });
-        kIncreasing(new int[] { 5, 4, 3, 2, 1 }, 1);
+        // kIncreasing(new int[] { 5, 4, 3, 2, 1 }, 1);
+        findNumberOfLIS(new int[] { 1, 1, 1, 2, 2, 2, 3, 3, 3 });
     }
 }

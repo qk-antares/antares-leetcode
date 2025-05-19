@@ -4,22 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HashT {
-    /**
-     * 1. 两数之和 [Easy]
-     */
-    public int[] twoSum(int[] nums, int target) {
-        HashMap<Integer, Integer> map = new HashMap<>();
-        for (int i = 0; i < nums.length; i++) {
-            int left = target - nums[i];
-            if(map.containsKey(left)){
-                return new int[]{map.get(left), i};
-            }
-            map.put(nums[i], i);
-        }
-
-        return new int[]{};
-    }
-
     /*
      * 2364. 统计坏数对的数目   [Medium]
      * 

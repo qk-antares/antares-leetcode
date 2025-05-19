@@ -117,7 +117,7 @@ int ans = (int) (tmp % MOD);
 #### 2.1.1 最大公约数与最小公倍数
 
 ```java
-//最大公因数的求法，依据定理：gcd(a,b)=gcd(b%a, a)=gcd(b,a mod b)
+//最大公因数的求法，依据定理：gcd(a,b)=gcd(b%a, a)=gcd(b,a%b)
 int gcd(int a, int b) {
     while(a != 0) {
         int tmp = a;
