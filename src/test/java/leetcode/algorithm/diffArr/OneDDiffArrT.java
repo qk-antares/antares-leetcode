@@ -48,6 +48,35 @@ public class OneDDiffArrT {
     }
 
     /*
+     * 1854. 人口最多的年份
+     * 
+     * 用cnt来表示各个年份的人口数量
+     * d是cnt的差分数组
+     * 每个log相当于cnt[log[0]..log[1]-1]++
+     * 相当于d[log[0]]++,d[log[1]]--
+     * 最后根据差分数组还原cnt，并统计最大值
+     */
+    public int maximumPopulation(int[][] logs) {
+        int[] cnt = new int[102];
+        for (int[] log : logs) {
+            cnt[log[0] - 1950]++;
+            cnt[log[1] - 1950]--;
+        }
+
+        int s = 0;
+        int max = 0;
+        int ans = 1950;
+        for (int i = 0; i <= 100; i++) {
+            s += cnt[i];
+            if (s > max) {
+                max = s;
+                ans = i + 1950;
+            }
+        }
+        return ans;
+    }
+
+    /*
      * 1094. 拼车 [Medium] <Star>
      * 
      * 数组a代表在每个位置上的乘客数
@@ -121,5 +150,75 @@ public class OneDDiffArrT {
                 return false;
         }
         return true;
+    }
+
+    /*
+     * 3356. 零数组变换 II [Medium] <Star>
+     * 
+     * 假设cnt是每个位置被减的最大值
+     * 对于queries[i]=[li,ri,vali]，它相当于cnt[li..ri]+=vali
+     * 用d表示cnt的差分，相当于d[li]+=vali，d[ri+1]-=vali
+     * 每执行一次queries[i]，就将d与nums进行比较
+     * 
+     * 上述方法超时
+     * 
+     * 可使用二分+差分来优化，即k是通过二分来枚举的
+     * 
+     * 也可只进行一次遍历，效率更高
+     */
+    public int minZeroArray0(int[] nums, int[][] queries) {
+        int l = 0, r = queries.length;
+        while (l <= r) {
+            int mid = (l + r) / 2;
+            if (!verifyK(nums, queries, mid)) {
+                l = mid + 1;
+            } else {
+                r = mid - 1;
+            }
+        }
+        return l <= queries.length ? l : -1;
+    }
+
+    boolean verifyK(int[] nums, int[][] queries, int k) {
+        int n = nums.length;
+        int[] d = new int[n + 1];
+
+        for (int i = 0; i < k; i++) {
+            int[] q = queries[i];
+            d[q[0]] += q[2];
+            d[q[1] + 1] -= q[2];
+        }
+
+        int s = 0;
+        for (int i = 0; i < n; i++) {
+            s += d[i];
+            if (s < nums[i])
+                return false;
+        }
+        return true;
+    }
+
+    public int minZeroArray(int[] nums, int[][] queries) {
+        int n = nums.length;
+        int[] d = new int[n + 1];
+        int s = 0;
+        int k = 0;
+        for (int i = 0; i < n; i++) {
+            s += d[i];
+            // 如果不能满足，则一直执行新的queries[]
+            while (k < queries.length && s < nums[i]) {
+                int[] q = queries[k];
+                d[q[0]] += q[2];
+                d[q[1] + 1] -= q[2];
+                if (q[0] <= i && i <= q[1]) {
+                    s += q[2];
+                }
+                k++;
+            }
+            if (s < nums[i])
+                return -1;
+        }
+
+        return k;
     }
 }
