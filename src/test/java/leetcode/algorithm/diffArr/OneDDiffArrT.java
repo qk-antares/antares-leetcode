@@ -1,6 +1,10 @@
 package leetcode.algorithm.diffArr;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.TreeMap;
 
 public class OneDDiffArrT {
     /*
@@ -48,7 +52,7 @@ public class OneDDiffArrT {
     }
 
     /*
-     * 1854. 人口最多的年份
+     * 1854. 人口最多的年份 [Easy]
      * 
      * 用cnt来表示各个年份的人口数量
      * d是cnt的差分数组
@@ -100,6 +104,28 @@ public class OneDDiffArrT {
                 return false;
         }
         return true;
+    }
+
+    /*
+     * 1109. 航班预订统计 [Medium]
+     * 
+     * 用cnt来表示每个航班上的预定座位总数
+     * d是cnt的差分数组
+     */
+    public int[] corpFlightBookings(int[][] bookings, int n) {
+        int[] d = new int[n + 2];
+        for (int[] b : bookings) {
+            d[b[0]] += b[2];
+            d[b[1] + 1] -= b[2];
+        }
+
+        int[] cnt = new int[n];
+        int s = 0;
+        for (int i = 1; i <= n; i++) {
+            s += d[i];
+            cnt[i - 1] = s;
+        }
+        return cnt;
     }
 
     /*
@@ -220,5 +246,57 @@ public class OneDDiffArrT {
         }
 
         return k;
+    }
+
+    /*
+     * 732. 我的日程安排表 III [Hard]
+     */
+    class MyCalendarThree {
+        TreeMap<Integer, Integer> d;
+
+        public MyCalendarThree() {
+            d = new TreeMap<>();
+        }
+        
+        public int book(int startTime, int endTime) {
+            d.put(startTime, d.getOrDefault(startTime, 0)+1);
+            d.put(endTime, d.getOrDefault(endTime, 0)-1);
+            int ans = 0;
+            int s = 0;
+            for(Map.Entry<Integer, Integer> e : d.entrySet()) {
+                s += e.getValue();
+                ans = Math.max(ans, s);
+            }
+            return ans;
+        }
+    }
+
+    /*
+     * 3362. 零数组变换 III [Medium] <Star>
+     */
+    public int maxRemoval(int[] nums, int[][] queries) {
+        Arrays.sort(queries, (o1, o2) -> o1[0] - o2[0]);
+        PriorityQueue<Integer> q = new PriorityQueue<>((o1, o2) -> o2 - o1);
+        int n = nums.length;
+        int[] d = new int[n + 1];
+        int s = 0;
+        int idx = 0;
+        for (int i = 0; i < n; i++) {
+            s += d[i];
+            while (idx < queries.length && queries[idx][0] <= i) {
+                q.add(queries[idx][1]);
+                idx++;
+            }
+            // 选择右端点最大的区间
+            while (!q.isEmpty() && s < nums[i] && q.peek() >= i) {
+                s++;
+                d[q.poll() + 1]--;
+            }
+            if (s < nums[i])
+                return -1;
+
+        }
+
+        return q.size();
     }
 }
