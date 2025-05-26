@@ -13,6 +13,20 @@ Object[] objs = new Object[n];
 Arrays.setAll(objs, i -> new Object());
 ```
 
+#### 1.1.2 `Arrays.copyOf`
+
+```java
+int[] arr = new int[n];
+//将数组arr的前n个元素复制到新数组中
+int[] newArr = Arrays.copyOf(arr, n);
+```
+非常类似的，可以使用`System.arraycopy`，实际上`Arrays.copyOf`内部也是调用了`System.arraycopy`。使用`System.arraycopy`可以更灵活地指定源数组和目标数组的起始位置。
+```java
+int[] arr = new int[n];
+int[] newArr = new int[n];
+System.arraycopy(arr, 0, newArr, 0, n);
+```
+
 ### 1.2 Collections
 
 #### 1.2.1 `Collections.sort`
@@ -50,7 +64,7 @@ int[] nums = new int[10];
 Arrays.stream(nums);
 ```
 
-`Map`的`keySet()`、`values()`、`entrySet()`方法都返回一个`Set`，可以使用`stream()`方法：
+`Map`的`keySet()`、`entrySet()`方法都返回一个`Set`，而`values()`返回一个`Collection`（因为`Map`的值可以重复），可以使用`stream()`方法：
 ```java
 Map<String, Integer> map = Map.of("a", 1, "b", 2);
 

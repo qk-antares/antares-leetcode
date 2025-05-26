@@ -1,10 +1,14 @@
 package leetcode.algorithm.diffArr;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.TreeMap;
+
+import org.junit.jupiter.api.Test;
 
 public class OneDDiffArrT {
     /*
@@ -179,6 +183,134 @@ public class OneDDiffArrT {
     }
 
     /*
+     * 56. 合并区间 [Medium] [ps: 似乎和差分并没有什么关系]
+     * 
+     * 下述的差分数组做法很难写：
+     * 用cnt来标记每个位置上被覆盖的区间数
+     * d是cnt的差分数组
+     * 本题的区间范围较小
+     * 
+     * 这主要是因为可能存在如下形式的测试用例：
+     * [[1,4],[0,0]]
+     * 差分数组的方法很难区分被覆盖的"点"和"区间"
+     * 它们本质上是两个概念
+     */
+    public int[][] merge0(int[][] intervals) {
+        int[] d = new int[10002];
+        for(int[] r : intervals) {
+            d[r[0]]++;
+            d[r[1]]--;
+        }
+
+        //还原cnt数组，直接在d上操作
+        //一边还原，一边开始生成答案
+        List<int[]> ans = new ArrayList<>();
+        int l = d[0] == 0 ? -1 : 0;
+        int r = l;
+        for(int i = 1; i <= 10000; i++) {
+            d[i] += d[i-1];
+            if(d[i] != 0) {
+                if(l == -1) {
+                    l = i;
+                    r = i;
+                }
+                else r = i;
+            } else {
+                if(l != -1) {
+                    ans.add(new int[]{l,r+1});
+                    l = -1;
+                    r = -1;
+                }
+            }
+        }
+
+        if(l != -1) ans.add(new int[]{l,r+1});
+
+        return ans.toArray(new int[0][]);
+    }
+
+    public int[][] merge(int[][] intervals) {
+        Arrays.sort(intervals, (o1, o2) -> o1[0] - o2[0]);
+        List<int[]> ans = new ArrayList<>();
+        ans.add(intervals[0]);
+
+        for (int i = 1; i < intervals.length; i++) {
+            // 起点大于当前区间的终点
+            if (intervals[i][0] > ans.get(ans.size() - 1)[1]) {
+                ans.add(intervals[i]);
+            } else {
+                ans.get(ans.size() - 1)[1] = Math.max(ans.get(ans.size() - 1)[1], intervals[i][1]);
+            }
+        }
+
+        return ans.toArray(new int[ans.size()][]);
+    }
+
+    /*
+     * 3453. 分割正方形 I [Medium]
+     * 
+     * 用cnt来标记y轴上每个单元上的正方形面积
+     * 每新增进来一个正方形[xi,yi,li]
+     * 这相当于cnt[yi..yi+li-1]的范围内全部增加li
+     * 用d来表示cnt的差分数组，上述操作等价于d[yi]+=li,d[yi+li]-=li
+     * 然后用d来还原cnt，并记录总面积
+     * 再次遍历cnt，直至到中位数
+     * 此题的范围又比较大，所以用TreeMap
+     */
+    public double separateSquares(int[][] squares) {
+        Map<Integer, Integer> d = new HashMap<>();
+        for (int[] s : squares) {
+            d.put(s[1], d.getOrDefault(s[1], 0) + s[2]);
+            d.put(s[1] + s[2], d.getOrDefault(s[1] + s[2], 0) - s[2]);
+        }
+
+        int total = 0;
+        int sum = 0;
+        for (int val : d.values()) {
+            sum += val;
+            total += sum;
+        }
+
+        sum = 0;
+        int tmpTotal = 0;
+        for (Map.Entry<Integer, Integer> entry : d.entrySet()) {
+            sum += entry.getValue();
+            tmpTotal += sum;
+            if (tmpTotal * 2 == total) {
+                return entry.getKey() + 1;
+            }
+            if (tmpTotal * 2 > total) {
+                tmpTotal -= sum;
+                return entry.getKey() + (total / 2.0 - tmpTotal) / sum;
+            }
+        }
+        return 0.0;
+    }
+
+    /*
+     * 732. 我的日程安排表 III [Hard]
+     */
+    class MyCalendarThree {
+        TreeMap<Integer, Integer> d;
+
+        public MyCalendarThree() {
+            d = new TreeMap<>();
+        }
+
+        public int book(int startTime, int endTime) {
+            d.put(startTime, d.getOrDefault(startTime, 0) + 1);
+            d.put(endTime, d.getOrDefault(endTime, 0) - 1);
+            int ans = 0;
+            int s = 0;
+            for (Map.Entry<Integer, Integer> e : d.entrySet()) {
+                s += e.getValue();
+                ans = Math.max(ans, s);
+            }
+            return ans;
+        }
+    }
+
+    /*
      * 3356. 零数组变换 II [Medium] <Star>
      * 
      * 假设cnt是每个位置被减的最大值
@@ -249,29 +381,6 @@ public class OneDDiffArrT {
     }
 
     /*
-     * 732. 我的日程安排表 III [Hard]
-     */
-    class MyCalendarThree {
-        TreeMap<Integer, Integer> d;
-
-        public MyCalendarThree() {
-            d = new TreeMap<>();
-        }
-        
-        public int book(int startTime, int endTime) {
-            d.put(startTime, d.getOrDefault(startTime, 0)+1);
-            d.put(endTime, d.getOrDefault(endTime, 0)-1);
-            int ans = 0;
-            int s = 0;
-            for(Map.Entry<Integer, Integer> e : d.entrySet()) {
-                s += e.getValue();
-                ans = Math.max(ans, s);
-            }
-            return ans;
-        }
-    }
-
-    /*
      * 3362. 零数组变换 III [Medium] <Star>
      */
     public int maxRemoval(int[] nums, int[][] queries) {
@@ -299,4 +408,11 @@ public class OneDDiffArrT {
 
         return q.size();
     }
+
+    @Test
+    public void test() {
+        int[][] squares = { { 0, 0, 2 }, { 1, 1, 1 } };
+        System.out.println(separateSquares(squares));
+    }
+
 }
