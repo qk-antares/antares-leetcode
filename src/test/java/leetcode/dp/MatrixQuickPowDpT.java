@@ -1,7 +1,10 @@
 package leetcode.dp;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 public class MatrixQuickPowDpT {
     /*
@@ -212,7 +215,7 @@ public class MatrixQuickPowDpT {
     }
 
     /*
-     * 790. 多米诺和托米诺平铺  [Medium]    <Star>
+     * 790. 多米诺和托米诺平铺 [Medium] <Star>
      * 
      * f[i]表示i列的排列情况
      * 状态转移方程f[i]=f[i-1]+f[i-2]+2(f[i-3]...f[1]+f[0])
@@ -243,5 +246,71 @@ public class MatrixQuickPowDpT {
 
     public int numTilings(int n) {
         return f[n];
+    }
+
+    /*
+     * 1931. 用三种不同颜色为网格涂色 [Hard]
+     * 
+     * 注意m的范围比较小，所以可以以m为行进行枚举
+     * F[i]为前i列(每种状态)的排列数
+     * F[i]=F[i-1]*M
+     * F[n]=F[1]*M^(n-1)
+     * F[1]=[1 1 ... 1]
+     */
+    public int colorTheGrid(int m, int n) {
+        // 枚举每一列的排列，用1 2 3来分别代表
+        List<int[]> cols = new ArrayList<>();
+        dfs(0, new int[m], m, cols);
+
+        // 接下来构造状态转移矩阵
+        int N = cols.size();
+        int[][] M = new int[N][N];
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                boolean flag = true;
+                for (int k = 0; k < m; k++) {
+                    if (cols.get(i)[k] == cols.get(j)[k]) {
+                        M[i][j] = 0;
+                        flag = false;
+                        break;
+                    }
+                }
+                if (flag)
+                    M[i][j] = 1;
+            }
+        }
+
+        int[][] F = new int[1][N];
+        Arrays.fill(F[0], 1);
+
+        // 计算F[1]*M^(n-1)
+        F = matrixPow(F, M, n - 1);
+
+        int ans = 0;
+        for (int i = 0; i < N; i++) {
+            ans = (ans + F[0][i]) % 1_000_000_007;
+        }
+
+        return ans;
+    }
+
+    void dfs(int idx, int[] cur, int m, List<int[]> cols) {
+        if (idx == m) {
+            cols.add(Arrays.copyOf(cur, m));
+            return;
+        }
+
+        // 尝试cur[idx]置为i
+        for (int i = 1; i <= 3; i++) {
+            if (idx == 0 || cur[idx - 1] != i) {
+                cur[idx] = i;
+                dfs(idx + 1, cur, m, cols);
+            }
+        }
+    }
+
+    @Test
+    public void test() {
+        colorTheGrid(1, 2);
     }
 }

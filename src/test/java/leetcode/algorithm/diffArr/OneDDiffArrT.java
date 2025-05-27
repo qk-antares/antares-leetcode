@@ -2,7 +2,6 @@ package leetcode.algorithm.diffArr;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -197,34 +196,35 @@ public class OneDDiffArrT {
      */
     public int[][] merge0(int[][] intervals) {
         int[] d = new int[10002];
-        for(int[] r : intervals) {
+        for (int[] r : intervals) {
             d[r[0]]++;
             d[r[1]]--;
         }
 
-        //还原cnt数组，直接在d上操作
-        //一边还原，一边开始生成答案
+        // 还原cnt数组，直接在d上操作
+        // 一边还原，一边开始生成答案
         List<int[]> ans = new ArrayList<>();
         int l = d[0] == 0 ? -1 : 0;
         int r = l;
-        for(int i = 1; i <= 10000; i++) {
-            d[i] += d[i-1];
-            if(d[i] != 0) {
-                if(l == -1) {
+        for (int i = 1; i <= 10000; i++) {
+            d[i] += d[i - 1];
+            if (d[i] != 0) {
+                if (l == -1) {
                     l = i;
                     r = i;
-                }
-                else r = i;
+                } else
+                    r = i;
             } else {
-                if(l != -1) {
-                    ans.add(new int[]{l,r+1});
+                if (l != -1) {
+                    ans.add(new int[] { l, r + 1 });
                     l = -1;
                     r = -1;
                 }
             }
         }
 
-        if(l != -1) ans.add(new int[]{l,r+1});
+        if (l != -1)
+            ans.add(new int[] { l, r + 1 });
 
         return ans.toArray(new int[0][]);
     }
@@ -247,44 +247,38 @@ public class OneDDiffArrT {
     }
 
     /*
-     * 3453. 分割正方形 I [Medium]
+     * 57. 插入区间 [Medium] [ps: 似乎和差分并没有什么关系]
      * 
-     * 用cnt来标记y轴上每个单元上的正方形面积
-     * 每新增进来一个正方形[xi,yi,li]
-     * 这相当于cnt[yi..yi+li-1]的范围内全部增加li
-     * 用d来表示cnt的差分数组，上述操作等价于d[yi]+=li,d[yi+li]-=li
-     * 然后用d来还原cnt，并记录总面积
-     * 再次遍历cnt，直至到中位数
-     * 此题的范围又比较大，所以用TreeMap
+     * 对intervals中的每个区间进行遍历
+     * 只要该区间和newInterval有交集，就将它们合并：
+     * newInterval[0] = Math.min(newInterval[0], intervals[i][0]);
+     * newInterval[1] = Math.max(newInterval[1], intervals[i][1]);
      */
-    public double separateSquares(int[][] squares) {
-        Map<Integer, Integer> d = new HashMap<>();
-        for (int[] s : squares) {
-            d.put(s[1], d.getOrDefault(s[1], 0) + s[2]);
-            d.put(s[1] + s[2], d.getOrDefault(s[1] + s[2], 0) - s[2]);
-        }
-
-        int total = 0;
-        int sum = 0;
-        for (int val : d.values()) {
-            sum += val;
-            total += sum;
-        }
-
-        sum = 0;
-        int tmpTotal = 0;
-        for (Map.Entry<Integer, Integer> entry : d.entrySet()) {
-            sum += entry.getValue();
-            tmpTotal += sum;
-            if (tmpTotal * 2 == total) {
-                return entry.getKey() + 1;
+    public int[][] insert(int[][] intervals, int[] newInterval) {
+        List<int[]> ans = new ArrayList<>();
+        boolean flag = false;
+        for (int i = 0; i < intervals.length; i++) {
+            // 无交集
+            if (intervals[i][1] < newInterval[0])
+                ans.add(intervals[i]);
+            else if (intervals[i][0] > newInterval[1]) {
+                if (!flag) {
+                    ans.add(newInterval);
+                    flag = true;
+                }
+                ans.add(intervals[i]);
             }
-            if (tmpTotal * 2 > total) {
-                tmpTotal -= sum;
-                return entry.getKey() + (total / 2.0 - tmpTotal) / sum;
+            // 有交集
+            else {
+                newInterval[0] = Math.min(newInterval[0], intervals[i][0]);
+                newInterval[1] = Math.max(newInterval[1], intervals[i][1]);
             }
         }
-        return 0.0;
+
+        if (!flag)
+            ans.add(newInterval);
+
+        return ans.toArray(new int[0][]);
     }
 
     /*
@@ -308,6 +302,129 @@ public class OneDDiffArrT {
             }
             return ans;
         }
+    }
+
+    /*
+     * 2406. 将区间分为最少组数 [Medium]
+     * 
+     * 计算某个位置上相交的区间的最大值，即为最少需要划分的组数
+     * 由于区间的范围还是比较大的，使用TreeMap
+     * 
+     * 方法二是使用堆+贪心，效率更高：
+     * 首先对intervals进行排序，按照左端点升序排列
+     * 使用heap（PriorityQueue）维护各个组的右端点
+     * 遍历intervals，当新加进来一个区间时：
+     * 如果这个区间的左端点在堆顶的左边，则必须新增加一个组
+     * 如果这个区间的左端点在堆顶的右侧，则将其加入堆顶的组，并更新其右端点
+     * 最后堆的大小即为答案
+     */
+    public int minGroups0(int[][] intervals) {
+        Map<Integer, Integer> d = new TreeMap<>();
+        for (int[] i : intervals) {
+            d.put(i[0], d.getOrDefault(i[0], 0) + 1);
+            d.put(i[1] + 1, d.getOrDefault(i[1] + 1, 0) - 1);
+        }
+
+        int s = 0;
+        int ans = 0;
+        for (int val : d.values()) {
+            s += val;
+            ans = Math.max(ans, s);
+        }
+
+        return ans;
+    }
+
+    public int minGroups(int[][] intervals) {
+        Arrays.sort(intervals, (o1, o2) -> o1[0] - o2[0]);
+
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        pq.add(intervals[0][1]);
+        for (int i = 1; i < intervals.length; i++) {
+            if (intervals[i][0] > pq.peek()) {
+                pq.poll();
+            }
+            pq.offer(intervals[i][1]);
+        }
+
+        return pq.size();
+    }
+
+    /*
+     * 3453. 分割正方形 I [Medium] <Star>
+     * 
+     * 用cnt来标记y轴上每个单元上的正方形面积
+     * 每新增进来一个正方形[xi,yi,li]
+     * 这相当于cnt[yi..yi+li-1]的范围内全部增加li
+     * 用d来表示cnt的差分数组，上述操作等价于d[yi]+=li,d[yi+li]-=li
+     * 然后用d来还原cnt，并记录总面积
+     * 再次遍历cnt，直至到中位数
+     * 此题的范围又比较大，所以用TreeMap
+     */
+    public double separateSquares(int[][] squares) {
+        Map<Integer, Integer> d = new TreeMap<>();
+        long totS = 0;
+        for (int[] s : squares) {
+            d.put(s[1], d.getOrDefault(s[1], 0) + s[2]);
+            d.put(s[1] + s[2], d.getOrDefault(s[1] + s[2], 0) - s[2]);
+            totS += (long) s[2] * s[2];
+        }
+
+        // 总面积
+        long s = 0;
+        // 之前的行面积
+        long preSL = 0;
+        int preY = -1;
+        for (var e : d.entrySet()) {
+            int y = e.getKey();
+            s += preSL * (y - preY);
+            if (s * 2 >= totS) {
+                return y - (s - totS / 2.0) / preSL;
+            }
+            preY = y;
+            preSL += e.getValue();
+        }
+        return -1;
+    }
+
+    /*
+     * 2381. 字母移位 II [Medium]
+     * 
+     * 假设s的长度是n
+     * 用一个长度为n的cnt数组来记录每个位置的移位数量
+     * 因为每个shift相当于对cnt的区间操作
+     * 用长度为n+1的d数组来表示cnt的差分数组
+     * dir=1相当于d[l]+=1;d[r+1]-=1，dir=0类似
+     * 之后一边还原cnt数组，一边构造答案
+     * 
+     * 需要注意最后ans[i]的计算方式
+     */
+    public String shiftingLetters(String s, int[][] shifts) {
+        int n = s.length();
+        char[] arr = s.toCharArray();
+        char[] ans = new char[n];
+
+        int[] d = new int[n + 1];
+        for (int[] shift : shifts) {
+            int l = shift[0];
+            int r = shift[1];
+            int dir = shift[2];
+            if (dir == 1) {
+                d[l] += 1;
+                d[r + 1] -= 1;
+            } else {
+                d[l] -= 1;
+                d[r + 1] += 1;
+            }
+        }
+
+        int cnt = 0;
+        for (int i = 0; i < n; i++) {
+            cnt += d[i];
+            ans[i] = (char) ('a' + (26 + arr[i] - 'a' + cnt % 26) % 26);
+        }
+
+        return new String(ans);
     }
 
     /*
@@ -411,8 +528,8 @@ public class OneDDiffArrT {
 
     @Test
     public void test() {
-        int[][] squares = { { 0, 0, 2 }, { 1, 1, 1 } };
-        System.out.println(separateSquares(squares));
+        // int[][] squares = { { 0, 0, 2 }, { 1, 1, 1 } };
+        // System.out.println(separateSquares(squares));
     }
 
 }
