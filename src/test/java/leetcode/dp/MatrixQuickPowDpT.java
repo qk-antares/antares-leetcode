@@ -249,6 +249,60 @@ public class MatrixQuickPowDpT {
     }
 
     /*
+     * 1411. 给 N x 3 网格图涂色的方案数 [Hard]
+     * 
+     * 首先dfs构造出1行的所有可能rows
+     * 接下来构造rows之间的状态转移矩阵M
+     * F[i]=F[i-1]*M
+     * F[n]=F[1]*M^(n-1)
+     */
+    public int numOfWays(int n) {
+        List<int[]> rows = new ArrayList<>();
+        dfs(new int[3], 0, rows);
+
+        int N = rows.size();
+        int[][] M = new int[N][N];
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                boolean flag = true;
+                for (int k = 0; k < 3; k++) {
+                    if (rows.get(i)[k] == rows.get(j)[k]) {
+                        flag = false;
+                    }
+                }
+                if (flag)
+                    M[i][j] = 1;
+            }
+        }
+
+        int[][] F = new int[1][N];
+        Arrays.fill(F[0], 1);
+
+        F = matrixPow(F, M, n - 1);
+
+        int ans = 0;
+        for (int i = 0; i < N; i++) {
+            ans = (ans + F[0][i]) % MOD;
+        }
+        return ans;
+    }
+
+    void dfs(int[] cur, int idx, List<int[]> rows) {
+        if (idx == 3) {
+            rows.add(Arrays.copyOf(cur, 3));
+            return;
+        }
+
+        // 尝试在idx位置上填写i
+        for (int i = 0; i < 3; i++) {
+            if (idx == 0 || cur[idx - 1] != i) {
+                cur[idx] = i;
+                dfs(cur, idx + 1, rows);
+            }
+        }
+    }
+
+    /*
      * 1931. 用三种不同颜色为网格涂色 [Hard]
      * 
      * 注意m的范围比较小，所以可以以m为行进行枚举

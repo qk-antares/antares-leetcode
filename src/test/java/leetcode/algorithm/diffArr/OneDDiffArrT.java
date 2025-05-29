@@ -428,6 +428,90 @@ public class OneDDiffArrT {
     }
 
     /*
+     * 995. K 连续位的最小翻转次数 [Hard] <Star>
+     * 
+     * nums.length不是很大
+     * 本题是贪心的策略，要想变成全1数组，只能从前往后进行翻转，遇到0就翻转从该位置开始的k个数
+     * 使用差分数组d来记录各个位置被翻转的次数
+     * 对nums进行一次遍历，边更新d
+     * 如果到n-k的位置遇到了0，那就证明无法翻转成功
+     */
+    public int minKBitFlips(int[] nums, int k) {
+        int ans = 0;
+        int n = nums.length;
+        int[] d = new int[n + 1];
+        // s记录当前遍历位置的翻转总次数
+        int s = 0;
+        for (int i = 0; i < n; i++) {
+            s += d[i];
+            // [i..i+k-1]要进行1次翻转
+            if (nums[i] == 0 && s % 2 == 0 || nums[i] == 1 && s % 2 == 1) {
+                // 超出位置限制
+                if (i > n - k)
+                    return -1;
+                ans++;
+                d[i]++;
+                d[i + k]--;
+                s++;
+            }
+        }
+        return ans;
+    }
+
+    /*
+     * 1589. 所有排列中的最大和 [Medium]
+     * 
+     * 记录每个位置被查询的次数cnt
+     * nums的范围不是特别大
+     * d是cnt的差分数组
+     * 根据d还原cnt
+     * 将nums和cnt排序
+     * ans=nums*cnt
+     */
+    public int maxSumRangeQuery(int[] nums, int[][] requests) {
+        int n = nums.length;
+        int[] d = new int[n + 1];
+        for (int[] r : requests) {
+            d[r[0]]++;
+            d[r[1] + 1]--;
+        }
+
+        int s = 0;
+        int[] cnt = new int[n];
+        for (int i = 0; i < n; i++) {
+            s += d[i];
+            cnt[i] = s;
+        }
+
+        Arrays.sort(cnt);
+        Arrays.sort(nums);
+
+        long ans = 0;
+        for (int i = 0; i < n; i++) {
+            ans = (ans + (long) nums[i] * cnt[i]) % 1_000_000_007;
+        }
+
+        return (int) ans;
+    }
+
+    /*
+     * 1526. 形成目标数组的子数组最少增加次数   [Hard]
+     * 
+     * 构造target的差分数组d
+     * 然后计算d中的正数之和
+     */
+    public int minNumberOperations(int[] target) {
+        int n = target.length;
+        int ans = 0;
+        // d[0]=target[0]
+        ans += Math.max(0, target[0]);
+        for (int i = 1; i < n; i++) {
+            ans += Math.max(0, target[i] - target[i - 1]);
+        }
+        return ans;
+    }
+
+    /*
      * 3356. 零数组变换 II [Medium] <Star>
      * 
      * 假设cnt是每个位置被减的最大值

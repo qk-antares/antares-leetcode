@@ -1,12 +1,14 @@
 package leetcode.graph;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /*
  * 通过dfs找连通块、判断是否有环等
  */
-public class DFST {
+public class DBFST {
     /*
      * 547. 省份数量 [Medium]
      * 
@@ -178,6 +180,135 @@ public class DFST {
         // 设置为完成遍历
         status[idx] = 2;
         memo[idx] = ans;
+
+        return ans;
+    }
+
+    /*
+     * ========================== 分割线 ==========================
+     */
+
+    /*
+     * 3372. 连接两棵树后最大目标节点数目 I [Medium]
+     * 
+     * 目标节点有两个来源：
+     * 来源1是Tree1，从节点i进行广度优先遍历，最大深度2层
+     * 来源2是Tree2，从节点j进行广度优先遍历，最大深度1层，保存最大值
+     * 使用邻接表
+     */
+    public int[] maxTargetNodes(int[][] edges1, int[][] edges2, int k) {
+        int[] ans1 = bfs(edges1, k);
+        int[] ans2 = bfs(edges2, k - 1);
+        int maxAns2 = Arrays.stream(ans2).max().getAsInt();
+        for (int i = 0; i < ans1.length; i++) {
+            ans1[i] += maxAns2;
+        }
+        return ans1;
+    }
+
+    @SuppressWarnings("unchecked")
+    public int[] bfs(int[][] edges, int depth) {
+        // 构造图
+        int n = edges.length + 1;
+        List<Integer>[] g = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            g[i] = new ArrayList<>();
+        }
+        for (int[] e : edges) {
+            g[e[0]].add(e[1]);
+            g[e[1]].add(e[0]);
+        }
+
+        int[] ans = new int[n];
+        for (int i = 0; i < n; i++) {
+            ArrayDeque<Integer> q = new ArrayDeque<>();
+            boolean[] vis = new boolean[n];
+            q.add(i);
+            vis[i] = true;
+            int d = 0;
+            while (d <= depth && !q.isEmpty()) {
+                int len = q.size();
+                for (int j = 0; j < len; j++) {
+                    for (int nbor : g[q.poll()]) {
+                        if (!vis[nbor]) {
+                            q.add(nbor);
+                            vis[nbor] = true;
+                        }
+                    }
+                    ans[i]++;
+                }
+                d++;
+            }
+        }
+
+        return ans;
+    }
+
+    /*
+     * 3373. 连接两棵树后最大目标节点数目 II [Hard] <Star>
+     * 
+     * 目标节点有两个来源：
+     * 来源1是Tree1，从节点i进行广度优先遍历，偶数层的节点是目标节点
+     * 来源2是Tree2，从节点j进行广度优先遍历，奇数层的节点是目标节点
+     * 只用记来源2的最大值
+     * 使用黑白对Tree1和Tree2染色，相邻的节点颜色不同，统计黑白色节点的集合
+     * 这可以视为：第一层->white，第二层->black，...
+     * 则白色节点到白色节点为偶数，黑色节点到黑色节点为偶数
+     * 
+     * 或者写双层dfs
+     */
+    public int[] maxTargetNodes(int[][] edges1, int[][] edges2) {
+        List<Integer>[] ans1 = bfs(edges1);
+        List<Integer>[] ans2 = bfs(edges2);
+        int maxAns2 = Math.max(ans2[0].size(), ans2[1].size());
+        int[] ans = new int[edges1.length + 1];
+        int len1 = ans1[0].size();
+        int len2 = ans1[1].size();
+        for (int i = 0; i < len1; i++) {
+            ans[ans1[0].get(i)] = len1 + maxAns2;
+        }
+        for (int i = 0; i < len2; i++) {
+            ans[ans1[1].get(i)] = len2 + maxAns2;
+        }
+        return ans;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Integer>[] bfs(int[][] edges) {
+        // 构造图
+        int n = edges.length + 1;
+        List<Integer>[] g = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            g[i] = new ArrayList<>();
+        }
+        for (int[] e : edges) {
+            g[e[0]].add(e[1]);
+            g[e[1]].add(e[0]);
+        }
+
+        List<Integer>[] ans = new ArrayList[2];
+        ans[0] = new ArrayList<>();
+        ans[1] = new ArrayList<>();
+
+        int d = 0;// 当前层数
+        boolean[] vis = new boolean[n]; // 节点是否访问过
+        ArrayDeque<Integer> q = new ArrayDeque<>();
+        q.add(0);
+        vis[0] = true;
+        while (!q.isEmpty()) {
+            int len = q.size();
+            for (int i = 0; i < len; i++) {
+                int cur = q.poll();
+                ans[d % 2].add(cur);
+                for (int nbor : g[cur]) {
+                    if (!vis[nbor]) {
+                        q.offer(nbor);
+                        vis[nbor] = true;
+                    }
+                }
+            }
+            d++;
+        }
 
         return ans;
     }
