@@ -78,6 +78,63 @@ public class DBFST {
     }
 
     /*
+     * 797. 所有可能的路径 [Medium]
+     * 
+     * dfs，因为无环所以不用保存访问过的节点
+     */
+    public List<List<Integer>> allPathsSourceTarget(int[][] graph) {
+        List<List<Integer>> ans = new ArrayList<>();
+        List<Integer> path = new ArrayList<>();
+        path.add(0);
+        dfs(graph, 0, path, ans);
+        return ans;
+    }
+
+    void dfs(int[][] graph, int cur, List<Integer> path, List<List<Integer>> ans) {
+        if (cur == graph.length - 1) {
+            ans.add(new ArrayList<>(path));
+            return;
+        }
+
+        int[] nbors = graph[cur];
+        for (int i = 0; i < nbors.length; i++) {
+            path.add(nbors[i]);
+            dfs(graph, nbors[i], path, ans);
+            path.removeLast();
+        }
+    }
+
+    /*
+     * 841. 钥匙和房间  [Medium]
+     * 
+     * 广度优先遍历
+     * 有可能有环，所以需要标记已经访问过的房间
+     */
+    public boolean canVisitAllRooms(List<List<Integer>> rooms) {
+        int n = rooms.size();
+        boolean[] vis = new boolean[n];
+        // 访问过的房间
+        int cnt = 0;
+        ArrayDeque<Integer> q = new ArrayDeque<>();
+        q.addAll(rooms.get(0));
+        vis[0] = true;
+        cnt++;
+        while (!q.isEmpty()) {
+            int len = q.size();
+            for (int i = 0; i < len; i++) {
+                int room = q.poll();
+                if (!vis[room]) {
+                    vis[room] = true;
+                    cnt++;
+                    q.addAll(rooms.get(room));
+                }
+            }
+        }
+
+        return cnt == n;
+    }
+
+    /*
      * 207. 课程表 [Medium] <Star>
      * 
      * 用List<Integer>[] 来表示图，有多少个节点，数组就有多大

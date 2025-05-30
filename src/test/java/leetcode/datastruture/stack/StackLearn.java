@@ -1,9 +1,7 @@
 package leetcode.datastruture.stack;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -504,96 +502,6 @@ public class StackLearn {
             }
 
             return ans;
-        }
-    }
-
-    /**
-     * 钥匙和房间，用两个hashset，可以通过，但是效率太差。答案解法是深度优先搜索（其实广度优先搜索也是可以的，前者用栈，后者用队列，深度优先搜索的非递归写法还是更难些）
-     * [[1],[2],[3],[]]
-     */
-    class CanVisitAllRooms {
-        public boolean canVisitAllRooms(List<List<Integer>> rooms) {
-            // 拿到过的钥匙 - 已经访问过房间的钥匙
-            HashSet<Integer> keys = new HashSet<>();
-            // 已经访问的房间
-            HashSet<Integer> visited = new HashSet<>();
-
-            keys.addAll(rooms.get(0));
-            keys.remove(0);
-            visited.add(0);
-
-            while (!keys.isEmpty()){
-                // 从中取出一个钥匙
-                Integer key = keys.iterator().next();
-                keys.remove(key);
-                //将房间标记为已访问过
-                visited.add(key);
-                // 将未访问过房间的钥匙拿走
-                for (Integer newKey : rooms.get(key)) {
-                    if(!visited.contains(newKey)){
-                        keys.add(newKey);
-                    }
-                }
-            }
-
-            return rooms.size() == visited.size();
-        }
-
-        boolean[] visited;
-        int size;
-        int cnt = 0;
-        public boolean canVisitAllRooms0(List<List<Integer>> rooms) {
-            size = rooms.size();
-            visited = new boolean[size];
-
-            visited[0] = true;
-            cnt++;
-            dfs(rooms, 0);
-
-            return cnt == size;
-        }
-
-        /**
-         * 深度优先搜索，用时无敌，内存消耗较大
-         */
-        void dfs(List<List<Integer>> rooms, int cur){
-            List<Integer> keys = rooms.get(cur);
-            for (Integer key : keys) {
-                if(!visited[key]){
-                    visited[key] = true;
-                    cnt++;
-                    dfs(rooms, key);
-                }
-            }
-        }
-
-        /**
-         * 内存消耗有提升，但是执行用时明显增长
-         */
-        public boolean canVisitAllRooms1(List<List<Integer>> rooms) {
-            int size = rooms.size();
-            int cnt = 0;
-            boolean[] visited = new boolean[size];
-
-            Queue<Integer> keys = new ArrayDeque<>();
-            visited[0] = true;
-            cnt++;
-            keys.addAll(rooms.get(0));
-
-            int keyNum;
-            while (!keys.isEmpty()){
-                keyNum = keys.size();
-                for(int i = 0;i < keyNum;i++){
-                    Integer key = keys.poll();
-                    if(!visited[key]){
-                        visited[key] = true;
-                        cnt++;
-                        keys.addAll(rooms.get(key));
-                    }
-                }
-            }
-
-            return size == cnt;
         }
     }
 
