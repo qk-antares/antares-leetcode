@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 /*
  * 通过dfs找连通块、判断是否有环等
  */
@@ -105,7 +107,7 @@ public class DBFST {
     }
 
     /*
-     * 841. 钥匙和房间  [Medium]
+     * 841. 钥匙和房间 [Medium]
      * 
      * 广度优先遍历
      * 有可能有环，所以需要标记已经访问过的房间
@@ -132,6 +134,135 @@ public class DBFST {
         }
 
         return cnt == n;
+    }
+
+    /*
+     * 2316. 统计无向图中无法互相到达点对数 [Medium] <Star>
+     * 
+     * 实际上就是统计图中的区域（连通分量）
+     * 
+     * 假设用一个list来保存已经找到的连通分量
+     * 我们每找到一个新的连通分量，假设它其中的节点数是n好了，
+     * 那么就需要对list进行遍历，ans+=n*list[i]
+     * 
+     * 这里的优化是：不需要保存list，而是用一个total变量来保存已经找到的连通分量的节点总数
+     */
+    public long countPairs(int n, int[][] edges) {
+        List<Integer>[] g = buildG(n, edges);
+        boolean[] vis = new boolean[n];
+
+        long ans = 0;
+        long total = 0;
+        for (int i = 0; i < n; i++) {
+            if (!vis[i]) {
+                long cnt = dfsCnt(g, i, vis);
+                ans += cnt * total;
+                total += cnt;
+            }
+        }
+
+        return ans;
+    }
+
+    @SuppressWarnings("unchecked")
+    List<Integer>[] buildG(int n, int[][] edges) {
+        List<Integer>[] g = new ArrayList[n];
+        for (int i = 0; i < n; i++) {
+            g[i] = new ArrayList<>();
+        }
+        for (int[] e : edges) {
+            g[e[0]].add(e[1]);
+            g[e[1]].add(e[0]);
+        }
+        return g;
+    }
+
+    // 返回连通分量中的节点数
+    long dfsCnt(List<Integer>[] g, int idx, boolean[] vis) {
+        vis[idx] = true;
+        long ans = 1;
+        for (int nbor : g[idx]) {
+            if (!vis[nbor]) {
+                ans += dfsCnt(g, nbor, vis);
+            }
+        }
+        return ans;
+    }
+
+    /*
+     * 1319. 连通网络的操作次数 [Medium]
+     * 
+     * 最少需要的线缆数是n-1
+     * 对整个网络拓扑进行广度或深度优先搜索，剩下未被搜索的到就是需要被连接的
+     * 上述思路不对，因为整个网络中可能有多个"区域"（连通分量）
+     * 我们实际上需要寻找的是连通分量
+     * 假设连通分量数是k，则需要移动k-1根线缆
+     */
+    public int makeConnected(int n, int[][] connections) {
+        if (connections.length < n - 1)
+            return -1;
+
+        List<Integer>[] g = buildG(n, connections);
+        boolean[] vis = new boolean[n];
+
+        int cnt = 0;
+        for (int i = 0; i < n; i++) {
+            if (!vis[i]) {
+                cnt++;
+                dfs(g, i, vis);
+            }
+        }
+
+        return cnt - 1;
+    }
+
+    void dfs(List<Integer>[] g, int idx, boolean[] vis) {
+        vis[idx] = true;
+        for (int nbor : g[idx]) {
+            if (!vis[nbor]) {
+                dfs(g, nbor, vis);
+            }
+        }
+    }
+
+    /*
+     * 2492. 两个城市间路径的最小分数 [Medium]
+     * 
+     * 该问题相当于遍历1和n所在连通分量中边的最小权重
+     * 可以使用dfs求连通分量
+     */
+    int minScore = Integer.MAX_VALUE;
+
+    @SuppressWarnings("unchecked")
+    public int minScore(int n, int[][] roads) {
+        // 先建立加权图
+        List<int[]>[] g = new List[n + 1];
+        for (int i = 0; i <= n; i++) {
+            g[i] = new ArrayList<>();
+        }
+
+        for (int[] r : roads) {
+            g[r[0]].add(new int[] { r[1], r[2] });
+            g[r[1]].add(new int[] { r[0], r[2] });
+        }
+
+        boolean[] vis = new boolean[n + 1];
+
+        dfs(n, g, vis);
+
+        return minScore;
+    }
+
+    void dfs(int idx, List<int[]>[] g, boolean[] vis) {
+        if (vis[idx])
+            return;
+        vis[idx] = true;
+
+        // 遍历和该节点连接的所有边
+        for (int[] nbor : g[idx]) {
+            minScore = Math.min(minScore, nbor[1]);
+            dfs(nbor[0], g, vis);
+        }
     }
 
     /*
@@ -368,5 +499,61 @@ public class DBFST {
         }
 
         return ans;
+    }
+
+    /*
+     * 1298. 你能从盒子里获得的最大糖果数 [Hard] <Star>
+     * 
+     * 深度优先搜索
+     * 对于initialBoxes中的盒子执行dfs
+     * 首先ans+=candies[idx]
+     * 接下来遍历keys[idx]
+     * 如果有对应的盒子，就执行dfs()
+     * 再接下来遍历containedBoxes[idx]
+     * 如果有对应的钥匙，就执行dfs
+     * 
+     * 用两个数组来标记是否有对应的盒子或钥匙
+     */
+    int ans = 0;
+
+    public int maxCandies(int[] status, int[] candies, int[][] keys, int[][] containedBoxes, int[] initialBoxes) {
+        int[] hasKey = status;
+        int n = status.length;
+        int[] hasBox = new int[n];
+        for (int box : initialBoxes)
+            hasBox[box] = 1;
+        for (int box : initialBoxes) {
+            if (hasKey[box] == 1 && hasBox[box] == 1)
+                dfs(box, hasKey, hasBox, candies, keys, containedBoxes);
+        }
+
+        return ans;
+    }
+
+    void dfs(int idx, int[] hasKey, int[] hasBox, int[] candies, int[][] keys, int[][] containedBoxes) {
+        ans += candies[idx];
+        hasBox[idx] = 0;
+
+        for (int key : keys[idx]) {
+            hasKey[key] = 1;
+            if (hasBox[key] == 1)
+                dfs(key, hasKey, hasBox, candies, keys, containedBoxes);
+        }
+
+        for (int box : containedBoxes[idx]) {
+            hasBox[box] = 1;
+            if (hasKey[box] == 1)
+                dfs(box, hasKey, hasBox, candies, keys, containedBoxes);
+        }
+    }
+
+    @Test
+    public void test() {
+        int[] status = { 1, 0, 1, 0 };
+        int[] candies = { 7, 5, 4, 100 };
+        int[][] keys = { {}, { 0 }, { 1 }, {} };
+        int[][] containedBoxes = { { 1, 2 }, { 3 }, {}, {} };
+        int[] initialBoxes = { 0 };
+        maxCandies(status, candies, keys, containedBoxes, initialBoxes);
     }
 }
