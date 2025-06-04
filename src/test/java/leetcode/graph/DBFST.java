@@ -3,7 +3,9 @@ package leetcode.graph;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -20,12 +22,12 @@ public class DBFST {
      */
     public int findCircleNum(int[][] isConnected) {
         int n = isConnected.length;
-        boolean[] color = new boolean[n];
+        boolean[] vis = new boolean[n];
         int ans = 0;
         for (int i = 0; i < n; i++) {
             // 从未访问过的节点开始
-            if (!color[i]) {
-                dfs(i, color, isConnected);
+            if (!vis[i]) {
+                dfsAVis(isConnected, i, vis);
                 ans++;
             }
         }
@@ -33,11 +35,11 @@ public class DBFST {
         return ans;
     }
 
-    void dfs(int idx, boolean[] color, int[][] isConnected) {
-        color[idx] = true;
-        for (int i = 0; i < isConnected.length; i++) {
-            if (!color[i] && isConnected[idx][i] == 1)
-                dfs(i, color, isConnected);
+    void dfsAVis(int[][] A, int idx, boolean[] vis) {
+        vis[idx] = true;
+        for (int i = 0; i < A.length; i++) {
+            if (!vis[i] && A[idx][i] == 1)
+                dfsAVis(A, i, vis);
         }
     }
 
@@ -46,7 +48,7 @@ public class DBFST {
      * 
      * 邻接表List<Integer>[]来存储图
      * 接下来是一个dfs
-     * 使用color来标记已经访问过的节点
+     * 使用vis来标记已经访问过的节点
      */
     @SuppressWarnings("unchecked")
     public boolean validPath(int n, int[][] edges, int source, int destination) {
@@ -60,19 +62,19 @@ public class DBFST {
             g[e[1]].add(e[0]);
         }
 
-        boolean[] color = new boolean[n];
-        return dfs(g, color, source, destination);
+        boolean[] vis = new boolean[n];
+        return dfsGVis(g, vis, source, destination);
     }
 
-    boolean dfs(List<Integer>[] g, boolean[] color, int i, int j) {
+    boolean dfsGVis(List<Integer>[] g, boolean[] vis, int i, int j) {
         if (i == j)
             return true;
 
-        color[i] = true;
+        vis[i] = true;
         for (int nbor : g[i]) {
             if (nbor == j)
                 return true;
-            if (!color[nbor] && dfs(g, color, nbor, j)) {
+            if (!vis[nbor] && dfsGVis(g, vis, nbor, j)) {
                 return true;
             }
         }
@@ -88,11 +90,11 @@ public class DBFST {
         List<List<Integer>> ans = new ArrayList<>();
         List<Integer> path = new ArrayList<>();
         path.add(0);
-        dfs(graph, 0, path, ans);
+        dfsGPath(graph, 0, path, ans);
         return ans;
     }
 
-    void dfs(int[][] graph, int cur, List<Integer> path, List<List<Integer>> ans) {
+    void dfsGPath(int[][] graph, int cur, List<Integer> path, List<List<Integer>> ans) {
         if (cur == graph.length - 1) {
             ans.add(new ArrayList<>(path));
             return;
@@ -101,7 +103,7 @@ public class DBFST {
         int[] nbors = graph[cur];
         for (int i = 0; i < nbors.length; i++) {
             path.add(nbors[i]);
-            dfs(graph, nbors[i], path, ans);
+            dfsGPath(graph, nbors[i], path, ans);
             path.removeLast();
         }
     }
@@ -155,7 +157,7 @@ public class DBFST {
         long total = 0;
         for (int i = 0; i < n; i++) {
             if (!vis[i]) {
-                long cnt = dfsCnt(g, i, vis);
+                long cnt = dfsGVisCnt(g, i, vis);
                 ans += cnt * total;
                 total += cnt;
             }
@@ -178,12 +180,12 @@ public class DBFST {
     }
 
     // 返回连通分量中的节点数
-    long dfsCnt(List<Integer>[] g, int idx, boolean[] vis) {
+    long dfsGVisCnt(List<Integer>[] g, int idx, boolean[] vis) {
         vis[idx] = true;
         long ans = 1;
         for (int nbor : g[idx]) {
             if (!vis[nbor]) {
-                ans += dfsCnt(g, nbor, vis);
+                ans += dfsGVisCnt(g, nbor, vis);
             }
         }
         return ans;
@@ -209,18 +211,18 @@ public class DBFST {
         for (int i = 0; i < n; i++) {
             if (!vis[i]) {
                 cnt++;
-                dfs(g, i, vis);
+                dfsGVis(g, i, vis);
             }
         }
 
         return cnt - 1;
     }
 
-    void dfs(List<Integer>[] g, int idx, boolean[] vis) {
+    void dfsGVis(List<Integer>[] g, int idx, boolean[] vis) {
         vis[idx] = true;
         for (int nbor : g[idx]) {
             if (!vis[nbor]) {
-                dfs(g, nbor, vis);
+                dfsGVis(g, nbor, vis);
             }
         }
     }
@@ -266,6 +268,146 @@ public class DBFST {
     }
 
     /*
+     * 3310. 移除可疑的方法 [Medium]
+     * 
+     * 所谓"一组方法"实际上就是图上的一个连通分量
+     * 所以首先获取k所在的连通分量
+     * 然后通过深度优先搜索获取k直接/间接调用的方法
+     * 如果两者相同，删除该连通分量
+     * 
+     * 上述方法的时间和空间复杂度都较高
+     * 首先找出可疑的方法
+     * 接下来对invocations进行遍历，如果有指向可疑方法的边，则证明无法消除可疑方法，返回[0, 1, ..., n-1]
+     * 否则，返回所有未被可疑方法调用的方法
+     */
+    @SuppressWarnings("unchecked")
+    public List<Integer> remainingMethods0(int n, int k, int[][] invocations) {
+        // 首先建立有向图
+        List<Integer>[] g = new List[n];
+        for (int i = 0; i < n; i++) {
+            g[i] = new ArrayList<>();
+        }
+        for (int[] invo : invocations) {
+            g[invo[0]].add(invo[1]);
+        }
+
+        Set<Integer> calls = new HashSet<Integer>();
+        dfsGVisSet(g, k, calls);
+
+        for (int[] invo : invocations) {
+            g[invo[1]].add(invo[0]);
+        }
+
+        Set<Integer> part = new HashSet<Integer>();
+        dfsGVisSet(g, k, part);
+
+        List<Integer> ans = new ArrayList<>();
+        if (calls.size() != part.size()) {
+            for (int i = 0; i < n; i++)
+                ans.add(i);
+        } else {
+            for (int i = 0; i < n; i++) {
+                if (!part.contains(i))
+                    ans.add(i);
+            }
+        }
+
+        return ans;
+    }
+
+    void dfsGVisSet(List<Integer>[] g, int idx, Set<Integer> res) {
+        res.add(idx);
+
+        for (int nbor : g[idx]) {
+            if (!res.contains(nbor)) {
+                dfsGVisSet(g, nbor, res);
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Integer> remainingMethods(int n, int k, int[][] invocations) {
+        // 首先建立有向图
+        List<Integer>[] g = new List[n];
+        for (int i = 0; i < n; i++) {
+            g[i] = new ArrayList<>();
+        }
+        for (int[] invo : invocations) {
+            g[invo[0]].add(invo[1]);
+        }
+
+        boolean[] flag = new boolean[n];
+        dfsGFlag(g, k, flag);
+
+        for (int[] invo : invocations) {
+            // 有指向可疑方法的正常方法
+            if (!flag[invo[0]] && flag[invo[1]]) {
+                List<Integer> ans = new ArrayList<>();
+                for (int i = 0; i < n; i++) {
+                    ans.add(i);
+                }
+                return ans;
+            }
+        }
+
+        List<Integer> ans = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            if (!flag[i])
+                ans.add(i);
+        }
+
+        return ans;
+    }
+
+    void dfsGFlag(List<Integer>[] g, int idx, boolean[] flag) {
+        flag[idx] = true;
+
+        for (int nbor : g[idx]) {
+            if (!flag[nbor]) {
+                dfsGFlag(g, nbor, flag);
+            }
+        }
+    }
+
+    /*
+     * 2685. 统计完全连通分量的数量 [Medium]
+     * 
+     * 计算各个连通分量中的节点数与边数
+     */
+    public int countCompleteComponents(int n, int[][] edges) {
+        boolean[] vis = new boolean[n];
+        List<Integer>[] g = buildG(n, edges);
+
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            if (!vis[i]) {
+                int[] res = dfsGVisCnts(g, i, vis);
+                if (res[1] == res[0] * (res[0] - 1))
+                    ans++;
+            }
+        }
+        return ans;
+    }
+
+    // 返回当前节点所在的连通分量的节点数与边数
+    int[] dfsGVisCnts(List<Integer>[] g, int idx, boolean[] vis) {
+        vis[idx] = true;
+
+        int[] res = new int[2];
+        res[0]++;
+        res[1] += g[idx].size();
+        for (int nbor : g[idx]) {
+            if (!vis[nbor]) {
+                int[] tmp = dfsGVisCnts(g, nbor, vis);
+                res[0] += tmp[0];
+                res[1] += tmp[1];
+            }
+        }
+
+        return res;
+    }
+
+    /*
      * 207. 课程表 [Medium] <Star>
      * 
      * 用List<Integer>[] 来表示图，有多少个节点，数组就有多大
@@ -305,71 +447,6 @@ public class DBFST {
         }
         color[idx] = 2;
         return false;
-    }
-
-    /*
-     * 1857. 有向图中最大颜色值 [Hard] <Star>
-     * 
-     * dfs(i)表示从节点i开始的路径中，每种颜色的最大值，颜色最多有26中，所以它的返回值是一个大小为26的数组
-     * dfs(i+1) = 1 + dfs(i)，这里的1只加到和i+1这个节点颜色对应的数组中
-     * 一边执行dfs，一边判断有没有环
-     */
-    @SuppressWarnings("unchecked")
-    public int largestPathValue(String colors, int[][] edges) {
-        // 先建图
-        int n = colors.length();
-        List<Integer>[] g = new ArrayList[n];
-        for (int i = 0; i < n; i++)
-            g[i] = new ArrayList<>();
-        for (int[] e : edges) {
-            // 自环
-            if (e[0] == e[1])
-                return -1;
-            g[e[0]].add(e[1]);
-        }
-
-        char[] arr = colors.toCharArray();
-        int[] status = new int[n];
-        int[][] memo = new int[n][];
-
-        int ans = 0;
-        for (int i = 0; i < n; i++) {
-            int[] cnt = dfs(i, g, memo, status, arr);
-            if (cnt == null)
-                return -1;
-            for (int c : cnt)
-                ans = Math.max(ans, c);
-        }
-        return ans;
-    }
-
-    int[] dfs(int idx, List<Integer>[] g, int[][] memo, int[] status, char[] arr) {
-        if (memo[idx] != null)
-            return memo[idx];
-        // 设置为正在遍历
-        status[idx] = 1;
-
-        int[] ans = new int[26];
-
-        // 遍历其邻居
-        for (int nbor : g[idx]) {
-            // 邻居正在遍历，证明找到了环
-            if (status[nbor] == 1)
-                return null;
-            int[] nborAns = dfs(nbor, g, memo, status, arr);
-            if (nborAns == null)
-                return null;
-            for (int i = 0; i < 26; i++) {
-                ans[i] = Math.max(ans[i], nborAns[i]);
-            }
-        }
-        ans[arr[idx] - 'a']++;
-
-        // 设置为完成遍历
-        status[idx] = 2;
-        memo[idx] = ans;
-
-        return ans;
     }
 
     /*
