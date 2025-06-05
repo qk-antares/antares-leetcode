@@ -3,6 +3,7 @@ package leetcode.graph;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -405,6 +406,92 @@ public class DBFST {
         }
 
         return res;
+    }
+
+    /*
+     * 2192. 有向无环图中一个节点的所有祖先 [Medium]
+     * 
+     * 根据edges可以知道每个节点的直接父节点
+     * 接下来对每个节点idx进行遍历：
+     * 如果idx没有直接父节点，ans[idx] = []，return ans[idx]
+     * 如果idx有父节点，则对其父节点执行ans += [p, dfs(p)]
+     * 注意 += 是集合Set的操作
+     * 
+     * 上述方法实现较复杂
+     * 依然类似上面那样，反向建图（记录每个节点的直接父节点）
+     * 接下来对每个节点进行dfs，每次dfs重置vis
+     * 然后遍历vis，vis中被访问过的节点是其父节点
+     */
+    @SuppressWarnings("unchecked")
+    public List<List<Integer>> getAncestors0(int n, int[][] edges) {
+        // 记录每个节点的直接父节点
+        List<Integer>[] ps = new List[n];
+        for (int i = 0; i < n; i++) {
+            ps[i] = new ArrayList<>();
+        }
+
+        for (int[] e : edges) {
+            ps[e[1]].add(e[0]);
+        }
+
+        Set<Integer>[] memo = new Set[n];
+
+        for (int i = 0; i < n; i++) {
+            dfs(ps, i, memo);
+        }
+
+        List<List<Integer>> ans = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            List<Integer> iAns = new ArrayList<>();
+            iAns.addAll(memo[i]);
+            Collections.sort(iAns);
+            ans.add(iAns);
+        }
+
+        return ans;
+    }
+
+    Set<Integer> dfs(List<Integer>[] ps, int idx, Set<Integer>[] memo) {
+        if (memo[idx] != null)
+            return memo[idx];
+
+        Set<Integer> idxAns = new HashSet<>();
+        idxAns.addAll(ps[idx]);
+
+        for (int p : ps[idx]) {
+            idxAns.addAll(dfs(ps, p, memo));
+        }
+
+        memo[idx] = idxAns;
+        return idxAns;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<List<Integer>> getAncestors(int n, int[][] edges) {
+        // 记录每个节点的直接父节点
+        List<Integer>[] ps = new List[n];
+        Arrays.setAll(ps, i -> new ArrayList<>());
+
+        for (int[] e : edges) {
+            ps[e[1]].add(e[0]);
+        }
+
+        List<List<Integer>> ans = new ArrayList<>();
+        boolean[] vis = new boolean[n];
+
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(vis, false);
+            dfsGVis(ps, i, vis);
+            vis[i] = false;
+            List<Integer> tmp = new ArrayList<>();
+            for (int j = 0; j < n; j++) {
+                if (vis[j])
+                    tmp.add(j);
+            }
+            ans.add(tmp);
+        }
+
+        return ans;
     }
 
     /*
