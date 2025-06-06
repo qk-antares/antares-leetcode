@@ -51,9 +51,19 @@ public class BasicT {
     }
 
     /*
-     * 3532. 针对图的路径存在性查询 I [Medium]
+     * 3532. 针对图的路径存在性查询 I [Medium] <Star>
+     * 
+     * 这里的问题在于，由于nums的范围很大，所以无法对nums进行两层for循环来判断绝对差
+     * 由于nums本身是有序的，所以可以通过二分来判断执行uf.merge的区间
+     * 对于nums[i]，实际上需要通过二分找到：
+     * 第一个>=nums[i]-maxDiff的元素下标idxL
+     * 最后一个<=nums[i]+maxDiff的元素下标idxR
+     * 
+     * 依然超时...因为测试用例中maxDiff的范围同样很大
+     * 
+     * 可用一个数组标记nums中每个元素所在的连通块
      */
-    public boolean[] pathExistenceQueries(int n, int[] nums, int maxDiff, int[][] queries) {
+    public boolean[] pathExistenceQueries0(int n, int[] nums, int maxDiff, int[][] queries) {
         UnionFind uf = new UnionFind(n);
 
         for (int i = 0; i < n; i++) {
@@ -71,14 +81,77 @@ public class BasicT {
         return ans;
     }
 
+    public boolean[] pathExistenceQueries1(int n, int[] nums, int maxDiff, int[][] queries) {
+        UnionFind uf = new UnionFind(n);
+
+        int l, r, mid, low, high, idxL, idxR;
+        for (int i = 0; i < n; i++) {
+            l = 0;
+            r = n - 1;
+            low = nums[i] - maxDiff;
+            while (l <= r) {
+                mid = (l + r) / 2;
+                if (nums[mid] < low) {
+                    l = mid + 1;
+                } else {
+                    r = mid - 1;
+                }
+            }
+            idxL = l;
+
+            l = 0;
+            r = n - 1;
+            high = nums[i] + maxDiff;
+            while (l <= r) {
+                mid = (l + r) / 2;
+                if (nums[mid] > high) {
+                    r = mid - 1;
+                } else {
+                    l = mid + 1;
+                }
+            }
+            idxR = r;
+
+            for (int j = idxL; j <= idxR; j++) {
+                uf.merge(i, j);
+            }
+        }
+
+        boolean[] ans = new boolean[queries.length];
+        for (int i = 0; i < queries.length; i++) {
+            ans[i] = uf.check(queries[i][0], queries[i][1]);
+        }
+
+        return ans;
+    }
+
+    public boolean[] pathExistenceQueries(int n, int[] nums, int maxDiff, int[][] queries) {
+        int[] idx = new int[n];
+        for (int i = 1; i < n; i++) {
+            idx[i] = idx[i - 1];
+            if (nums[i] - nums[i - 1] > maxDiff)
+                idx[i]++;
+        }
+
+        int m = queries.length;
+        boolean[] ans = new boolean[m];
+        for (int i = 0; i < m; i++) {
+            ans[i] = idx[queries[i][0]] == idx[queries[i][1]];
+        }
+        return ans;
+    }
+
     /*
-     * 721. 账户合并 [Medium]
+     * 721. 账户合并 [Medium] <Star>
      * 
      * 首先是将List<List<String>>的账户转成Set<String>[]
      * 然后用双层的for循环，判断这些账户是否有交集
+     * 
+     * 上述操作非常费时，也可以用一个HashMap保存账号对应的idx列表
+     * 然后使用dfs
      */
     @SuppressWarnings("unchecked")
-    public List<List<String>> accountsMerge(List<List<String>> accounts) {
+    public List<List<String>> accountsMerge0(List<List<String>> accounts) {
         int n = accounts.size();
         Set<String>[] sets = new Set[n];
         for (int i = 0; i < n; i++) {
@@ -128,6 +201,57 @@ public class BasicT {
         }
 
         return ans;
+    }
+
+    public List<List<String>> accountsMerge(List<List<String>> accounts) {
+        int n = accounts.size();
+        Map<String, List<Integer>> map = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            int len = accounts.get(i).size();
+            for (int j = 1; j < len; j++) {
+                String email = accounts.get(i).get(j);
+                List<Integer> pre = map.getOrDefault(email, new ArrayList<>());
+                pre.add(i);
+                map.put(email, pre);
+            }
+        }
+
+        List<List<String>> ans = new ArrayList<>();
+        boolean[] vis = new boolean[n];
+        Set<String> set = new HashSet<>();
+        for (int i = 0; i < n; i++) {
+            if (vis[i])
+                continue;
+
+            set.clear();
+            dfs(i, accounts, map, vis, set);
+
+            List<String> res = new ArrayList<>(set);
+            Collections.sort(res);
+            res.add(0, accounts.get(i).get(0));
+
+            ans.add(res);
+        }
+
+        return ans;
+    }
+
+    void dfs(int idx, List<List<String>> accounts, Map<String, List<Integer>> map, boolean[] vis, Set<String> set) {
+        vis[idx] = true;
+        List<String> acc = accounts.get(idx);
+        int len = acc.size();
+        for (int i = 1; i < len; i++) {
+            String email = acc.get(i);
+            if (set.contains(email))
+                continue;
+
+            set.add(email);
+            for (int nbor : map.get(email)) {
+                if (!vis[nbor]) {
+                    dfs(nbor, accounts, map, vis, set);
+                }
+            }
+        }
     }
 
     /*
