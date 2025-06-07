@@ -33,46 +33,6 @@ public class DoublePointer {
     }
 
     /**
-     * 实现 strStr() （KMP算法，next的构造方法还要看看）
-     */
-    class StrStr {
-        public int strStr(String haystack, String needle) {
-            int[] next = buildNext(needle);
-
-            int i = 0,j = 0;
-            for(;i < haystack.length() && j < needle.length();){
-                if(j < 0 || haystack.charAt(i) == needle.charAt(j)){
-                    i++;
-                    j++;
-                }else {
-                    j = next[j];
-                }
-            }
-
-            //匹配成功
-            if(j == needle.length()){
-                return i - j;
-            }else
-                return -1;
-        }
-
-        //首先构造next
-        public int[] buildNext(String P) { // 构造模式串 P 的 next 表
-            int m = P.length(), j = 0; // “主”串指针
-            int[] N = new int[m]; // next 表
-            int t = N[0] = -1; // 模式串指针
-            while (j < m - 1)
-                if ( 0 > t || P.charAt(j) == P.charAt(t)){ // 匹配
-                    j++; t++;
-                    N[j] = t; // 此句可改进为 N[j] = (P[j] != P[t] ? t : N[t]);
-                }else // 失配
-                    t = N[t];
-
-            return N;
-        }
-    }
-
-    /**
      * 数组拆分 I（实际是排序+偶数下标元素之和，但是效率太低，一种解法使用数组统计出现次数，也可以用优先级队列）
      */
     class ArrayPairSum {

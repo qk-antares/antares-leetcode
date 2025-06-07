@@ -320,54 +320,6 @@ public class EasyString {
     }
 
     /**
-     * 实现 strStr()
-     * 我的解法(使用双指针，效率已较高)
-     */
-    public int strStr(String haystack, String needle) {
-        int res = 0;
-        int len1 = haystack.length(),len2 = needle.length();
-        for(int i = 0,j = 0;i < len1;i++){
-            if(haystack.charAt(i) != needle.charAt(j))
-                continue;
-            res = i;
-            i++;
-            j++;
-            for(;j < len2;i++,j++){
-                if(i == len1 || needle.charAt(j) != haystack.charAt(i)){
-                    j = 0;
-                    i = res;
-                    break;
-                }
-            }
-            if(j == len2)
-                return res;
-        }
-        return -1;
-    }
-
-    /**
-     * 答案解法（KMP算法，不太理解）
-     * 1.求next数组
-     * 什么是next数组？
-     * 从上一个字符开始，和最前面的最长匹配长度，例如：ABCABA的next数组为[-1,0,0,0,1,2];WABCABA的next数组为[-1,0,0,0,0,0,0]
-     */
-    public void getNext(String p, int[] next){
-        int len = p.length();
-        //i指向当前读取位置，j为被匹配位置
-        int i = 0,j = -1;
-        next[0] = -1;
-        while (i < len - 1){
-            if(j == -1 || p.charAt(i) == p.charAt(j)){
-                i++;
-                j++;
-                next[i] = j;
-            }else{
-                j = next[j];
-            }
-        }
-    }
-
-    /**
      * 外观数组
      * 我的解法(递归调用，效率较低，答案也是这种解法，将String换成StringBuffer就有较大提升)
      */

@@ -1,4 +1,4 @@
-package leetcode.datastruture.stack;
+package leetcode.datastruture.stk;
 
 import java.util.ArrayList;
 import java.util.HashMap;
