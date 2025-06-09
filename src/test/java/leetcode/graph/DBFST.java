@@ -495,6 +495,173 @@ public class DBFST {
     }
 
     /*
+     * 924. 尽量减少恶意软件的传播 [Hard]
+     * 
+     * 解法1是并查集+枚举删除的节点，但这种解法的时间复杂度较高
+     * 
+     * 并查集
+     * 要移除的节点有以下特征：
+     * 1. 它位于某个连通分量中
+     * 2. 该连通分量中只有它一个感染节点
+     * 3. 该连通分量最大
+     */
+    class UnionFind0 {
+        int[] fa;
+
+        public UnionFind0(int n) {
+            fa = new int[n];
+            for (int i = 0; i < n; i++)
+                fa[i] = i;
+        }
+
+        void init() {
+            for (int i = 0; i < fa.length; i++)
+                fa[i] = i;
+        }
+
+        int find(int x) {
+            if (fa[x] != x)
+                return find(fa[x]);
+            return x;
+        }
+
+        // merge的时候，指向恶意节点
+        void merge(int x, int y, boolean[] flags) {
+            int fx = find(x);
+            int fy = find(y);
+            if (fx != fy) {
+                if (flags[fx]) {
+                    fa[fy] = fx;
+                } else {
+                    fa[fx] = fy;
+                }
+            }
+        }
+    }
+
+    public int minMalwareSpread0(int[][] graph, int[] initial) {
+        Arrays.sort(initial);
+
+        int n = graph.length;
+        boolean[] flags = new boolean[n];
+        for (int idx : initial)
+            flags[idx] = true;
+
+        int min = Integer.MAX_VALUE;
+        int ans = -1;
+        UnionFind0 uf = new UnionFind0(n);
+        for (int idx : initial) {
+            uf.init();
+
+            flags[idx] = false;
+
+            // 遍历所有的边
+            for (int i = 0; i < n; i++) {
+                for (int j = i + 1; j < n; j++) {
+                    if (graph[i][j] == 1) {
+                        uf.merge(i, j, flags);
+                    }
+                }
+            }
+
+            // 统计被感染的节点
+            int cnt = 0;
+            for (int i = 0; i < n; i++) {
+                if (flags[uf.find(i)])
+                    cnt++;
+            }
+
+            if (cnt < min) {
+                min = cnt;
+                ans = idx;
+            }
+
+            flags[idx] = true;
+        }
+
+        return ans;
+    }
+
+    class UnionFind {
+        int[] fa;
+        // size标记连通分量大小
+        int[] size;
+        // cnt标记连通分量中的恶意节点数
+        int[] cnt;
+
+        public UnionFind(int n, int[] initial) {
+            fa = new int[n];
+            size = new int[n];
+            cnt = new int[n];
+            for (int i = 0; i < n; i++)
+                fa[i] = i;
+            Arrays.fill(size, 1);
+            for (int i : initial)
+                cnt[i] = 1;
+        }
+
+        int find(int x) {
+            if (fa[x] != x)
+                return find(fa[x]);
+            return x;
+        }
+
+        // merge的时候，指向恶意节点
+        void merge(int x, int y) {
+            int fx = find(x);
+            int fy = find(y);
+            if (fx != fy) {
+                if (cnt[fx] > 0) {
+                    fa[fy] = fx;
+                    size[fx] += size[fy];
+                    cnt[fx] += cnt[fy];
+                } else {
+                    fa[fx] = fy;
+                    size[fy] += size[fx];
+                    cnt[fy] += cnt[fx];
+                }
+            }
+        }
+
+        int getSize(int x) {
+            return size[find(x)];
+        }
+
+        int getCnt(int x) {
+            return cnt[find(x)];
+        }
+    }
+
+    public int minMalwareSpread(int[][] graph, int[] initial) {
+        Arrays.sort(initial);
+        int n = graph.length;
+
+        UnionFind uf = new UnionFind(n, initial);
+
+        // 遍历所有的边
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (graph[i][j] == 1) {
+                    uf.merge(i, j);
+                }
+            }
+        }
+
+        int maxSize = 0;
+        int ans = initial[0];
+        for (int i : initial) {
+            int cnt = uf.getCnt(i);
+            int size = uf.getSize(i);
+            if (cnt == 1 && size > maxSize) {
+                ans = i;
+                maxSize = size;
+            }
+        }
+
+        return ans;
+    }
+
+    /*
      * 207. 课程表 [Medium] <Star>
      * 
      * 用List<Integer>[] 来表示图，有多少个节点，数组就有多大
@@ -713,11 +880,13 @@ public class DBFST {
 
     @Test
     public void test() {
-        int[] status = { 1, 0, 1, 0 };
-        int[] candies = { 7, 5, 4, 100 };
-        int[][] keys = { {}, { 0 }, { 1 }, {} };
-        int[][] containedBoxes = { { 1, 2 }, { 3 }, {}, {} };
-        int[] initialBoxes = { 0 };
-        maxCandies(status, candies, keys, containedBoxes, initialBoxes);
+        minMalwareSpread(new int[][] { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } }, new int[] { 1, 2 });
+
+        // int[] status = { 1, 0, 1, 0 };
+        // int[] candies = { 7, 5, 4, 100 };
+        // int[][] keys = { {}, { 0 }, { 1 }, {} };
+        // int[][] containedBoxes = { { 1, 2 }, { 3 }, {}, {} };
+        // int[] initialBoxes = { 0 };
+        // maxCandies(status, candies, keys, containedBoxes, initialBoxes);
     }
 }

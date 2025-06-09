@@ -142,6 +142,28 @@ public class BasicT {
     }
 
     /*
+     * 990. 等式方程的可满足性  [Medium]
+     */
+    public boolean equationsPossible(String[] equations) {
+        UnionFind uf = new UnionFind(26);
+        //首先处理等式
+        for(String e : equations) {
+            if(e.charAt(1) == '=') {
+                uf.merge(e.charAt(0)-'a', e.charAt(3)-'a');
+            }
+        }
+
+        //接下来判断是否满足不等式
+        for(String e : equations) {
+            if(e.charAt(1) == '!' && uf.check(e.charAt(0)-'a', e.charAt(3)-'a')) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /*
      * 721. 账户合并 [Medium] <Star>
      * 
      * 首先是将List<List<String>>的账户转成Set<String>[]
