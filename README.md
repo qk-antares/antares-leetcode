@@ -88,7 +88,29 @@ List<Integer> list = new ArrayList<>();
 int[] arr = list.stream().mapToInt(Integer::intValue).toArray();
 ```
 
-### 1.4 运算符优先级
+### 1.5 `String`
+
+#### 1.5.1 `split()`
+
+```java
+//按照多个字符分隔字符串
+String[] parts = str.split("[ .,!]+");
+//按照一个或多个空格分割
+String[] parts = str.split("\\s+");
+//单纯按照一个空格分割
+String[] parts = str.split(" ");
+```
+
+#### 1.5.2 `join()`
+
+```java
+//将字符串数组用空格连接成一个字符串，最后一个字符串后面不会有空格
+String[] arr = {"Java", "is", "awesome"};
+String result = String.join(" ", arr);
+```
+
+
+### 1.6 运算符优先级
 
 | 优先级 | 运算符                                                           | 结合性     |
 |--------|-----------------------------------------------------------------|------------|
@@ -112,7 +134,7 @@ int[] arr = list.stream().mapToInt(Integer::intValue).toArray();
 
 根据上表可以发现，位运算符（`<<` `>>` `&` `^` `|`）以及三目运算符（`?:`）的优先级都比较低（低于`+` `-`），因此在使用的时候要特别注意带括号
 
-### 1.5 溢出
+### 1.7 溢出
 
 ```java
 int a, b;

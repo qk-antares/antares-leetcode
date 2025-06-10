@@ -1,6 +1,67 @@
 package leetcode.datastruture.trie;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
 public class BasicT {
+    /*
+     * 648. 单词替换 [Medium]
+     */
+    public String replaceWords(List<String> dictionary, String sentence) {
+        Trie trie = new Trie();
+        for (String s : dictionary) {
+            trie.insert(s);
+        }
+
+        String[] ss = sentence.split(" ");
+        for (int i = 0; i < ss.length; i++) {
+            ss[i] = trie.findPrefix(ss[i]);
+        }
+        return String.join(" ", ss);
+    }
+
+    /*
+     * 720. 词典中最长的单词 [Medium]
+     * 
+     * 构造字典树，然后对字典树进行广度优先搜索
+     * 答案的遍历路径中，每个点都应该是True
+     */
+    List<Integer> ans = new ArrayList<>();
+
+    public String longestWord(String[] words) {
+        Trie trie = new Trie();
+        for (String s : words) {
+            trie.insert(s);
+        }
+
+        dfs(trie.root, new ArrayList<Integer>());
+
+        StringBuilder sb = new StringBuilder();
+        for (int ch : ans) {
+            sb.append((char) (ch + 'a'));
+        }
+        return sb.toString();
+    }
+
+    void dfs(Node cur, List<Integer> path) {
+        if (path.size() > ans.size())
+            ans = new ArrayList<>(path);
+
+        for (int i = 0; i < 26; i++) {
+            if (cur.children[i] != null && cur.children[i].end) {
+                path.add(i);
+                dfs(cur.children[i], path);
+                path.removeLast();
+            }
+        }
+    }
+
+    /*
+     * ========================== 分割线 ==========================
+     */
+
     /*
      * 440. 字典序的第K小数字 [Hard] <Star>
      * 
@@ -44,5 +105,10 @@ public class BasicT {
             upper *= 10;
         }
         return size;
+    }
+
+    @Test
+    public void test() {
+        longestWord(new String[] { "w", "wo", "wor", "worl", "world" });
     }
 }

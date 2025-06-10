@@ -85,26 +85,6 @@ public class DoublePointer {
     }
 
     /**
-     * 两数之和 II - 输入有序数组
-     */
-    class TwoSum {
-        public int[] twoSum(int[] numbers, int target) {
-            int i = 0, j = numbers.length-1;
-
-            while (numbers[i] + numbers[j] != target){
-                if(numbers[i] + numbers[j] > target){
-                    j--;
-                }
-                if(numbers[i] + numbers[j] < target){
-                    i++;
-                }
-            }
-
-            return new int[]{i+1, j+1};
-        }
-    }
-
-    /**
      * 移除元素
      */
     class RemoveElement {
