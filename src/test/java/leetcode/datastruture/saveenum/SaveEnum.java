@@ -133,4 +133,16 @@ public class SaveEnum {
         return ans;
     }
 
+    /*
+     * 1128. 等价多米诺骨牌对的数量 [Easy]
+     */
+    public int numEquivDominoPairs(int[][] dominoes) {
+        int[] cnt = new int[100];
+        int ans = 0;
+        for (int[] d : dominoes) {
+            int key = d[0] > d[1] ? d[0] * 10 + d[1] : d[1] * 10 + d[0];
+            ans += cnt[key]++;
+        }
+        return ans;
+    }
 }

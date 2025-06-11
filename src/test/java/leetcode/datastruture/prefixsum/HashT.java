@@ -1,4 +1,4 @@
-package leetcode.prefixsum;
+package leetcode.datastruture.prefixsum;
 
 import java.util.List;
 

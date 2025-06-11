@@ -1,4 +1,4 @@
-package leetcode.algorithm.diffArr;
+package leetcode.datastruture.diffArr;
 
 import java.util.ArrayList;
 import java.util.Arrays;
