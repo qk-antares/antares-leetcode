@@ -3,6 +3,7 @@ package leetcode.datastruture.saveenum;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /*
@@ -142,6 +143,119 @@ public class SaveEnum {
         for (int[] d : dominoes) {
             int key = d[0] > d[1] ? d[0] * 10 + d[1] : d[1] * 10 + d[0];
             ans += cnt[key]++;
+        }
+        return ans;
+    }
+
+    /*
+     * 121. 买卖股票的最佳时机 [Easy]
+     * 
+     * 从右往左进行遍历，遍历的过程中记录当前遇到过的最大值max，则：
+     * ans = Math.max(ans, max-prices[i])
+     */
+    public int maxProfit(int[] prices) {
+        int n = prices.length;
+        int ans = 0, max = prices[n - 1];
+        for (int i = n - 2; i >= 0; i--) {
+            ans = Math.max(ans, max - prices[i]);
+            max = Math.max(max, prices[i]);
+        }
+        return ans;
+    }
+
+    /*
+     * 219. 存在重复元素 II
+     * 
+     * 要求两个元素相等，且位置要尽可能接近
+     * 使用Map保存该元素出现的最近位置
+     */
+    public boolean containsNearbyDuplicate(int[] nums, int k) {
+        Map<Integer, Integer> map = new HashMap<>();
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            if (map.containsKey(nums[i]) && i - map.get(nums[i]) <= k) {
+                return true;
+            }
+            map.put(nums[i], i);
+        }
+
+        return false;
+    }
+
+    /*
+     * 2260. 必须拿起的最小连续卡牌数 [Medium]
+     * 
+     * 方法一：
+     * 滑动窗口求最小
+     * 
+     * 方法二：
+     * 和上一题一样，要求两个元素相等，且位置尽可能接近。只不过本题求的是最近的距离
+     */
+    public int minimumCardPickup0(int[] cards) {
+        int ans = Integer.MAX_VALUE;
+        int l = 0, r = 0;
+        int n = cards.length;
+
+        // 统计窗口种的元素数量
+        Map<Integer, Integer> map = new HashMap<>();
+        int old;
+        while (r < n) {
+            old = map.getOrDefault(cards[r], 0);
+            map.put(cards[r], old + 1);
+
+            if (old == 1) {
+                boolean flag = true;
+                while (flag) {
+                    ans = Math.min(ans, r + 1 - l);
+                    old = map.get(cards[l]);
+                    if (old == 1)
+                        map.remove(cards[l]);
+                    else
+                        map.put(cards[l], old - 1);
+
+                    if (cards[l] == cards[r])
+                        flag = false;
+
+                    l++;
+                }
+            }
+
+            r++;
+        }
+
+        return ans == Integer.MAX_VALUE ? -1 : ans;
+    }
+
+    public int minimumCardPickup(int[] cards) {
+        Map<Integer, Integer> map = new HashMap<>();
+        int n = cards.length;
+        int ans = Integer.MAX_VALUE;
+        for (int i = 0; i < n; i++) {
+            if (map.containsKey(cards[i])) {
+                ans = Math.min(ans, i - map.get(cards[i]) + 1);
+            }
+            map.put(cards[i], i);
+        }
+
+        return ans == Integer.MAX_VALUE ? -1 : ans;
+    }
+
+    /*
+     * ========================== 分割线 ==========================
+     */
+
+    /*
+     * 1010. 总持续时间可被 60 整除的歌曲 [Medium]
+     * 
+     * 用Map记录满足某余数的歌曲数量，当然，由于本题余数的范围是很小的，所以可以用一个数组代替Map效率更高
+     */
+    public int numPairsDivisibleBy60(int[] time) {
+        int[] map = new int[60];
+        int ans = 0;
+        for (int i = 0; i < time.length; i++) {
+            int mod = time[i] % 60;
+            ans += map[(60 - mod) % 60];
+            map[mod]++;
         }
         return ans;
     }
