@@ -241,6 +241,53 @@ public class SaveEnum {
     }
 
     /*
+     * 2815. 数组中的最大数对和 [Easy]
+     * 
+     * 从数位的角度来讲，共有10种数位
+     * 用一个数组，记录当前遇到的某数位最大的数
+     */
+    public int maxSum(int[] nums) {
+        int[] map = new int[10];
+        Arrays.fill(map, -1);
+        int ans = -1;
+        for (int num : nums) {
+            int maxDigit = 0;
+            int tmp = num;
+            while (tmp > 0) {
+                maxDigit = Math.max(maxDigit, tmp % 10);
+                tmp /= 10;
+            }
+            if (map[maxDigit] != -1)
+                ans = Math.max(ans, num + map[maxDigit]);
+            map[maxDigit] = Math.max(map[maxDigit], num);
+        }
+        return ans;
+    }
+
+    /*
+     * 2342. 数位和相等数对的最大和 [Medium]
+     * 
+     * 和上一道题的思路一模一样
+     */
+    public int maximumSum(int[] nums) {
+        int[] map = new int[100];
+        int ans = -1;
+        for(int num : nums) {
+            int digitSum = 0;
+            int tmp = num;
+            while(tmp > 0) {
+                digitSum += tmp % 10;
+                tmp /= 10;
+            }
+
+            if(map[digitSum] > 0) ans = Math.max(ans, num+map[digitSum]);
+            map[digitSum] = Math.max(map[digitSum], num);
+        }
+
+        return ans;
+    }
+
+    /*
      * ========================== 分割线 ==========================
      */
 
