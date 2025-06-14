@@ -1,10 +1,14 @@
 package leetcode.datastruture.saveenum;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.junit.jupiter.api.Test;
 
 /*
  * 一边保存一边枚举，例如：
@@ -272,18 +276,60 @@ public class SaveEnum {
     public int maximumSum(int[] nums) {
         int[] map = new int[100];
         int ans = -1;
-        for(int num : nums) {
+        for (int num : nums) {
             int digitSum = 0;
             int tmp = num;
-            while(tmp > 0) {
+            while (tmp > 0) {
                 digitSum += tmp % 10;
                 tmp /= 10;
             }
 
-            if(map[digitSum] > 0) ans = Math.max(ans, num+map[digitSum]);
+            if (map[digitSum] > 0)
+                ans = Math.max(ans, num + map[digitSum]);
             map[digitSum] = Math.max(map[digitSum], num);
         }
 
+        return ans;
+    }
+
+    /*
+     * 1679. K 和数对的最大数目 [Medium]
+     */
+    public int maxOperations(int[] nums, int k) {
+        // 保存每个值出现的次数
+        Map<Integer, Integer> map = new HashMap<>();
+        int ans = 0;
+        for (int num : nums) {
+            int key = k - num;
+            int old = map.getOrDefault(key, 0);
+            if (old > 0) {
+                map.put(key, old - 1);
+                ans++;
+            } else {
+                map.merge(num, 1, Integer::sum);
+            }
+        }
+        return ans;
+    }
+
+    /*
+     * 面试题 16.24. 数对和 [Medium]
+     * 
+     * 和上一题的思路一模一样
+     */
+    public List<List<Integer>> pairSums(int[] nums, int target) {
+        List<List<Integer>> ans = new ArrayList<>();
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int num : nums) {
+            int key = target - num;
+            int old = map.getOrDefault(key, 0);
+            if (old > 0) {
+                map.put(key, old - 1);
+                ans.add(Arrays.asList(key, num));
+            } else {
+                map.merge(num, 1, Integer::sum);
+            }
+        }
         return ans;
     }
 
@@ -305,5 +351,38 @@ public class SaveEnum {
             map[mod]++;
         }
         return ans;
+    }
+
+    public int minMaxDifference(int num) {
+        char[] max = String.valueOf(num).toCharArray();
+        char[] min = String.valueOf(num).toCharArray();
+
+        int n = max.length;
+
+        int target = min[0];
+        for (int i = 0; i < n; i++) {
+            if (min[i] == target)
+                min[i] = '0';
+        }
+
+        int i = 0;
+        for (; i < n; i++) {
+            if (max[i] != 9) {
+                target = max[i];
+                break;
+            }
+        }
+
+        for (; i < n; i++) {
+            if (max[i] == target)
+                max[i] = '9';
+        }
+
+        return Integer.valueOf(new String(max)) - Integer.valueOf(new String(min));
+    }
+
+    @Test
+    public void test() {
+        System.out.println(minMaxDifference(90));
     }
 }

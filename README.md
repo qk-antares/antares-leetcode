@@ -27,6 +27,14 @@ int[] newArr = new int[n];
 System.arraycopy(arr, 0, newArr, 0, n);
 ```
 
+#### 1.1.3 `Arrays.asList`
+
+```java
+//将若干个元素转换成List，注意这里的参数不是数组
+List<Integer> list = Arrays.asList(num1, num2, ...);
+//注意：asList返回的List是固定长度的，不能添加或删除元素
+```
+
 ### 1.2 Collections
 
 #### 1.2.1 `Collections.sort`
@@ -44,6 +52,14 @@ Collections.sort(list);
 ```java
 //比较两个字符串的字典序，不能直接使用比较符(==,<,>)，应该使用compareTo，当s1字典序小于s2时，返回负数
 s1.compareTo(s2);
+```
+
+#### 1.3.2 `replace`
+
+```java
+//将字符串中的某个字符或子串替换成另一个字符或子串，返回新字符串而不修改原字符串
+res = s.replace("old", "new");
+res = s.replace('a', 'b');
 ```
 
 ### 1.4 `stream()`
@@ -109,6 +125,18 @@ String[] arr = {"Java", "is", "awesome"};
 String result = String.join(" ", arr);
 ```
 
+### 1.6 `Map`
+
+#### 1.6.1 `merge`
+
+```java
+//如果key不存在，则将key-value对添加到map中；如果key存在，则使用合并函数合并旧值和新值
+map.merge(key, value, (oldValue, newValue) -> oldValue + newValue);
+//一个常用的写法是计数器
+map.merge(key, 1, Integer::sum);
+//等价于
+map.put(key, map.getOrDefault(key, 0) + 1);
+```
 
 ### 1.6 运算符优先级
 
