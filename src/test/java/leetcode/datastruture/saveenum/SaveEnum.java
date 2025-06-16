@@ -334,6 +334,133 @@ public class SaveEnum {
     }
 
     /*
+     * 3371. 识别数组中的最大异常值 [Medium]
+     * 
+     * 先计算总体的和，并统计nums中各个数字的出现次数
+     * 枚举nums[i]作为异常值
+     * sum-=nums[i]
+     * 如果sum%2==0&&map[sum/2]>0，则nums[i]可以作为异常值（还要注意sum/2之后应该在值域范围之内）
+     */
+    public int getLargestOutlier(int[] nums) {
+        int[] map = new int[2001];
+        int sum = 0;
+        for (int num : nums) {
+            sum += num;
+            map[num + 1000]++;
+        }
+
+        int ans = Integer.MIN_VALUE;
+        for (int num : nums) {
+            map[num + 1000]--;
+            int tmp = sum - num;
+            if (tmp % 2 == 0 && tmp / 2 >= -1000 && tmp / 2 <= 1000 && map[tmp / 2 + 1000] > 0)
+                ans = Math.max(ans, num);
+            map[num + 1000]++;
+        }
+
+        return ans;
+    }
+
+    /*
+     * 624. 数组列表中的最大距离 [Medium]
+     * 
+     * 用两个变量，分别维护当前遇到的最小值和最大值
+     * 注意两个点必须从不同的数组中选择
+     */
+    public int maxDistance(List<List<Integer>> arrays) {
+        int min = arrays.get(0).get(0);
+        int max = arrays.get(0).getLast();
+        int ans = Integer.MIN_VALUE;
+        int n = arrays.size();
+        for (int i = 1; i < n; i++) {
+            int l = arrays.get(i).get(0);
+            int r = arrays.get(i).getLast();
+            ans = Math.max(ans, Math.max(Math.abs(r - min), Math.abs(max - l)));
+            min = Math.min(min, l);
+            max = Math.max(max, r);
+        }
+        return ans;
+    }
+
+    /*
+     * 2364. 统计坏数对的数目 [Medium]
+     * 
+     * 最暴力的解法，循环两次遍历，O(n^2)=>超时
+     * 坏数对的对立面是好数对：j - i = nums[j] - nums[i]
+     * 这个条件等价于nums[i]-i = nums[j]-j
+     * 所以只用遍历1次nums数组，统计nums[i]-i的出现次数
+     * 则ans=总数对-好数对，即(n-1)+...+1-sum(hashmap)
+     * 这里的sum(hashmap)可以在构造时计算
+     */
+    public long countBadPairs(int[] nums) {
+        Map<Integer, Integer> cnt = new HashMap<>();
+        int n = nums.length;
+        long ans = (long) n * (n - 1) / 2;
+        for (int i = 0; i < n; i++) {
+            int tmp = nums[i] - i;
+            int cur = cnt.getOrDefault(tmp, 0);
+            ans -= cur;
+            cnt.put(tmp, cur + 1);
+        }
+
+        return ans;
+    }
+
+    /*
+     * 1014. 最佳观光组合 [Medium]
+     * 
+     * 从前往后遍历
+     * 用一个变量记录[当前景点][前面]价值最大的景点
+     */
+    public int maxScoreSightseeingPair(int[] values) {
+        int maxPre = values[0];
+        int ans = 0;
+        for (int i = 1; i < values.length; i++) {
+            maxPre--;
+            ans = Math.max(ans, maxPre + values[i]);
+            maxPre = Math.max(maxPre, values[i]);
+        }
+        return ans;
+    }
+
+    /*
+     * 1814. 统计一个数组中好对子的数目 [Medium]
+     * 
+     * nums[i] + rev(nums[j]) == nums[j] + rev(nums[i])
+     * 等价于
+     * nums[i]-rev(nums[i])=nums[j]-rev(nums[j])
+     * 根据nums构造tmp数组
+     * 接下来对tmp进行遍历，遍历过程中用一个Map来计算前面的元素出现的次数
+     */
+    public int countNicePairs(int[] nums) {
+        int n = nums.length;
+        int[] tmp = new int[n];
+        for (int i = 0; i < n; i++) {
+            tmp[i] = computeTmp(nums[i]);
+        }
+
+        int ans = 0;
+        Map<Integer, Integer> cnt = new HashMap<>();
+        for (int val : tmp) {
+            ans = (ans + cnt.getOrDefault(val, 0)) % 1_000_000_007;
+            cnt.merge(val, 1, Integer::sum);
+        }
+
+        return ans;
+    }
+
+    int computeTmp(int num) {
+        int rev = 0;
+        int tmp = num;
+        while (num != 0) {
+            rev *= 10;
+            rev += num % 10;
+            num /= 10;
+        }
+        return tmp - rev;
+    }
+
+    /*
      * ========================== 分割线 ==========================
      */
 
