@@ -229,3 +229,65 @@ while (r < nums.length) {
 #### 2.2.1 极坐标与三角函数
 
 `atan2`函数可以用来计算极坐标的角度，它的几何含义是`与原点的连线`和`正x轴`之间的夹角。值域是`[-π, π]`，当`y>0`时，`atan2(y, x)`是正值，反之是负值。关联题目：`[1610. 可见点的最大数目]`
+
+### 2.3 组合数学
+
+#### 2.3.1 排列组合
+排列组合的公式如下：
+- 排列：`A(n, m) = n! / (n - m)!`
+- 组合：`C(n, m) = n! / m! / (n - m)!`
+
+#### 2.3.2 模运算
+许多组合数学题目需要使用模运算来避免数值溢出。常用的模数是`10^9+7`，但需要特别注意的是：
+$$
+\frac{m}{n} \% p \neq \frac{m \% p}{n \% p}
+$$
+
+关于这种除法运算求模，通常可以使用如下定理求解：当 $p$ 是质数，$a$ 是 $b$ 的倍数，且 $b$ 不是 $p$ 的倍数时：
+$$
+\frac{a}{b} \% p = a \cdot b^{p-2} \% p
+$$
+
+这里的 $b^{p-2}$ 实质上就是 $b$ 关于模 $p$ 的逆元。模的逆元是指对于一个数 $a$，存在一个数 $b$ 使得：
+$$
+a \cdot b \equiv 1 \mod p
+$$
+
+当 $p$ 是一个质数时，可以依据费马小定理来计算逆元，费马小定理指出，对于一个质数 $p$ 和一个整数 $a$，如果 $a$ 不被 $p$ 整除，则存在一个整数 $b$ 使得：
+$$
+b^{p} \equiv b \mod p
+\\
+b^{p-1} \equiv 1 \mod p
+$$
+因此，$b^{p-2}$ 就是 $b$ 关于模 $p$ 的逆元。
+
+#### 2.3.3 组合数的计算
+组合数的计算可以通过预处理阶乘和逆元来实现：
+
+```java
+int MOD = 1_000_000_007;
+long[] fact = new int[n+1];
+long[] invFact = new int[n+1];
+
+void init(int n) {
+    fact[0] = 1;
+    for (int i = 1; i <= n; i++) {
+        fact[i] = fact[i - 1] * i % MOD;
+    }
+    
+    invFact[n] = pow(fact[n], MOD-2);
+    for (int i = n - 1; i >= 0; i--) {
+        invFact[i] = invFact[i + 1] * (i + 1) % MOD;
+    }
+}
+
+long pow(long base, int exp) {
+    long ans = 1;
+    while (exp > 0) {
+        if ((exp & 1) == 1) ans = ans * base % MOD;
+        base = base * base % MOD;
+        exp >>= 1;
+    }
+    return result;
+}
+```

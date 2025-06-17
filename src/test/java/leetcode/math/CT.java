@@ -3,10 +3,61 @@ package leetcode.math;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 /*
  * 组合数学（combinatorics）
  */
 public class CT {
+    /*
+     * 3405. 统计恰好有 K 个相等相邻元素的数组数目 [Hard]   <Star>
+     * 
+     * 长度为n的数组，共形成n-1个相邻数对
+     * 满足条件的数对为k个，则不满足的有n-1-k个
+     * 这n-1-k个不满足的相当于在两数中间插入隔板，隔板两侧的数字不相等
+     * 先选隔板：C(n,m)=n!/(m!*(n-m)!)
+     * 隔板分割出来n-k个块，第一个块有m种选择
+     * 后面的块都是m-1种选择
+     * 故ans=(n-1)!/(n-1-k)!/k! * m * (m-1)^(n-k-1)
+     * 这道题会经常用到[1,N]范围内的阶乘及其逆元
+     */
+    static int N = 100_001;
+    static long[] fac = new long[N];
+    static long[] invF = new long[N];
+    static boolean flag = false;
+
+    void init() {
+        if (flag)
+            return;
+        flag = true;
+
+        fac[0] = 1;
+        for (int i = 1; i < N; i++) {
+            fac[i] = (i * fac[i - 1]) % MOD;
+        }
+
+        invF[N - 1] = pow(fac[N - 1], MOD - 2);
+        for (int i = N - 1; i > 0; i--) {
+            invF[i - 1] = (i * invF[i]) % MOD;
+        }
+    }
+
+    long pow(long num, int n) {
+        long ans = 0;
+        while (n != 0) {
+            if ((n & 1) != 0)
+                ans = (ans + num) % MOD;
+            num = (num * num) % MOD;
+            n >>= 1;
+        }
+        return ans;
+    }
+
+    public int countGoodArrays(int n, int m, int k) {
+        init();
+        return (int) (fac[n - 1] * invF[n - 1 - k] * invF[k] * m * pow(m - 1, n - k - 1) % MOD);
+    }
+
     /*
      * 2338. 统计理想数组的数目 [Hard]
      */
@@ -64,5 +115,10 @@ public class CT {
             ans += mul;
         }
         return (int) (ans % MOD);
+    }
+
+    @Test
+    public void test() {
+        System.out.println(countGoodArrays(3, 2, 1)); // 6
     }
 }

@@ -461,6 +461,56 @@ public class SaveEnum {
     }
 
     /*
+     * 2905. 找出满足差值条件的下标 II [Medium]
+     * 
+     * 假设两个元素的index是i,j
+     * j-i>=indexDifference
+     * j从indexDifference开始
+     */
+    public int[] findIndices(int[] nums, int indexDifference, int valueDifference) {
+        int maxIdx = 0;
+        int minIdx = 0;
+        for (int j = indexDifference; j < nums.length; j++) {
+            int i = j - indexDifference;
+            if (nums[i] < nums[minIdx])
+                minIdx = i;
+            if (nums[i] > nums[maxIdx])
+                maxIdx = i;
+
+            if (nums[j] - nums[minIdx] >= valueDifference)
+                return new int[] { minIdx, j };
+            if (nums[maxIdx] - nums[j] >= valueDifference)
+                return new int[] { maxIdx, j };
+        }
+        return new int[] { -1, -1 };
+    }
+
+    /*
+     * 3584. 子序列首尾元素的最大乘积 [Medium]
+     * 
+     * 假设首尾元素的index是i，j
+     * 则j-i>=m-1
+     * 记录最大正值和最小负值
+     * j从m开始
+     */
+    public long maximumProduct(int[] nums, int m) {
+        int maxIdx = 0;
+        int minIdx = 0;
+        long ans = Long.MIN_VALUE;
+        for (int j = m - 1; j < nums.length; j++) {
+            int i = j - m + 1;
+            if (nums[i] < nums[minIdx])
+                minIdx = i;
+            if (nums[i] > nums[maxIdx])
+                maxIdx = i;
+
+            ans = Math.max(ans, Math.max((long) nums[j] * nums[minIdx], (long) nums[j] * nums[maxIdx]));
+        }
+
+        return ans;
+    }
+
+    /*
      * ========================== 分割线 ==========================
      */
 
