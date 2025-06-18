@@ -530,36 +530,51 @@ public class SaveEnum {
         return ans;
     }
 
-    public int minMaxDifference(int num) {
-        char[] max = String.valueOf(num).toCharArray();
-        char[] min = String.valueOf(num).toCharArray();
-
-        int n = max.length;
-
-        int target = min[0];
-        for (int i = 0; i < n; i++) {
-            if (min[i] == target)
-                min[i] = '0';
+    /*
+     * 3185. 构成整天的下标对数目 II [Medium]
+     * 
+     * 只用记录每个位置%24的余数 0~23
+     */
+    public long countCompleteDayPairs(int[] hours) {
+        int[] cnt = new int[24];
+        long ans = 0;
+        for (int h : hours) {
+            int mod = h % 24;
+            ans += cnt[(24 - mod) % 24];
+            cnt[mod]++;
         }
+        return ans;
+    }
 
-        int i = 0;
-        for (; i < n; i++) {
-            if (max[i] != 9) {
-                target = max[i];
-                break;
+    /*
+     * 2748. 美丽下标对的数目 [Easy]
+     * 
+     * 只用记录第一个数字的出现次数
+     * 构建一个满足条件的map
+     */
+    public int countBeautifulPairs(int[] nums) {
+        int[] cnt = new int[10];
+        int ans = 0;
+        for (int num : nums) {
+            // 获取最后一个数字
+            int lastNum = num % 10;
+            for (int i = 1; i <= 9; i++)
+                if (gcd(i, lastNum) == 1)
+                    ans += cnt[i];
+
+            // 获取第一个数字
+            int firstNum = 0;
+            while (num != 0) {
+                firstNum = num % 10;
+                num /= 10;
             }
+            cnt[firstNum]++;
         }
 
-        for (; i < n; i++) {
-            if (max[i] == target)
-                max[i] = '9';
-        }
-
-        return Integer.valueOf(new String(max)) - Integer.valueOf(new String(min));
+        return ans;
     }
 
     @Test
     public void test() {
-        System.out.println(minMaxDifference(90));
     }
 }
