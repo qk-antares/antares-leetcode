@@ -574,6 +574,26 @@ public class SaveEnum {
         return ans;
     }
 
+    /*
+     * 2506. 统计相似字符串对的数目 [Easy]
+     * 
+     * 每个单词可以用26个bit位来统计各个字母是否出现
+     * 可以直接使用一个int来统计，最后存储到Map中
+     */
+    public int similarPairs(String[] words) {
+        Map<Integer, Integer> map = new HashMap<>();
+        int ans = 0;
+        for (String s : words) {
+            int flag = 0;
+            for (char ch : s.toCharArray())
+                flag |= (1 << ch - 'a');
+
+            ans += map.getOrDefault(flag, 0);
+            map.merge(flag, 1, Integer::sum);
+        }
+        return ans;
+    }
+
     @Test
     public void test() {
     }

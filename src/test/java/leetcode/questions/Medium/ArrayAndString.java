@@ -76,97 +76,6 @@ public class ArrayAndString {
     }
 
     /**
-     * 矩阵置零（我的解法：效率还行，使用了两个临时数组）
-     */
-    public void setZeroes(int[][] matrix) {
-        //记录需要被置零的那些行
-        ArrayList<Integer> rows = new ArrayList<>();
-        //记录那些需要被置零的列
-        ArrayList<Integer> columns = new ArrayList<>();
-        for(int i = 0;i < matrix.length;i++){
-            for(int j = 0;j < matrix[i].length;j++){
-                if(matrix[i][j] == 0){
-                    rows.add(i);
-                    columns.add(j);
-                }
-            }
-        }
-
-        //将对应的行置为零
-        for (Integer row : rows) {
-            for (int i = 0;i < matrix[row].length;i++) {
-                matrix[row][i] = 0;
-            }
-        }
-
-        //将对应的列置为零
-        for (Integer column : columns) {
-            for (int i = 0;i < matrix[column].length;i++) {
-                matrix[i][column] = 0;
-            }
-        }
-    }
-
-    /**
-     * 答案解法（直接将目标矩阵的第一行和第一列作为临时数组，同时增加两个变量来判断第一行和第一列是否有0）
-     */
-    public void setZeroes0(int[][] matrix) {
-        //判断第一行是否有0
-        boolean row = false;
-        //判断第一列是否有0
-        boolean column = false;
-
-        for(int i = 0;i < matrix[0].length;i++){
-            if(matrix[0][i] == 0){
-                row = true;
-                break;
-            }
-        }
-
-        for(int i = 0;i < matrix.length;i++){
-            if(matrix[i][0] == 0){
-                column = true;
-                break;
-            }
-        }
-
-        for(int i = 1;i < matrix.length;i++){
-            for(int j = 1;j < matrix[0].length;j++){
-                if(matrix[i][j] == 0){
-                    matrix[0][j] = 0;
-                    matrix[i][0] = 0;
-                }
-            }
-        }
-
-        //将对应的行置为零
-        for(int i = 1;i < matrix.length;i++){
-            if(matrix[i][0] == 0){
-                for(int j = 1;j < matrix[i].length;j++)
-                    matrix[i][j] = 0;
-            }
-        }
-
-        //将对应的列置为零
-        for(int i = 1;i < matrix[0].length;i++){
-            if(matrix[0][i] == 0){
-                for(int j = 1;j < matrix.length;j++)
-                    matrix[j][i] = 0;
-            }
-        }
-
-        //判断第一行和第一列的情况
-        if(row){
-            for(int i = 0;i < matrix[0].length;i++)
-                matrix[0][i] = 0;
-        }
-        if(column){
-            for(int i = 0;i < matrix.length;i++)
-                matrix[i][0] = 0;
-        }
-    }
-
-    /**
      * 字母异位词分组（我的解法：字符串排序，可以，但是效率比较低，注意chars.toString()和String.valueOf(chars)是不同的）
      */
     public List<List<String>> groupAnagrams(String[] strs) {
@@ -357,7 +266,6 @@ public class ArrayAndString {
 
     @Test
     public void invoke(){
-//        setZeroes(new int[][]{{1,1,1},{1,0,1},{1,1,1}});
 //        groupAnagrams(new String[]{"eat","tea","tan","ate","nat","bat"});
 //        longestPalindrome("babad");
         longestPalindrome2("fsajlkasjabcddcbalj");

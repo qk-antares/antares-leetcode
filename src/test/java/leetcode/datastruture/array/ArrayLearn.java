@@ -1,8 +1,11 @@
 package leetcode.datastruture.array;
 
-import org.junit.jupiter.api.Test;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.PriorityQueue;
 
-import java.util.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Antares
@@ -196,51 +199,6 @@ public class ArrayLearn {
     }
 
     /**
-     * 零矩阵（我的解法：将需要清零的列映射到第一行上，将需要清零的行映射到第一列上，答案解法：多用两个布尔数组，来统计哪些行和列需要清零）
-     */
-    class SetZeroes {
-        public void setZeroes(int[][] matrix) {
-            boolean clearColumn = false, clearRow = false;
-            for(int i = 0;i < matrix.length;i++){
-                for(int j = 0;j < matrix[0].length;j++){
-                    if(matrix[i][j] == 0){
-                        matrix[0][j] = 0;
-                        matrix[i][0] = 0;
-                        if(i == 0)
-                            clearRow = true;
-                        if(j == 0)
-                            clearColumn = true;
-                    }
-                }
-            }
-
-            //遍历第一列
-            for(int i = 1;i < matrix.length;i++){
-                if(matrix[i][0] == 0){
-                    for(int j = 1;j < matrix[0].length;j++)
-                        matrix[i][j] = 0;
-                }
-            }
-            //遍历第一行
-            for(int j = 1;j < matrix[0].length;j++){
-                if(matrix[0][j] == 0){
-                    for(int i = 1;i < matrix.length;i++)
-                        matrix[i][j] = 0;
-                }
-            }
-
-            if (clearColumn){
-                for(int i = 1;i < matrix.length;i++)
-                    matrix[i][0] = 0;
-            }
-            if(clearRow){
-                for(int j = 1;j < matrix[0].length;j++)
-                    matrix[0][j] = 0;
-            }
-        }
-    }
-
-    /**
      * 对角线遍历
      * 来看一下访问坐标
      * (0,0)
@@ -367,9 +325,6 @@ public class ArrayLearn {
     public void invoke(){
 //        new PivotIndex().pivotIndex(new int[]{-1, 1, -1});
 //        new SearchInsert().searchInsert(new int[]{1,3}, 0);
-//        new SetZeroes().setZeroes(new int[][]{{1,1,1},{0,1,2}});
-//        new SetZeroes().setZeroes(new int[][]{{1,0,3}});
-//        new SetZeroes().setZeroes(new int[][]{{1,1,1},{0,1,2}});
 //        new FindDiagonalOrder().findDiagonalOrder(new int[][]{{1,2,3},{4,5,6},{7,8,9},{10,11,12}});
 //        new FindDiagonalOrder().findDiagonalOrder(new int[][]{{1,2,3},{4,5,6},{7,8,9}});
 
