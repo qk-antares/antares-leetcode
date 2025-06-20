@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.jupiter.api.Test;
-
 /*
  * 一边保存一边枚举，例如：
  * 枚举右，维护左（双变量）
@@ -594,7 +592,27 @@ public class SaveEnum {
         return ans;
     }
 
-    @Test
-    public void test() {
+    /*
+     * ========================== 分割线 ==========================
+     */
+
+    /*
+     * 3443. K 次修改后的最大曼哈顿距离 [Medium]
+     * 遍历的过程中，统计NSEW的数量
+     * 由于题目求的是"过程中"的最大距离，每遍历一个字符，就更新ans
+     */
+    public int maxDistance(String s, int k) {
+        int[] cnt = new int['Z'];
+        int ans = 0;
+        for (char ch : s.toCharArray()) {
+            cnt[ch]++;
+            int x = Math.abs(cnt['E'] - cnt['W']);
+            int d1 = Math.min(k, Math.min(cnt['E'], cnt['W']));
+            int y = Math.abs(cnt['N'] - cnt['S']);
+            int d2 = Math.min(k - d1, Math.min(cnt['N'], cnt['S']));
+            ans = Math.max(ans, x + 2 * d1 + y + 2 * d2);
+        }
+
+        return ans;
     }
 }
