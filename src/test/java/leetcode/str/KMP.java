@@ -382,6 +382,107 @@ public class KMP {
         return pmt;
     }
 
+    /*
+     * 214. 最短回文串 [Hard]
+     * 
+     * 最朴素的方法是将s反转revS，然后枚举revS的后缀
+     * 假设s.startsWith(revS[i..])，那么将revS[0..i-1]添加到s的前面即可
+     * 
+     * 上述方法由于要枚举i，所以时间复杂度会比较高
+     * 
+     * 观察上述过程，本质上是在寻找s的【最长回文前缀】
+     * 另一种方法是直接使用KMP，将s和revS拼接成一个新的字符串
+     * ss = s + '#' + revS
+     * pmt数组的最后一位就是最长回文前缀的长度
+     */
+    public String shortestPalindrome0(String s) {
+        int n = s.length();
+        String reverseS = new StringBuilder(s).reverse().toString();
+        StringBuilder ans = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            if (s.startsWith(reverseS.substring(i))) {
+                ans.append(reverseS.substring(0, i)).append(s);
+                break;
+            }
+        }
+        return ans.toString();
+    }
+
+    public String shortestPalindrome(String s) {
+        String revS = new StringBuilder(s).reverse().toString();
+        String ss = new StringBuilder().append(s).append('#').append(revS).toString();
+        int[] pmt = buildPmt(ss);
+        return revS.substring(0, s.length() - pmt[pmt.length - 1]) + s;
+
+    }
+
+    /*
+     * 3529. 统计水平子串和垂直子串重叠格子的数目 [Medium]
+     * 
+     * 用两个boolean[][]矩阵分别做标记
+     * 这种方法的瓶颈就在于将boolean[][]置为true，如果pattern很长，则每次置为true的时间开销很大
+     * 可以与差分结合
+     * 具体来说，使用两个int[m*n+1]矩阵做标记
+     * 假设(i,j)的位置匹配上了，那么[i*n+j-p.length+1..i*n+j]这段置为true，等价于左边界+1，(右边界+1)-1
+     */
+    public int countCells(char[][] grid, String pattern) {
+        int m = grid.length, n = grid[0].length;
+        char[] p = pattern.toCharArray();
+        int[] pmt = buildPmt(p);
+
+        int[] d1 = new int[m * n + 1];
+        int[] d2 = new int[m * n + 1];
+
+        int len = 0; // 匹配长度
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                while (len > 0 && p[len] != grid[i][j])
+                    len = pmt[len - 1];
+                if (p[len] == grid[i][j])
+                    len++;
+
+                if (len == pmt.length) {
+                    len = pmt[len - 1];
+
+                    d1[i * n + j - p.length + 1]++;
+                    d1[i * n + j + 1]--;
+                }
+            }
+        }
+
+        len = 0;
+        for (int j = 0; j < n; j++) {
+            for (int i = 0; i < m; i++) {
+                while (len > 0 && p[len] != grid[i][j])
+                    len = pmt[len - 1];
+                if (p[len] == grid[i][j])
+                    len++;
+
+                if (len == pmt.length) {
+                    len = pmt[len - 1];
+
+                    d2[j * m + i - p.length + 1]++;
+                    d2[j * m + i + 1]--;
+                }
+            }
+        }
+
+        for (int i = 1; i < m * n; i++) {
+            d1[i] += d1[i - 1];
+            d2[i] += d2[i - 1];
+        }
+
+        int ans = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (d1[i * n + j] > 0 && d2[j * m + i] > 0)
+                    ans++;
+            }
+        }
+
+        return ans;
+    }
+
     @Test
     public void testGetNext() {
         // maxRepeating("aaabaaaabaaabaaaabaaaabaaaabaaaaba", "aaaba");
