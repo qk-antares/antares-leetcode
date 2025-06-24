@@ -495,7 +495,7 @@ public class OneDDiffArrT {
     }
 
     /*
-     * 1526. 形成目标数组的子数组最少增加次数   [Hard]
+     * 1526. 形成目标数组的子数组最少增加次数 [Hard]
      * 
      * 构造target的差分数组d
      * 然后计算d中的正数之和
@@ -608,6 +608,93 @@ public class OneDDiffArrT {
         }
 
         return q.size();
+    }
+
+    /*
+     * ========================== 分割线 ==========================
+     */
+
+    /*
+     * 2200. 找出数组中的所有 K 近邻下标
+     * 
+     * 二分
+     * 首先找出所有key的下标 n
+     * 然后对nums中的每个i使用二分查找是否存在符合要求的key
+     * 
+     * 方法2是使用差分
+     * 遍历nums，遇到一个key，相当于将[i-k, i+k]的区间+1，即差分数组d[Math.max(i-k,
+     * 0)]++,d[Math.min(i+k+1, n)]--
+     * 最后根据d构造s，s[i]>0则i满足题意
+     * 
+     * 方法3是滑动窗口，首先遍历nums的[0,k-1]的元素，记录key最后一次出现的位置idx
+     * 接下来开始对nums从0进行遍历
+     * 先更新idx，然后将当前遍历元素的i与idx进行比较
+     */
+    public List<Integer> findKDistantIndices0(int[] nums, int key, int k) {
+        List<Integer> keyIdx = new ArrayList<>();
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] == key)
+                keyIdx.add(i);
+        }
+
+        List<Integer> ans = new ArrayList<>();
+        for (int i = 0; i < nums.length; i++) {
+            // 二分查找第一个>=i-k的下标
+            int l = 0, r = keyIdx.size() - 1;
+            while (l <= r) {
+                int mid = (l + r) / 2;
+                if (keyIdx.get(mid) < i - k) {
+                    l = mid + 1;
+                } else {
+                    r = mid - 1;
+                }
+            }
+            if (l < keyIdx.size() && keyIdx.get(l) <= i + k)
+                ans.add(i);
+        }
+
+        return ans;
+    }
+
+    public List<Integer> findKDistantIndices1(int[] nums, int key, int k) {
+        int n = nums.length;
+        int[] d = new int[n+1];
+        for(int i = 0; i < n; i++) {
+            if(nums[i] == key) {
+                d[Math.max(i-k, 0)]++;
+                d[Math.min(i+k+1, n)]--;
+            }
+        }
+
+        List<Integer> ans = new ArrayList<>();
+        if(d[0] > 0) ans.add(0);
+        for(int i = 1; i < n; i++) {
+            d[i] += d[i-1];
+            if(d[i] > 0) ans.add(i);
+        }
+
+        return ans;
+    }
+
+    public List<Integer> findKDistantIndices(int[] nums, int key, int k) {
+        // 代表key没有出现
+        int idx = -1;
+        int n = nums.length;
+        for (int i = 0; i < k; i++) {
+            if (nums[i] == key)
+                idx = i;
+        }
+
+        List<Integer> ans = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            int next = k + i;
+            if (next < n && nums[next] == key)
+                idx = next;
+            if (idx >= 0 && Math.abs(idx - i) <= k)
+                ans.add(i);
+        }
+
+        return ans;
     }
 
     @Test

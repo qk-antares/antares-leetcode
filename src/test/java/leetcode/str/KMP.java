@@ -1,6 +1,7 @@
 package leetcode.str;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -41,10 +42,44 @@ public class KMP {
         return next;
     }
 
+    int[] buildPmt(char[] p) {
+        int n = p.length;
+        int[] pmt = new int[n];
+        int j = 0;
+
+        for (int i = 1; i < n; i++) {
+            while (j > 0 && p[j] != p[i])
+                j = pmt[j - 1];
+            if (p[j] == p[i])
+                j++;
+            pmt[i] = j;
+        }
+
+        return pmt;
+    }
+
+    int[] buildPmt(int[] p) {
+        int n = p.length;
+        int[] pmt = new int[n];
+        int j = 0; // 当前匹配长度
+
+        for (int i = 1; i < n; i++) {
+            while (j > 0 && p[j] != p[i])
+                j = pmt[j - 1];
+            if (p[j] == p[i])
+                j++;
+            pmt[i] = j;
+        }
+
+        return pmt;
+    }
+
     /*
      * 28. 找出字符串中第一个匹配项的下标 [Easy] <Star>
+     * 
+     * 转成char[]之后再进行匹配的效率稍高
      */
-    public int strStr(String haystack, String needle) {
+    public int strStr0(String haystack, String needle) {
         int m = haystack.length(), n = needle.length();
         int[] pmt = buildPmt(needle);
         int j = 0; // 匹配长度
@@ -55,6 +90,25 @@ public class KMP {
                 j++;
             if (j == n)
                 return i - j + 1;
+        }
+        return -1;
+    }
+
+    int strStr(String s, String p) {
+        char[] sArr = s.toCharArray();
+        char[] pArr = p.toCharArray();
+        int n = sArr.length;
+        int m = pArr.length;
+
+        int[] pmt = buildPmt(pArr);
+        int j = 0;
+        for (int i = 0; i < n; i++) {
+            while (j > 0 && pArr[j] != sArr[i])
+                j = pmt[j - 1];
+            if (pArr[j] == sArr[i])
+                j++;
+            if (j == m)
+                return i - m + 1;
         }
         return -1;
     }
@@ -135,22 +189,6 @@ public class KMP {
         }
 
         return ans;
-    }
-
-    int[] buildPmt(int[] p) {
-        int n = p.length;
-        int[] pmt = new int[n];
-        int j = 0; // 当前匹配长度
-
-        for (int i = 1; i < n; i++) {
-            while (j > 0 && p[j] != p[i])
-                j = pmt[j - 1];
-            if (p[j] == p[i])
-                j++;
-            pmt[i] = j;
-        }
-
-        return pmt;
     }
 
     /*
@@ -366,22 +404,6 @@ public class KMP {
         return ans;
     }
 
-    int[] buildPmt(char[] p) {
-        int n = p.length;
-        int[] pmt = new int[n];
-        int j = 0;
-
-        for (int i = 1; i < n; i++) {
-            while (j > 0 && p[j] != p[i])
-                j = pmt[j - 1];
-            if (p[j] == p[i])
-                j++;
-            pmt[i] = j;
-        }
-
-        return pmt;
-    }
-
     /*
      * 214. 最短回文串 [Hard]
      * 
@@ -483,6 +505,261 @@ public class KMP {
         return ans;
     }
 
+    /*
+     * 686. 重复叠加字符串匹配 [Medium]
+     * 
+     * 这里的次数是有上下界的，画个图很容易看出来
+     * 而且min+1=max
+     * 也就是答案只有两种可能
+     * 实测发现char[] KMP > String KMP >> Java contains/indexOf
+     * 所以在做算法题时最好还是使用自己实现的KMP算法
+     */
+    public int repeatedStringMatch(String a, String b) {
+        int m = a.length(), n = b.length();
+        int min = (int) Math.ceil((double) n / m);
+        int max = 1 + (int) Math.ceil((n - 1.0) / m);
+        String aa = a.repeat(max);
+        int idx = strStr(aa, b);
+        if (idx == -1)
+            return -1;
+        return idx + b.length() > a.length() * min ? max : min;
+    }
+
+    /*
+     * 3455. 最短匹配子字符串 [Hard]
+     * 
+     * 首先去掉首尾的*
+     * 将p分割成了（至多）3个子串subP[]（题设说了*号恰好有两个）
+     * 则s中必须包含所有的这些子串
+     * 记录这些子串出现的位置List<List<Integer>> posList，这是一些有序的列表
+     * 对这些列表进行遍历
+     * 
+     * 上述解法需要处理p中的*，还需要对p分割后不同数量的情况进行分类讨论
+     * 
+     * 另一种简单的方法是使用split("\\*", -1)保留分割出来的子串，这样分割后一定是3个子串
+     * 然后对每个子串使用KMP找出所有出现的位置
+     * 对于空串，我们认为s中的任何位置都可以匹配（包括s.length）
+     * 然后枚举中间这个串的位置，并维护左右最近的子串位置
+     */
+    public int shortestMatchingSubstring0(String s, String p) {
+        int pl = 0, pr = p.length() - 1;
+        int m = p.length();
+        while (pl <= pr && p.charAt(pl) == '*')
+            pl++;
+        while (pr >= pl && p.charAt(pr) == '*')
+            pr--;
+        p = p.substring(pl, pr + 1);
+        m = p.length();
+
+        List<List<Integer>> posList = new ArrayList<>();
+        List<String> subP = new ArrayList<>();
+        for (String subStr : p.split("\\*")) {
+            if (subStr.length() > 0) {
+                subP.add(subStr);
+                posList.add(strStrAll(s, subStr));
+            }
+        }
+
+        int len = posList.size();
+        if (len == 0)
+            return 0;
+        if (len == 1) {
+            int size0 = posList.get(0).size();
+            if (size0 == 0)
+                return -1;
+            else
+                return m;
+        }
+        if (len == 2) {
+            int size0 = posList.get(0).size(), size1 = posList.get(1).size();
+            if (size0 == 0 || size1 == 0)
+                return -1;
+            int ans = Integer.MAX_VALUE;
+            for (int i = 0; i < size0; i++) {
+                int l = posList.get(0).get(i);
+                int r = binarySearch(posList.get(1), l + subP.get(0).length() - 1);
+                if (r < 0 || r >= size1)
+                    break;
+                ans = Math.min(ans, posList.get(1).get(r) + subP.get(1).length() - l);
+            }
+            return ans == Integer.MAX_VALUE ? -1 : ans;
+        }
+        if (len == 3) {
+            int size0 = posList.get(0).size(), size1 = posList.get(1).size(), size2 = posList.get(2).size();
+            if (size0 == 0 || size1 == 0 || size2 == 0)
+                return -1;
+            int ans = Integer.MAX_VALUE;
+            for (int i = 0; i < size0; i++) {
+                int l = posList.get(0).get(i);
+                int r = binarySearch(posList.get(1), l + subP.get(0).length() - 1);
+                if (r < 0 || r >= size1)
+                    break;
+                int rr = binarySearch(posList.get(2), posList.get(1).get(r) + subP.get(1).length() - 1);
+                if (rr < 0 || rr >= size2)
+                    break;
+                ans = Math.min(ans, posList.get(2).get(rr) + subP.get(2).length() - l);
+            }
+            return ans == Integer.MAX_VALUE ? -1 : ans;
+        }
+        return -1;
+    }
+
+    // 二分查找第一个>target的元素下标
+    int binarySearch(List<Integer> list, int target) {
+        int l = 0, r = list.size() - 1;
+        while (l <= r) {
+            int mid = (l + r) / 2;
+            if (list.get(mid) <= target) {
+                l = mid + 1;
+            } else {
+                r = mid - 1;
+            }
+        }
+        return l;
+    }
+
+    List<Integer> strStrAll(String s, String p) {
+        char[] sArr = s.toCharArray();
+        char[] pArr = p.toCharArray();
+        int n = sArr.length;
+        int m = pArr.length;
+
+        List<Integer> ans = new ArrayList<>();
+
+        int[] pmt = buildPmt(pArr);
+        int j = 0;
+        for (int i = 0; i < n; i++) {
+            while (j > 0 && pArr[j] != sArr[i])
+                j = pmt[j - 1];
+            if (pArr[j] == sArr[i])
+                j++;
+            if (j == m) {
+                ans.add(i - m + 1);
+                j = pmt[j - 1];
+            }
+        }
+        return ans;
+    }
+
+    public int shortestMatchingSubstring(String s, String p) {
+        char[] sArr = s.toCharArray();
+        // 保留空串
+        String[] subP = p.split("\\*", -1);
+
+        List<Integer> pos0 = strStrAll(sArr, subP[0].toCharArray());
+        List<Integer> pos1 = strStrAll(sArr, subP[1].toCharArray());
+        List<Integer> pos2 = strStrAll(sArr, subP[2].toCharArray());
+
+        int ans = Integer.MAX_VALUE;
+        int l = 0, r = 0;
+        // 枚举中间，维护左右最近的元素
+        for (int mid : pos1) {
+            // 找右边最近
+            while (r < pos2.size() && pos2.get(r) < mid + subP[1].length())
+                r++;
+            // 右侧不存在满足条件的点
+            if (r >= pos2.size())
+                break;
+            // 找左侧最近
+            while (l < pos0.size() && pos0.get(l) <= mid - subP[0].length())
+                l++;
+            // l-1是左边最近的子串
+            if (l > 0)
+                ans = Math.min(ans, pos2.get(r) + subP[2].length() - pos0.get(l - 1));
+        }
+
+        return ans == Integer.MAX_VALUE ? -1 : ans;
+    }
+
+    List<Integer> strStrAll(char[] s, char[] p) {
+        int n = s.length;
+        int m = p.length;
+
+        if (m == 0) {
+            // 所有位置都可以匹配s
+            List<Integer> ans = new ArrayList<>(n + 1);
+            for (int i = 0; i <= n; i++) {
+                ans.add(i);
+            }
+            return ans;
+        }
+
+        List<Integer> ans = new ArrayList<>();
+
+        int[] pmt = buildPmt(p);
+        int j = 0;
+        for (int i = 0; i < n; i++) {
+            while (j > 0 && p[j] != s[i])
+                j = pmt[j - 1];
+            if (p[j] == s[i])
+                j++;
+            if (j == m) {
+                ans.add(i - m + 1);
+                j = pmt[j - 1];
+            }
+        }
+        return ans;
+    }
+
+    /*
+     * 1397. 找到所有好字符串 [Hard]
+     * 
+     * 数位dp
+     * dfs(i,status,s1Limit,s2Limit,char[] s1, char[] s2, int[][] memo, char[] evil,
+     * int[] pmt, int n)
+     * i表示当前填写的位，一共有n位
+     * status表示已经连续多少位和evil相同
+     * s1Limit表示是否受到下界限制
+     * s2Limit表示是否受到上界限制
+     * s1是下界
+     * s2是上界
+     * memo是记忆数组
+     * 返回当前的状态下，有多少个结果
+     */
+    public int findGoodStrings(int n, String s1, String s2, String evil) {
+        char[] arr = evil.toCharArray();
+        int[] pmt = buildPmt(arr);
+        int[][] memo = new int[n][pmt.length];
+        for (int[] row : memo)
+            Arrays.fill(row, -1);
+        return dfs(0, 0, true, true, s1.toCharArray(), s2.toCharArray(), memo, arr, pmt, n);
+    }
+
+    int dfs(int i, int status, boolean s1Limit, boolean s2Limit, char[] s1, char[] s2, int[][] memo, char[] evil,
+            int[] pmt, int n) {
+        if (status == pmt.length)
+            return 0;
+        if (i == n)
+            return 1;
+        if (!s1Limit && !s2Limit && memo[i][status] != -1)
+            return memo[i][status];
+
+        int ans = 0; // 共有ans种填法
+        int low = s1Limit ? s1[i] - 'a' : 0;
+        int high = s2Limit ? s2[i] - 'a' : 25;
+        for (int j = low; j <= high; j++) {
+            // 这相当于失配
+            if (j != evil[status] - 'a') {
+                int newStatus = status;
+                while (newStatus > 0 && j != evil[newStatus])
+                    newStatus = pmt[newStatus - 1];
+                if (evil[newStatus] == j)
+                    newStatus++;
+                ans = (ans
+                        + dfs(i + 1, newStatus, s1Limit && j == low, s2Limit && j == high, s1, s2, memo, evil, pmt, n))
+                        % 1_000_000_007;
+            } else {
+                ans = (ans
+                        + dfs(i + 1, status + 1, s1Limit && j == low, s2Limit && j == high, s1, s2, memo, evil, pmt, n))
+                        % 1_000_000_007;
+            }
+        }
+
+        if (!s1Limit && !s2Limit)
+            memo[i][status] = ans;
+        return ans;
+    }
+
     @Test
     public void testGetNext() {
         // maxRepeating("aaabaaaabaaabaaaabaaaabaaaabaaaaba", "aaaba");
@@ -493,5 +770,9 @@ public class KMP {
         // System.out.print(pmt[i] + " ");
         // }
         // Expected output: -1 0 0 1 2
+
+        // shortestMatchingSubstring("cvtrmfmvuhzncqffl", "fl**");
+
+        findGoodStrings(4, "aaa", "zzz", "ab");
     }
 }

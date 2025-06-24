@@ -115,6 +115,8 @@ String[] parts = str.split("[ .,!]+");
 String[] parts = str.split("\\s+");
 //单纯按照一个空格分割
 String[] parts = str.split(" ");
+//按照特殊字符(|*)分割
+String[] parts = str.split("\\|");
 ```
 
 #### 1.5.2 `join()`
