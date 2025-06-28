@@ -12,6 +12,11 @@ Object[] objs = new Object[n];
 //这个地方不能使用Arrays.fill，因为会让数组中每个元素引用同一个对象
 Arrays.setAll(objs, i -> new Object());
 ```
+需要注意`Arrays.setAll`只能用于引用类型，对于基本数据类型，如果填充不是固定值，而是有规律的逻辑（比如填充为下标），可以使用包装类型，如：
+```java
+Integer[] arr = new Integer[n];
+Arrays.setAll(arr, i -> i);
+```
 
 #### 1.1.2 `Arrays.copyOf`
 
