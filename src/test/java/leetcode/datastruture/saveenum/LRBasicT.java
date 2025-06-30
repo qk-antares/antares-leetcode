@@ -13,7 +13,7 @@ import java.util.Set;
  * 枚举右，维护左（双变量）
  * 枚举中间（多变量）
  */
-public class SaveEnum {
+public class LRBasicT {
     /*
      * 1. 两数之和 [Easy]
      */
@@ -161,6 +161,22 @@ public class SaveEnum {
         for (int i = n - 2; i >= 0; i--) {
             ans = Math.max(ans, max - prices[i]);
             max = Math.max(max, prices[i]);
+        }
+        return ans;
+    }
+
+    /*
+     * 2016. 增量元素之间的最大差值 [Easy]
+     * 
+     * 遍历数组的同时，保存当前的最小值
+     */
+    public int maximumDifference(int[] nums) {
+        int min = nums[0];
+        int ans = -1;
+        for (int num : nums) {
+            if (num > min)
+                ans = Math.max(ans, num - min);
+            min = Math.min(min, num);
         }
         return ans;
     }
@@ -513,90 +529,6 @@ public class SaveEnum {
      */
 
     /*
-     * 1010. 总持续时间可被 60 整除的歌曲 [Medium]
-     * 
-     * 用Map记录满足某余数的歌曲数量，当然，由于本题余数的范围是很小的，所以可以用一个数组代替Map效率更高
-     */
-    public int numPairsDivisibleBy60(int[] time) {
-        int[] map = new int[60];
-        int ans = 0;
-        for (int i = 0; i < time.length; i++) {
-            int mod = time[i] % 60;
-            ans += map[(60 - mod) % 60];
-            map[mod]++;
-        }
-        return ans;
-    }
-
-    /*
-     * 3185. 构成整天的下标对数目 II [Medium]
-     * 
-     * 只用记录每个位置%24的余数 0~23
-     */
-    public long countCompleteDayPairs(int[] hours) {
-        int[] cnt = new int[24];
-        long ans = 0;
-        for (int h : hours) {
-            int mod = h % 24;
-            ans += cnt[(24 - mod) % 24];
-            cnt[mod]++;
-        }
-        return ans;
-    }
-
-    /*
-     * 2748. 美丽下标对的数目 [Easy]
-     * 
-     * 只用记录第一个数字的出现次数
-     * 构建一个满足条件的map
-     */
-    public int countBeautifulPairs(int[] nums) {
-        int[] cnt = new int[10];
-        int ans = 0;
-        for (int num : nums) {
-            // 获取最后一个数字
-            int lastNum = num % 10;
-            for (int i = 1; i <= 9; i++)
-                if (gcd(i, lastNum) == 1)
-                    ans += cnt[i];
-
-            // 获取第一个数字
-            int firstNum = 0;
-            while (num != 0) {
-                firstNum = num % 10;
-                num /= 10;
-            }
-            cnt[firstNum]++;
-        }
-
-        return ans;
-    }
-
-    /*
-     * 2506. 统计相似字符串对的数目 [Easy]
-     * 
-     * 每个单词可以用26个bit位来统计各个字母是否出现
-     * 可以直接使用一个int来统计，最后存储到Map中
-     */
-    public int similarPairs(String[] words) {
-        Map<Integer, Integer> map = new HashMap<>();
-        int ans = 0;
-        for (String s : words) {
-            int flag = 0;
-            for (char ch : s.toCharArray())
-                flag |= (1 << ch - 'a');
-
-            ans += map.getOrDefault(flag, 0);
-            map.merge(flag, 1, Integer::sum);
-        }
-        return ans;
-    }
-
-    /*
-     * ========================== 分割线 ==========================
-     */
-
-    /*
      * 3443. K 次修改后的最大曼哈顿距离 [Medium]
      * 遍历的过程中，统计NSEW的数量
      * 由于题目求的是"过程中"的最大距离，每遍历一个字符，就更新ans
@@ -611,6 +543,42 @@ public class SaveEnum {
             int y = Math.abs(cnt['N'] - cnt['S']);
             int d2 = Math.min(k - d1, Math.min(cnt['N'], cnt['S']));
             ans = Math.max(ans, x + 2 * d1 + y + 2 * d2);
+        }
+
+        return ans;
+    }
+
+    /*
+     * 594. 最长和谐子序列 [Easy]
+     * 
+     * 一边遍历，一边使用一个Map来保存前面元素的出现次数cnt
+     * 假设当前遍历到的为nums[i]，则以nums[i]结尾的最长子序列长度为：Math.max(cnt[nums[i]]+cnt[nums[i]+1],
+     * cnt[nums[i]]+cnt[nums[i]-1])
+     * 还要考虑不存在的情况
+     * 
+     * 没必要，一次遍历保存所有元素的出现次数即可
+     */
+    public int findLHS0(int[] nums) {
+        int ans = 0;
+        Map<Integer, Integer> cnt = new HashMap<>();
+        for (int num : nums) {
+            int update = cnt.getOrDefault(num, 0) + 1;
+            cnt.put(num, update);
+            ans = Math.max(ans, Math.max(update + cnt.getOrDefault(num - 1, Integer.MIN_VALUE),
+                    update + cnt.getOrDefault(num + 1, Integer.MIN_VALUE)));
+        }
+        return ans;
+    }
+
+    public int findLHS(int[] nums) {
+        int ans = 0;
+        Map<Integer, Integer> cnt = new HashMap<>();
+        for (int num : nums) {
+            cnt.merge(num, 1, Integer::sum);
+        }
+        for (Map.Entry<Integer, Integer> e : cnt.entrySet()) {
+            ans = Math.max(ans, Math.max(e.getValue() + cnt.getOrDefault(e.getKey() - 1, Integer.MIN_VALUE),
+                    e.getValue() + cnt.getOrDefault(e.getKey() + 1, Integer.MIN_VALUE)));
         }
 
         return ans;
