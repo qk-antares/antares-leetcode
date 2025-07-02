@@ -153,6 +153,37 @@ public class EnumMidT {
         }
 
         return ans;
+    }
 
+    /*
+     * 3128. 直角三角形 [Medium]
+     * 
+     * 将(i,j)视为直角
+     * ans += (row[i]-1) * (col[j]-1)
+     */
+    public long numberOfRightTriangles(int[][] grid) {
+        int m = grid.length, n = grid[0].length;
+        long ans = 0;
+        long[] row = new long[m];
+        long[] col = new long[n];
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] != 0) {
+                    row[i]++;
+                    col[j]++;
+                }
+            }
+        }
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] != 0) {
+                    ans += (row[i] - 1) * (col[j] - 1);
+                }
+            }
+        }
+
+        return ans;
     }
 }

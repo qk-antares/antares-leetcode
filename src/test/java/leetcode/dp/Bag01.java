@@ -1,8 +1,10 @@
-package leetcode.questions.T1000.T500;
+package leetcode.dp;
 
-public class DpT {
+import java.util.Arrays;
+
+public class Bag01 {
     /*
-     * TODO 416. 分割等和子集 [Medium]
+     * 416. 分割等和子集 [Medium]
      * 
      * 使用dp[i][j]表示从nums[...i]中选取一些数，能否使其和恰好为j
      * 本问题等价于从nums中选取一些数，使其和恰好为sum/2(target)
@@ -46,5 +48,55 @@ public class DpT {
         }
 
         return dp[n - 1][target];
+    }
+
+    /*
+     * 494. 目标和 [Medium] <Star>
+     * 
+     * dfs(i,cur,nums,target)
+     * i是当前填的位
+     * cur是当前的和
+     * 返回==target的方案数
+     * 
+     * nums的所有和为S
+     * 添加正号元素之和为p，负号元素之和为q
+     * p+q=S，p-q=target
+     * p=(S+target)/2，q=(S-target)/2
+     * 
+     * 问题转换成从nums选取一些正数，和为(S-|target|)/2
+     * dfs(i,tot) 表示从nums[0..i]中选取一些数，和为tot的方案数
+     */
+    public int findTargetSumWays(int[] nums, int target) {
+        int S = 0;
+        for (int num : nums)
+            S += num;
+        int tot = S - Math.abs(target);
+        if (tot < 0 || tot % 2 != 0)
+            return 0;
+
+        tot /= 2;
+        int n = nums.length;
+        int[][] memo = new int[n][tot + 1];
+        for (int[] row : memo)
+            Arrays.fill(row, -1);
+        return dfs(n - 1, tot, nums, memo);
+    }
+
+    int dfs(int i, int tot, int[] nums, int[][] memo) {
+        if (i < 0) {
+            return tot == 0 ? 1 : 0;
+        }
+
+        if (memo[i][tot] != -1)
+            return memo[i][tot];
+
+        int ans = 0;
+        // 该条件下才能选择nums[i]
+        if (tot >= nums[i])
+            ans += dfs(i - 1, tot - nums[i], nums, memo);
+        ans += dfs(i - 1, tot, nums, memo);
+
+        memo[i][tot] = ans;
+        return ans;
     }
 }
