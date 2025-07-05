@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 public class EnumMidT {
     /*
@@ -185,5 +186,82 @@ public class EnumMidT {
         }
 
         return ans;
+    }
+
+    /*
+     * 2874. 有序三元组中的最大值 II [Medium]
+     */
+    public long maximumTripletValue(int[] nums) {
+        int n = nums.length;
+        int[] leftMax = new int[n];
+        int[] rightMax = new int[n];
+        for (int i = 1; i < n; i++) {
+            leftMax[i] = Math.max(leftMax[i - 1], nums[i - 1]);
+            rightMax[n - 1 - i] = Math.max(rightMax[n - i], nums[n - i]);
+        }
+
+        long ans = 0;
+        for (int i = 1; i < n - 1; i++) {
+            ans = Math.max(ans, (long) (leftMax[i] - nums[i]) * rightMax[i]);
+        }
+        return ans;
+    }
+
+    /*
+     * 447. 回旋镖的数量 [Medium]
+     * 
+     * 枚举points中的点作为"角"
+     * 接下来遍历points中的点计算距离，距离保存到HashMap
+     * ans += map[dis]
+     * map放在for循环外面new可以提高效率
+     */
+    public int numberOfBoomerangs(int[][] points) {
+        int ans = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int[] o : points) {
+            map.clear();
+            for (int[] p : points) {
+                int x = p[0] - o[0], y = p[1] - o[1];
+                int dis = x * x + y * y;
+                int cur = map.getOrDefault(dis, 0);
+                ans += cur;
+                map.put(dis, cur + 1);
+            }
+        }
+        return ans * 2;
+    }
+
+    /*
+     * 456. 132 模式 [Medium] <Star>
+     * 
+     * 枚举中间的nums[j]，枚举的过程中记录各个数字的出现次数，这相当于知道了leftCnt
+     * 一开始就记录nums中所有数字的出现次数，并在上面个枚举的过程中不断--遍历到的数字，这相当于知道了rightCnt
+     * 枚举leftCnt中<nums[j]的数l，同时枚举rightCnt中<nums[j]且>l的数
+     * leftCnt和rightCnt都使用TreeMap，使用headMap、tailMap或subMap来对某个区间的TreeMap进行遍历
+     * 
+     * 要使上面rightCnt的区间尽可能地大，所以只需要知道nums[j]左侧最小的值即可
+     */
+    public boolean find132pattern(int[] nums) {
+        int n = nums.length;
+        if (n < 3)
+            return false;
+        TreeMap<Integer, Integer> rightCnt = new TreeMap<>();
+        for (int i = 1; i < n; i++)
+            rightCnt.merge(nums[i], 1, Integer::sum);
+
+        int l = nums[0];
+        for (int j = 1; j < n - 1; j++) {
+            int update = rightCnt.get(nums[j]) - 1;
+            if (update > 0)
+                rightCnt.put(nums[j], update);
+            else
+                rightCnt.remove(nums[j]);
+            Integer r = rightCnt.ceilingKey(l + 1);
+            if (r != null && l < nums[j] && r < nums[j])
+                return true;
+            l = Math.min(l, nums[j]);
+        }
+
+        return false;
     }
 }
