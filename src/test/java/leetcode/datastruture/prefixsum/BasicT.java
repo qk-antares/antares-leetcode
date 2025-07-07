@@ -1,7 +1,5 @@
 package leetcode.datastruture.prefixsum;
 
-import java.util.Arrays;
-
 public class BasicT {
     /*
      * 303. 区域和检索 - 数组不可变 [Easy[]
@@ -39,42 +37,43 @@ public class BasicT {
     }
 
     /*
-     * 1371. 每个元音包含偶数次的最长子字符串 [Medium] <Star>
-     * 
-     * 相当于枚举右，维护左
-     * 枚举到的s[i]，需要知道它们每个元音字母的奇偶性
-     * 5个字母的奇偶性有2^5个状态，者可以用1<<5的数组维护
-     * 维护左边某个奇偶性状态最早出现的位置
+     * 2559. 统计范围内的元音字符串数 [Medium]
      */
-    public int findTheLongestSubstring(String s) {
-        char[] arr = s.toCharArray();
-        // 维护每个状态的最近位置
-        int[] map = new int[1 << 5];
-        Arrays.fill(map, -2);
-        map[0] = -1;
-        // 初始状态，每个元音字母都是0
-        int status = 0;
-        int ans = 0;
-        for (int i = 0; i < arr.length; i++) {
-            if (arr[i] == 'a') {
-                status ^= 1;
-            } else if (arr[i] == 'e') {
-                status ^= (1 << 1);
-            } else if (arr[i] == 'i') {
-                status ^= (1 << 2);
-            } else if (arr[i] == 'o') {
-                status ^= (1 << 3);
-            } else if (arr[i] == 'u') {
-                status ^= (1 << 4);
-            }
+    public int[] vowelStrings(String[] words, int[][] queries) {
+        int n = words.length;
+        int[] preSum = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            char c1 = words[i - 1].charAt(0);
+            char c2 = words[i - 1].charAt(words[i - 1].length() - 1);
 
-            if (map[status] != -2) {
-                ans = Math.max(ans, i - map[status]);
-            } else {
-                map[status] = i;
-            }
+            if ((c1 == 'a' || c1 == 'e' || c1 == 'i' || c1 == 'o' || c1 == 'u')
+                    && (c2 == 'a' || c2 == 'e' || c2 == 'i' || c2 == 'o' || c2 == 'u'))
+                preSum[i] = 1 + preSum[i - 1];
+            else
+                preSum[i] = preSum[i - 1];
         }
 
+        int[] ans = new int[queries.length];
+        for (int i = 0; i < queries.length; i++) {
+            int[] q = queries[i];
+            ans[i] = preSum[q[1] + 1] - preSum[q[0]];
+        }
+        return ans;
+    }
+
+    /*
+     * 3152. 特殊数组 II [Medium]
+     */
+    public boolean[] isArraySpecial(int[] nums, int[][] queries) {
+        int[] s = new int[nums.length];
+        for (int i = 1; i < nums.length; i++) {
+            s[i] = s[i - 1] + (nums[i - 1] % 2 == nums[i] % 2 ? 1 : 0);
+        }
+        boolean[] ans = new boolean[queries.length];
+        for (int i = 0; i < queries.length; i++) {
+            int[] q = queries[i];
+            ans[i] = s[q[0]] == s[q[1]];
+        }
         return ans;
     }
 
