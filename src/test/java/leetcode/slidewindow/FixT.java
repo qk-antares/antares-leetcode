@@ -331,7 +331,7 @@ public class FixT {
      * 每平移1个会议，相当于合并nums中的2个元素，则平移k个会议，相当于nums中k+1大小的窗口
      * 变成了求nums中k+1的窗口的最大元素和
      */
-    public int maxFreeTime(int eventTime, int k, int[] startTime, int[] endTime) {
+    public int maxFreeTime0(int eventTime, int k, int[] startTime, int[] endTime) {
         List<Integer> nums = new ArrayList<>();
         int n = startTime.length;
         int end = 0;
@@ -357,6 +357,28 @@ public class FixT {
             sum -= nums.get(i - k);
         }
         return Math.max(ans, sum);
+    }
+
+    public int maxFreeTime(int eventTime, int k, int[] startTime, int[] endTime) {
+        int n = startTime.length;
+        int[] d = new int[n + 1];
+        d[0] = startTime[0];
+        for (int i = 1; i < n; i++) {
+            d[i] = startTime[i] - endTime[i - 1];
+        }
+        d[n] = eventTime - endTime[n - 1];
+
+        int sum = 0;
+        int ans = 0;
+        for (int i = 0; i < n + 1; i++) {
+            sum += d[i];
+            if (i >= k) {
+                ans = Math.max(ans, sum);
+                sum -= d[i - k];
+            }
+        }
+
+        return ans;
     }
 
     /*

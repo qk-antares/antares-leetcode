@@ -169,6 +169,31 @@ public class DisjointInterval {
     }
 
     /*
+     * 2054. 两个最好的不重叠活动 [Medium]
+     * 
+     * 首先将所有的活动按照结束时间排序
+     * dp[i][j]表示从前i个events中，选择j个，所能获得的最大价值
+     * 不选：dp[i+1][j] = dp[i][j]
+     * 选：dp[i+1][j] = dp[idx+1][j-1]+events[i][2]
+     * idx是endTime<events[i].startTime的最远event的idx
+     * 边界条件：dp[0][0] = 0
+     */
+    public int maxTwoEvents(int[][] events) {
+        Arrays.sort(events, (o1, o2) -> o1[1] - o2[1]);
+        int n = events.length;
+        int[][] dp = new int[n + 1][3];
+
+        for (int i = 0; i < n; i++) {
+            int idx = binarySearch0(events, events[i][0]);
+            for (int j = 0; j < 2; j++) {
+                dp[i + 1][j + 1] = Math.max(dp[i][j + 1], dp[idx + 1][j] + events[i][2]);
+            }
+        }
+
+        return dp[n][2];
+    }
+
+    /*
      * 1751. 最多可以参加的会议数目 II [Hard]
      * 
      * 和上一题类似，但是dp多了一个维度k，表示最多可以参加k个会议

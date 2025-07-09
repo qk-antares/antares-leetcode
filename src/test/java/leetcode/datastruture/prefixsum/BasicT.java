@@ -1,5 +1,7 @@
 package leetcode.datastruture.prefixsum;
 
+import java.util.Arrays;
+
 public class BasicT {
     /*
      * 303. 区域和检索 - 数组不可变 [Easy[]
@@ -74,6 +76,57 @@ public class BasicT {
             int[] q = queries[i];
             ans[i] = s[q[0]] == s[q[1]];
         }
+        return ans;
+    }
+
+    /*
+     * 1749. 任意子数组和的绝对值的最大值 [Medium]
+     * 
+     * 符合题意的子数组一定是前缀和最大的一段减去前缀和最小的一段
+     */
+    public int maxAbsoluteSum(int[] nums) {
+        int sum = 0, min = 0, max = 0;
+        for (int num : nums) {
+            sum += num;
+            if (sum > max)
+                max = sum;
+            else if (sum < min)
+                min = sum;
+        }
+        return max - min;
+    }
+
+    /*
+     * 2389. 和有限的最长子序列 [Easy]
+     * 
+     * 由于是子序列，所以顺序无关
+     * 首先对nums进行排序
+     * 接下来计算前缀和s
+     * 每个q相当于在s中二分
+     */
+    public int[] answerQueries(int[] nums, int[] queries) {
+        Arrays.sort(nums);
+        int n = nums.length;
+        int[] s = new int[n + 1];
+        for (int i = 0; i < n; i++)
+            s[i + 1] = s[i] + nums[i];
+
+        int m = queries.length;
+        int[] ans = new int[m];
+        for (int i = 0; i < m; i++) {
+            int q = queries[i];
+            int l = 0, r = n;
+            while (l <= r) {
+                int mid = (l + r) / 2;
+                if (s[mid] > q) {
+                    r = mid - 1;
+                } else {
+                    l = mid + 1;
+                }
+            }
+            ans[i] = r;
+        }
+
         return ans;
     }
 
