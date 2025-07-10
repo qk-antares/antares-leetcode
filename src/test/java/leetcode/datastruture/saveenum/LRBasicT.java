@@ -583,4 +583,48 @@ public class LRBasicT {
 
         return ans;
     }
+
+    /*
+     * 3440. 重新安排会议得到最多空余时间 II [Medium]
+     * 
+     * 假设被重新安排的会议是i，那么有以下两种情况
+     * 顺序不发生变化：会议i被左右移动，直至和左右的会议贴在一起
+     * ans = Math.max(ans, leftEmpty+rightEmpty)
+     * 顺序发生变化：会议i被插入除leftEmpty和rightEmpty之外的一个空间（前提是能放得下）
+     * ans = Math.max(ans, leftEmpty+deltai+rightEmpty)
+     * 假设有n个会议，那么它们之间的间隔d有n+1个
+     * 用一个数组r来记录右侧的最大空余空间
+     */
+    public int maxFreeTime(int eventTime, int[] startTime, int[] endTime) {
+        int n = startTime.length;
+        int[] d = new int[n + 1];
+        d[0] = startTime[0];
+        for (int i = 1; i < n; i++) {
+            d[i] = startTime[i] - endTime[i - 1];
+        }
+        d[n] = eventTime - endTime[n - 1];
+
+        int[] r = new int[n + 1];
+        for (int i = n - 1; i >= 0; i--) {
+            r[i] = Math.max(r[i + 1], d[i + 1]);
+        }
+
+        int ans = 0;
+        // 左侧最大空间
+        int l = 0;
+        // 枚举被移动的那个会议
+        for (int i = 0; i < n; i++) {
+            int delta = endTime[i] - startTime[i];
+            // 顺序发生变化
+            if (delta <= l || delta <= r[i + 1])
+                ans = Math.max(ans, d[i] + delta + d[i + 1]);
+            // 顺序不变
+            else
+                ans = Math.max(ans, d[i] + d[i + 1]);
+
+            l = Math.max(l, d[i]);
+        }
+
+        return ans;
+    }
 }
