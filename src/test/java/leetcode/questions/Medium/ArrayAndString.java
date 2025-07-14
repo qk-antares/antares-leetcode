@@ -224,46 +224,6 @@ public class ArrayAndString {
         return s.substring(start, start + maxLen);
     }
 
-    /**
-     * 递增的三元子序列（我的解法：动态规划，思路是对的，但是超时）
-     * dp[i]表示nums[i]结尾的最长递增子序列
-     * dp[0] = 1
-     * dp[i] = max(dp[j])+1 (nums[j]<nums[i])
-     */
-    public boolean increasingTriplet(int[] nums) {
-        int[] dp = new int[nums.length];
-        dp[0] = 1;
-        int maxDp;
-        for(int i = 1;i < nums.length;i++){
-            maxDp = 0;
-            for(int j = 0;j < i;j++){
-                if(nums[j] < nums[i] && dp[j] > maxDp){
-                    maxDp = dp[j];
-                }
-            }
-            dp[i] = maxDp + 1;
-            if(dp[i] >= 3)
-                return true;
-        }
-        return false;
-    }
-
-    /**
-     * 答案解法（两个临时变量分别保存当前遇到的第一小值和第二小值）
-     */
-    public boolean increasingTriplet0(int[] nums) {
-        int min0 = Integer.MAX_VALUE,min1 = Integer.MAX_VALUE;
-        for(int i = 0;i < nums.length;i++){
-            if(nums[i] < min0)
-                min0 = nums[i];
-            else if(nums[i] > min0 && nums[i] < min1)
-                min1 = nums[i];
-            else if (nums[i] > min1)
-                return true;
-        }
-        return false;
-    }
-
     @Test
     public void invoke(){
 //        groupAnagrams(new String[]{"eat","tea","tan","ate","nat","bat"});

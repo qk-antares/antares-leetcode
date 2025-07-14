@@ -1,10 +1,10 @@
 package leetcode.hots100;
 
-import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+
+import org.junit.jupiter.api.Test;
 
 public class ArrayLearn {
     /**
@@ -63,27 +63,6 @@ public class ArrayLearn {
             l++;
             r--;
         }
-    }
-
-    /**
-     * 除自身以外数组的乘积(维护两个数组L[],R[],L[i]代表nums[i]左侧元素的乘积，R[i]代表右侧元素的乘积)
-     */
-    public int[] productExceptSelf(int[] nums) {
-        int len = nums.length;
-        int[] L = new int[len];
-        L[0] = 1;
-        int[] R = new int[len];
-        R[len-1] = 1;
-        for (int i = 1; i < len; i++) {
-            L[i] = L[i-1] * nums[i-1];
-            R[len-i-1] = R[len-i] * nums[len-i];
-        }
-
-        int[] ans = new int[len];
-        for (int i = 0; i < len; i++) {
-            ans[i] = L[i] * R[i];
-        }
-        return ans;
     }
 
     /**

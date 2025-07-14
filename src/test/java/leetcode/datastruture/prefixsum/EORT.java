@@ -2,6 +2,9 @@ package leetcode.datastruture.prefixsum;
 
 import java.util.Arrays;
 
+/*
+ * 前缀异或和
+ */
 public class EORT {
     /*
      * 1371. 每个元音包含偶数次的最长子字符串 [Medium] <Star>

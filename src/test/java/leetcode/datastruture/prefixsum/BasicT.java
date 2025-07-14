@@ -334,6 +334,106 @@ public class BasicT {
         return ans;
     }
 
+    /*
+     * ========================== 分割线 ==========================
+     */
+
+    /*
+     * 238. 除自身以外数组的乘积 [Medium]
+     * 
+     * 第一种方法，提前计算所有元素的积，然后对于nums[i]，答案就是tot/nums[i]
+     * 这种方法的问题在于，需要对nums中有没有0，有多少个0进行判断，逻辑稍微复杂
+     * 
+     * 第二种方法，理解起来更加直观，用前缀积和后缀积
+     * 前缀积数组p[i]表示nums[0]到nums[i-1]的积
+     * 后缀积数组s[i]表示nums[i+1]到nums[n-1]的积
+     * 那么答案就是p[i]*s[i]
+     * 我们可以提前构造后缀积，而在构造答案的过程中，边遍历边构造前缀积
+     */
+    public int[] productExceptSelf0(int[] nums) {
+        long tot = 1;
+        int cnt = 0;
+        int idx = -1;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != 0)
+                tot *= nums[i];
+            else {
+                cnt++;
+                idx = i;
+            }
+        }
+        if (cnt != 0) {
+            Arrays.fill(nums, 0);
+            if (cnt == 1) {
+                nums[idx] = (int) tot;
+            }
+        } else {
+            for (int i = 0; i < nums.length; i++) {
+                nums[i] = (int) (tot / nums[i]);
+            }
+        }
+
+        return nums;
+    }
+
+    public int[] productExceptSelf(int[] nums) {
+        int len = nums.length;
+        int[] left = new int[len];
+        left[0] = 1;
+        int[] right = new int[len];
+        right[len - 1] = 1;
+
+        for (int i = 1; i < len; i++) {
+            left[i] = nums[i - 1] * left[i - 1];
+            right[len - 1 - i] = nums[len - i] * right[len - i];
+        }
+
+        int[] ans = new int[len];
+        for (int i = 0; i < len; i++) {
+            ans[i] = left[i] * right[i];
+        }
+        return ans;
+    }
+
+    /*
+     * 334. 递增的三元子序列 [Medium]
+     * 
+     * 记录nums中每个元素左侧的最小值lMin和右侧最大值rMax
+     * 其中rMax通过提前遍历nums构造
+     * lMin边遍历(枚举中间的j)边构造
+     * 
+     * 答案解法（两个临时变量分别保存当前遇到的第一小值和第二小值）
+     */
+    public boolean increasingTriplet0(int[] nums) {
+        int n = nums.length;
+        int[] rMax = new int[n];
+        rMax[n-1] = Integer.MIN_VALUE;
+        for(int i = n-2; i >= 0; i--) {
+            rMax[i] = Math.max(rMax[i+1], nums[i+1]);
+        }
+
+        int lMin = nums[0];
+        for(int j = 1; j < n-1; j++) {
+            if(nums[j] > lMin && nums[j] < rMax[j]) return true;
+            lMin = Math.min(lMin, nums[j]);
+        }
+
+        return false;
+    }
+
+    public boolean increasingTriplet(int[] nums) {
+        int min1 = Integer.MAX_VALUE, min2 = Integer.MAX_VALUE;
+        for (int num : nums) {
+            if (num < min1) {
+                min1 = num;
+            } else if (num > min1 && num < min2) {
+                min2 = num;
+            } else if (num > min2)
+                return true;
+        }
+        return false;
+    }
+
     @Test
     public void test() {
         // System.out.println(shiftDistance("abab", "baba",
