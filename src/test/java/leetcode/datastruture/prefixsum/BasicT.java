@@ -335,6 +335,35 @@ public class BasicT {
     }
 
     /*
+     * 1744. 你能在你最喜欢的那天吃到你最喜欢的糖果吗？ [Medium]
+     * 
+     * candiesCount的前缀和可以用来求该糖果被吃的区间范围
+     */
+    public boolean[] canEat(int[] candiesCount, int[][] queries) {
+        int n = candiesCount.length;
+        long[] s = new long[n + 1];
+        for (int i = 0; i < n; i++)
+            s[i + 1] = s[i] + candiesCount[i];
+
+        int m = queries.length;
+        boolean[] ans = new boolean[m];
+        for (int i = 0; i < m; i++) {
+            int[] q = queries[i];
+            // 已吃掉的最小和最大值
+            int min = q[1];
+            long max = (long) (q[1] + 1) * q[2];
+
+            // 已吃掉的最小值覆盖了当前糖果 || 已吃掉的最大值+当前再吃掉的总值无法覆盖到当前糖果
+            if (min >= s[q[0] + 1] || max <= s[q[0]])
+                ans[i] = false;
+            else
+                ans[i] = true;
+        }
+
+        return ans;
+    }
+
+    /*
      * ========================== 分割线 ==========================
      */
 
@@ -407,14 +436,15 @@ public class BasicT {
     public boolean increasingTriplet0(int[] nums) {
         int n = nums.length;
         int[] rMax = new int[n];
-        rMax[n-1] = Integer.MIN_VALUE;
-        for(int i = n-2; i >= 0; i--) {
-            rMax[i] = Math.max(rMax[i+1], nums[i+1]);
+        rMax[n - 1] = Integer.MIN_VALUE;
+        for (int i = n - 2; i >= 0; i--) {
+            rMax[i] = Math.max(rMax[i + 1], nums[i + 1]);
         }
 
         int lMin = nums[0];
-        for(int j = 1; j < n-1; j++) {
-            if(nums[j] > lMin && nums[j] < rMax[j]) return true;
+        for (int j = 1; j < n - 1; j++) {
+            if (nums[j] > lMin && nums[j] < rMax[j])
+                return true;
             lMin = Math.min(lMin, nums[j]);
         }
 
