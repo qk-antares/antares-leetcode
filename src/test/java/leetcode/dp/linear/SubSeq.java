@@ -1,5 +1,7 @@
 package leetcode.dp.linear;
 
+import org.junit.jupiter.api.Test;
+
 /*
  * 子序列DP
  */
@@ -30,6 +32,130 @@ public class SubSeq {
         }
 
         return ans > 1 ? ans : -1;
+    }
+
+    /*
+     * 3202. 找出有效子序列的最大长度 II [Medium]
+     * 
+     * (a+b)%k=(b+c)%k等价于(a-c)%k=0，即a和c关于k同余
+     * 即子序列的偶数项同余，奇数项同余
+     * 对nums的每个元素求%k，假设余数的范围是[1,max]
+     * 创建一个dp[max+1][max+1]数组
+     * 假设我们现在遍历到了一个余数x
+     * 则dp[y][x]=dp[x][y]+1
+     * dp[x][y]表示以xy作为最后两项的子序列的最大长度
+     * 用一个for循环枚举y来更新dp
+     * 
+     * 还可以把上述两个过程合并，余数的上界max不用求，实际上就是[1,k-1]
+     */
+    public int maximumLength0(int[] nums, int k) {
+        int n = nums.length;
+        int max = 0;
+
+        for (int i = 0; i < n; i++) {
+            nums[i] %= k;
+            max = Math.max(max, nums[i]);
+        }
+
+        int[][] dp = new int[max + 1][max + 1];
+
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            int x = nums[i];
+            for (int y = 0; y <= max; y++) {
+                dp[y][x] = dp[x][y] + 1;
+                ans = Math.max(ans, dp[y][x]);
+            }
+        }
+
+        return ans;
+    }
+
+    public int maximumLength(int[] nums, int k) {
+        int[][] dp = new int[k][k];
+
+        int ans = 0;
+        for (int x : nums) {
+            x %= k;
+            for (int y = 0; y < k; y++) {
+                dp[y][x] = dp[x][y] + 1;
+                ans = Math.max(ans, dp[y][x]);
+            }
+        }
+
+        return ans;
+    }
+
+    /*
+     * 1218. 最长定差子序列 [Medium]
+     * 
+     * 用dp[i]表示以i结尾的最长等差子序列的长度
+     * 由于此题i的范围比较有限（20000），所以直接用数组
+     */
+    public int longestSubsequence(int[] arr, int difference) {
+        int[] dp = new int[20001];
+        int ans = 0;
+        for (int num : arr) {
+            int idx = num + 10000;
+            int pre = idx - difference;
+            dp[idx] = (pre >= 0 && pre <= 20000 ? dp[idx - difference] : 0) + 1;
+            ans = Math.max(ans, dp[idx]);
+        }
+        return ans;
+    }
+
+    /*
+     * 1027. 最长等差数列 [Medium]
+     * 
+     * 看nums[i]的范围，可以用dp[i][j]表示以i结尾，且公差为j的等差数列的最大长度
+     * 注意公差的范围在[-500,500]
+     * 
+     * 一种错解是，对于dp[num][d]，只更新了合法的d，但是实际上没有d num单个元素也是可以的。
+     * 所以即使当前的d是不可能根据前面的元素得到的，也要更新dp[num][d]=1
+     * 
+     * 第二种解法是用dp[i][d]表示以nums[i]结尾，公差为d的等差数列的长度
+     */
+    public int longestArithSeqLength0(int[] nums) {
+        int[][] dp = new int[501][1001];
+        int ans = 0;
+        for (int num : nums) {
+            for (int pre = 0; pre <= 500; pre++) {
+                int d = num - pre + 500;    //只更新合法的d（不正确）
+                dp[num][d] = dp[pre][d] + 1;
+                ans = Math.max(ans, dp[num][d]);
+            }
+        }
+        return ans;
+    }
+
+    public int longestArithSeqLength1(int[] nums) {
+        int[][] dp = new int[501][1001];
+        int ans = 0;
+        for (int num : nums) {
+            for (int d = 0; d <= 1000; d++) {   // 更新所有的d（正确）
+                int pre = num - (d - 500);
+                if (pre < 0 || pre > 500)   // 如果pre不合法，则dp[num][d] = 1
+                    dp[num][d] = 1;
+                else
+                    dp[num][d] = dp[pre][d] + 1;
+                ans = Math.max(ans, dp[num][d]);
+            }
+        }
+        return ans;
+    }
+
+    public int longestArithSeqLength(int[] a) {
+        int ans = 0, n = a.length;
+        int[][] dp = new int[n][1001];
+        for (int i = 1; i < n; i++)
+            for (int j = i - 1; j >= 0; j--) {
+                int d = a[i] - a[j] + 500; // +500 防止出现负数
+                if (dp[i][d] == 0) {    //只在第一次取到d时更新dp[i][d]，因为j越往前，答案肯定越小
+                    dp[i][d] = dp[j][d] + 1; // 默认的 1 在下面返回时加上
+                    ans = Math.max(ans, dp[i][d]);
+                }
+            }
+        return ans + 1;
     }
 
     /*
@@ -95,5 +221,14 @@ public class SubSeq {
         }
 
         return Math.max(Math.max(cnt1, cnt2), Math.max(evenCnt, oddCnt));
+    }
+
+    @Test
+    public void test() {
+        int[] nums = { 61, 28, 67, 53, 13, 6, 70, 5, 79, 82, 60, 60, 84, 17, 80, 25, 82, 82, 69, 76, 81, 43, 58, 86, 18,
+                78, 4, 25, 8, 30, 33, 87, 91, 18, 90, 26, 62, 11, 28, 66, 9, 33, 58, 66, 47, 48, 80, 38, 25, 57, 4, 84,
+                79, 71, 54, 84, 63, 32, 97, 62, 26, 68, 5, 69, 54, 93, 25, 26, 100, 73, 24, 94, 80, 39, 30, 45, 95, 80,
+                0, 29, 57, 98, 92, 15, 17, 76, 69, 11, 57, 56, 48, 10, 28, 7, 63, 66, 53, 58, 12, 58 };
+        System.out.println(longestArithSeqLength(nums)); // Example usage
     }
 }
