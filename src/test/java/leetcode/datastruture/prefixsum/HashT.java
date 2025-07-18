@@ -3,7 +3,27 @@ package leetcode.datastruture.prefixsum;
 import java.util.List;
 
 public class HashT {
-    /**
+    /*
+     * 930. 和相同的二元子数组 [Medium]
+     * 
+     * 相当于在前缀和数组上应用枚举左维护右
+     */
+    public int numSubarraysWithSum(int[] nums, int goal) {
+        int n = nums.length;
+        int[] s = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            s[i + 1] = nums[i] + s[i];
+        }
+        int[] cnt = new int[30001];
+        int ans = 0;
+        for (int si : s) {
+            ans += si - goal < 0 ? 0 : cnt[si - goal];
+            cnt[si]++;
+        }
+        return ans;
+    }
+
+    /*
      * 2845. 统计趣味子数组的数目 [Medium] <Star>
      * 
      * 可以用一个长度与nums相同的数组，标记每个位置是否满足nums[i] % modulo == k
