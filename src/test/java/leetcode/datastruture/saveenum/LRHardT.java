@@ -1,6 +1,8 @@
 package leetcode.datastruture.saveenum;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /*
@@ -144,6 +146,105 @@ public class LRHardT {
             }
             for (int j = i + firstLen; j + secondLen <= n; j++) {
                 ans = Math.max(ans, sum1 + preSum[j + secondLen] - preSum[j]);
+            }
+        }
+
+        return ans;
+    }
+
+    /*
+     * TODO
+     * 2555. 两个线段获得的最多奖品 [Medium] <Star>
+     */
+
+    /*
+     * 1995. 统计特殊四元组 [Easy]
+     * 
+     * nums[a]+nums[b]+nums[c] = nums[d]等价于
+     * nums[a]+nums[b]=nums[d]-nums[c]
+     * 可以从右到左枚举c（for1）
+     * 在for1里面枚举右侧的d（for2），nums[d]必须大于nums[c]
+     * 然后等式的右侧就确定了
+     * 左侧相当于一个两数之和问题
+     */
+    @SuppressWarnings("unchecked")
+    public int countQuadruplets0(int[] nums) {
+        int n = nums.length;
+
+        // 记录每个c对应的右侧目标值（左侧两数之和）
+        List<Integer>[] r = new List[n];
+        for (int c = n - 2; c > 1; c--) {
+            r[c] = new ArrayList<>();
+            for (int d = c + 1; d < n; d++) {
+                if (nums[d] > nums[c])
+                    r[c].add(nums[d] - nums[c]);
+            }
+        }
+
+        int ans = 0;
+
+        // 开始左侧两数之和
+        int[] cnt = new int[101]; // 记录左侧数字的出现次数
+        cnt[nums[0]]++;
+        for (int b = 1; b < n - 2; b++) {
+            for (int c = b + 1; c < n - 1; c++) {
+                for (int target : r[c]) {
+                    int a = target - nums[b];
+                    if (a > 0)
+                        ans += cnt[a];
+                }
+            }
+            cnt[nums[b]]++;
+        }
+
+        return ans;
+    }
+
+    public int countQuadruplets(int[] nums) {
+        int n = nums.length;
+        int ans = 0;
+        // 记录nums[d]-nums[c]的个数（值域[-99,99]，有意义的只有正的）
+        int[] cnt = new int[100];
+        // 枚举b，b每向前移动一位，相当于多了一种c=b+1，更新cnt
+        for (int b = n - 3; b > 0; b--) {
+            int c = b + 1;
+            for (int d = c + 1; d < n; d++) {
+                int target = nums[d] - nums[c];
+                if (target > 0)
+                    cnt[target]++;
+            }
+
+            for (int a = b - 1; a >= 0; a--) {
+                int target = nums[a] + nums[b];
+                if (target < 100)
+                    ans += cnt[target];
+            }
+        }
+
+        return ans;
+    }
+
+    /*
+     * 3404. 统计特殊子序列的数目 [Medium]
+     * 
+     * nums[p]*nums[r]=nums[q]*num[s]
+     * nums[p]/nums[q]=nums[s]/nums[r]
+     * 从右到左枚举q
+     * 
+     * 和上一题的思路一致
+     */
+    public long numberOfSubsequences(int[] nums) {
+        int n = nums.length;
+        Map<Float, Integer> cnt = new HashMap<>();
+        long ans = 0;
+        for (int q = n - 5; q > 0; q--) {
+            int r = q + 2;
+            for (int s = r + 2; s < n; s++) {
+                cnt.merge((float) nums[s] / nums[r], 1, Integer::sum);
+            }
+
+            for (int p = q - 2; p >= 0; p--) {
+                ans += cnt.getOrDefault((float) nums[p] / nums[q], 0);
             }
         }
 
