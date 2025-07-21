@@ -250,4 +250,32 @@ public class LRHardT {
 
         return ans;
     }
+
+    /*
+     * 454. 四数相加 II [Medium]
+     * 
+     * nums1[i]+nums2[j]=-nums3[k]-nums4[l]
+     * 用mapL记录可能的右侧
+     * 用mapR记录可能的左侧
+     * ans+=mapL[key]*mapR[key]
+     */
+    public int fourSumCount(int[] nums1, int[] nums2, int[] nums3, int[] nums4) {
+        Map<Integer, Integer> mapR = new HashMap<>();
+        int n = nums1.length;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                mapR.merge(-nums3[i] - nums4[j], 1, Integer::sum);
+            }
+        }
+
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                ans += mapR.getOrDefault(nums1[i] + nums2[j], 0);
+            }
+        }
+
+        return ans;
+    }
 }

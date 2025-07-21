@@ -1,6 +1,8 @@
 package leetcode.datastruture.prefixsum;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HashT {
     /*
@@ -21,6 +23,63 @@ public class HashT {
             cnt[si]++;
         }
         return ans;
+    }
+
+    /*
+     * 560. 和为 K 的子数组 [Medium]
+     */
+    public int subarraySum0(int[] nums, int k) {
+        int n = nums.length;
+        int[] s = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            s[i + 1] = nums[i] + s[i];
+        }
+
+        Map<Integer, Integer> cnt = new HashMap<>();
+        int ans = 0;
+        for (int ss : s) {
+            ans += cnt.getOrDefault(ss - k, 0);
+            cnt.merge(ss, 1, Integer::sum);
+        }
+
+        return ans;
+    }
+
+    public int subarraySum(int[] nums, int k) {
+        int s = 0;
+        Map<Integer, Integer> cnt = new HashMap<>();
+        cnt.merge(s, 1, Integer::sum);
+
+        int ans = 0;
+        for (int num : nums) {
+            s += num;
+            ans += cnt.getOrDefault(s - k, 0);
+            cnt.merge(s, 1, Integer::sum);
+        }
+
+        return ans;
+    }
+
+    /*
+     * 1524. 和为奇数的子数组数目 [Medium]
+     * 
+     * 前缀和
+     * 某个子数组相当于取两个前缀和元素，相减
+     * 和为奇数，则这两个前缀和奇偶性相异
+     */
+    public int numOfSubarrays(int[] arr) {
+        int s = 0;
+        int cnt1 = 1;
+        int cnt2 = 0;
+        for (int num : arr) {
+            s += num;
+            if (s % 2 == 0)
+                cnt1++;
+            else
+                cnt2++;
+        }
+
+        return (int) ((long) cnt1 * cnt2 % 1_000_000_007);
     }
 
     /*
