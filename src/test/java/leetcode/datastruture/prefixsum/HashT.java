@@ -1,8 +1,14 @@
 package leetcode.datastruture.prefixsum;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import org.junit.jupiter.api.Test;
+
+import leetcode.common.TreeNode;
 
 public class HashT {
     /*
@@ -83,6 +89,147 @@ public class HashT {
     }
 
     /*
+     * 974. 和可被 K 整除的子数组 [Medium]
+     * 
+     * 求前缀和
+     * 子数组的和是从前缀和取两个元素作差
+     * 差的结果是k的倍数(s2-s1)%k==0 s2-s1=nk s1=s2-nk max=s2-nk (s2-max)/k<=n<=(s2-min)/k
+     * 维护前缀和的最大最小值
+     * 
+     * 超时，map的key应该是s%k的余数
+     */
+    public int subarraysDivByK0(int[] nums, int k) {
+        int n = nums.length;
+        int[] s = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            s[i + 1] = s[i] + nums[i];
+        }
+
+        int[] cnt = new int[k];
+
+        int ans = 0;
+        for (int s2 : s) {
+            int mod = (s2 % k + k) % k;
+            ans += cnt[mod];
+            cnt[mod]++;
+        }
+
+        return ans;
+    }
+
+    public int subarraysDivByK(int[] nums, int k) {
+        int s = 0;
+        int[] cnt = new int[k];
+        cnt[0]++;
+        int ans = 0;
+        for (int num : nums) {
+            s += num;
+            int mod = (s % k + k) % k;
+            ans += cnt[mod];
+            cnt[mod]++;
+        }
+
+        return ans;
+    }
+
+    /*
+     * 523. 连续的子数组和
+     * 
+     * 本题k的范围较大，所以只能使用HashMap
+     */
+    public boolean checkSubarraySum0(int[] nums, int k) {
+        int s = 0;
+        // 某个s%k出现的最早下标
+        Map<Integer, Integer> idx = new HashMap<>();
+        idx.put(0, -1);
+        for (int i = 0; i < nums.length; i++) {
+            s += nums[i];
+            int mod = (s % k + k) % k;
+            Integer val = idx.get(mod);
+            if (val != null) {
+                if (i - val >= 2)
+                    return true;
+            } else {
+                idx.put(mod, i);
+            }
+        }
+        return false;
+    }
+
+    public boolean checkSubarraySum(int[] nums, int k) {
+        int n = nums.length;
+        // 记录前缀和的mod（本题没有负数）
+        int[] mod = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            mod[i + 1] = (mod[i] + nums[i]) % k;
+        }
+
+        // 某个s%k是否出现过
+        Set<Integer> set = new HashSet<>();
+        for (int i = 1; i <= n; i++) {
+            if (set.contains(mod[i]))
+                return true;
+            set.add(mod[i - 1]);
+        }
+        return false;
+    }
+
+    /*
+     * 437. 路径总和 III [Medium]
+     */
+    int ans = 0;
+
+    // 深度优先遍历+前缀和
+    public int pathSum(TreeNode root, int targetSum) {
+        if (root == null)
+            return 0;
+
+        Map<Long, Integer> map = new HashMap<>();
+        map.put(0L, 1);
+        dfs(root, targetSum, 0L, map);
+        return ans;
+    }
+
+    // 统计以cur结尾的等于target的路径数
+    void dfs(TreeNode cur, int targetSum, long preSum, Map<Long, Integer> map) {
+        preSum += cur.val;
+        ans += map.getOrDefault(preSum - targetSum, 0);
+        map.merge(preSum, 1, Integer::sum);
+
+        if (cur.left != null)
+            dfs(cur.left, targetSum, preSum, map);
+        if (cur.right != null)
+            dfs(cur.right, targetSum, preSum, map);
+
+        map.merge(preSum, -1, Integer::sum);
+    }
+
+    /*
+     * 2588. 统计美丽子数组数目 [Medium]
+     * 
+     * 用bits来表示nums的前n个元素，32个bit位出现1总数的奇偶性
+     * 记录某个奇偶性的出现次数
+     * 美丽子数组对应的bits[l]和bits[r]一定相同
+     */
+    public long beautifulSubarrays(int[] nums) {
+        int bits = 0;
+        Map<Integer, Integer> map = new HashMap<>(nums.length + 1);
+        map.put(0, 1);
+        long ans = 0;
+        for (int num : nums) {
+            bits ^= num;
+            //getOrDefault与merge合并能提高算法效率
+            // int old = map.getOrDefault(bits, 0);
+            // ans += old;
+            // map.put(bits, old + 1);
+            ans += map.getOrDefault(bits, 0);
+            map.merge(bits, 1, Integer::sum);
+        }
+
+        return ans;
+    }
+
+    /*
      * 2845. 统计趣味子数组的数目 [Medium] <Star>
      * 
      * 可以用一个长度与nums相同的数组，标记每个位置是否满足nums[i] % modulo == k
@@ -125,5 +272,10 @@ public class HashT {
         }
 
         return ans;
+    }
+
+    @Test
+    public void test() {
+        System.out.println(-7 % 3); // -1
     }
 }

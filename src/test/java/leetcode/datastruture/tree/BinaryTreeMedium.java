@@ -1,10 +1,21 @@
 package leetcode.datastruture.tree;
 
-import leetcode.common.TreeNode;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Stack;
+import java.util.stream.Collectors;
+
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import leetcode.common.TreeNode;
 
 public class BinaryTreeMedium {
 
@@ -633,39 +644,6 @@ public class BinaryTreeMedium {
             return helper(root.left, true) + helper(root.right, false);
         }
     }
-
-    /**
-     * 路径总和 III
-     */
-    class PathSum {
-        public int pathSum(TreeNode root, int targetSum) {
-            if(root == null) return 0;
-            int ans = pathSum(root.left, targetSum - root.val) +
-                    pathSum(root.right, targetSum - root.val) +
-                    pathSum(root.left, targetSum) +
-                    pathSum(root.right, targetSum);
-
-            if(root.val == targetSum) return 1 + ans;
-            else return ans;
-        }
-
-        /**
-         * 该方法返回以root结点为起点的路径数 （深度优先遍历+递归）
-         */
-        public int helper(TreeNode root, int targetSum){
-            if(root == null) return 0;
-            int ans = helper(root.left, targetSum - root.val) +
-                    helper(root.right, targetSum - root.val) +
-                    helper(root.left, targetSum) +
-                    helper(root.right, targetSum);
-
-            if(root.val == targetSum) return 1 + ans;
-            else return ans;
-        }
-    }
-
-
-
 
     @Test
     void invoke(){

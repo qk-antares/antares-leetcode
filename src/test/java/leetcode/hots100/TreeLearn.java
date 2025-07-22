@@ -1,8 +1,12 @@
 package leetcode.hots100;
 
-import leetcode.common.TreeNode;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import java.util.*;
+import leetcode.common.TreeNode;
 
 public class TreeLearn {
     /**
@@ -292,18 +296,4 @@ public class TreeLearn {
         treeNode.right = buildTree(preorder, inorder, preLeft+leftLen+1, preRight, index+1, inRight);
         return treeNode;
     }
-
-    /**
-     * 路径总和 III
-     */
-    public int pathSum(TreeNode root, int targetSum) {
-        int ans = pathSum(root.left, targetSum - root.val) +
-                pathSum(root.right, targetSum - root.val) +
-                pathSum(root.left, targetSum) +
-                pathSum(root.right, targetSum);
-
-        if(root.val == targetSum) return 1 + ans;
-        else return ans;
-    }
-
 }
