@@ -218,12 +218,41 @@ public class HashT {
         long ans = 0;
         for (int num : nums) {
             bits ^= num;
-            //getOrDefault与merge合并能提高算法效率
+            // getOrDefault与merge合并能提高算法效率
             // int old = map.getOrDefault(bits, 0);
             // ans += old;
             // map.put(bits, old + 1);
             ans += map.getOrDefault(bits, 0);
             map.merge(bits, 1, Integer::sum);
+        }
+
+        return ans;
+    }
+
+    /*
+     * 525. 连续数组 [Medium]
+     * 
+     * 计算前缀和s
+     * s[i]-s[j]=(i-j)/2
+     * 2s[i]-2s[j]=i-j
+     * 2s[i]-i=2s[j]-j
+     * 记录每个2s[i]-i出现的最早下标
+     */
+    public int findMaxLength(int[] nums) {
+        int n = nums.length;
+        int s = 0;
+        int ans = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, 0);
+        for (int i = 1; i <= n; i++) {
+            s += nums[i - 1];
+            int key = 2 * s - i;
+            Integer idx = map.get(key);
+            if (idx != null) {
+                ans = Math.max(ans, i - idx);
+            } else {
+                map.put(key, i);
+            }
         }
 
         return ans;
@@ -276,6 +305,6 @@ public class HashT {
 
     @Test
     public void test() {
-        System.out.println(-7 % 3); // -1
+        System.out.println(findMaxLength(new int[] { 0, 1, 1, 1, 1, 1, 0, 0, 0 }));
     }
 }
