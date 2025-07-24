@@ -259,6 +259,105 @@ public class HashT {
     }
 
     /*
+     * 面试题 17.05. 字母与数字 [Medium]
+     * 
+     * 求前缀和，字母当作0，数字当作1
+     * 有相同个数的0和1，即s[i]-s[j]=(i-j)/2
+     * 即2s[i]-i=2s[j]-j
+     * 用HashMap记录某个2s[i]-i出现的最早下标
+     * 用ans，l，r三个值记录答案
+     * 
+     * 字母当作-1，数字当作1
+     * s[i]-s[j]=0
+     * 这种方案因为多了s的自减操作，效率稍差
+     */
+    public String[] findLongestSubarray0(String[] array) {
+        int n = array.length;
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, 0);
+        int s = 0;
+        int ans = 0, l = 0;
+        for (int i = 1; i <= n; i++) {
+            String c = array[i - 1];
+            if (Character.isDigit(c.charAt(0))) {
+                s += 1;
+            } else {
+                s -= 1;
+            }
+
+            Integer j = map.get(s);
+            if (j == null) {
+                map.put(s, i);
+            } else if (i - j > ans) {
+                ans = i - j;
+                l = j;
+            }
+        }
+
+        String[] subArr = new String[ans];
+        System.arraycopy(array, l, subArr, 0, ans);
+        return subArr;
+    }
+
+    public String[] findLongestSubarray(String[] array) {
+        int n = array.length;
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, 0);
+        int s = 0;
+        int ans = 0, l = 0;
+        for (int i = 1; i <= n; i++) {
+            String c = array[i - 1];
+            if (Character.isDigit(c.charAt(0))) {
+                s += 1;
+            }
+
+            int key = 2 * s - i;
+            Integer j = map.get(key);
+            if (j == null) {
+                map.put(key, i);
+            } else if (i - j > ans) {
+                ans = i - j;
+                l = j;
+            }
+        }
+
+        String[] subArr = new String[ans];
+        System.arraycopy(array, l, subArr, 0, ans);
+        return subArr;
+    }
+
+    /*
+     * 3026. 最大好子数组和 [Medium]
+     * 
+     * 维护左遍历右+前缀和
+     * 用一个Map记录左侧出现过的元素，且前缀和最小的位置
+     */
+    public long maximumSubarraySum(int[] nums, int k) {
+        Map<Integer, Integer> idx = new HashMap<>();
+        int n = nums.length;
+        long[] s = new long[n + 1];
+        long ans = Long.MIN_VALUE;
+        for (int i = 0; i < n; i++) {
+            s[i + 1] = s[i] + nums[i];
+            Integer preIdx = idx.get(nums[i] - k);
+            if (preIdx != null) {
+                ans = Math.max(ans, s[i + 1] - s[preIdx]);
+            }
+            preIdx = idx.get(nums[i] + k);
+            if (preIdx != null) {
+                ans = Math.max(ans, s[i + 1] - s[preIdx]);
+            }
+
+            // 前缀和更小
+            Integer val = idx.get(nums[i]);
+            if (val == null || s[i] < s[val]) {
+                idx.put(nums[i], i);
+            }
+        }
+        return ans == Long.MIN_VALUE ? 0 : ans;
+    }
+
+    /*
      * 2845. 统计趣味子数组的数目 [Medium] <Star>
      * 
      * 可以用一个长度与nums相同的数组，标记每个位置是否满足nums[i] % modulo == k
@@ -305,6 +404,14 @@ public class HashT {
 
     @Test
     public void test() {
-        System.out.println(findMaxLength(new int[] { 0, 1, 1, 1, 1, 1, 0, 0, 0 }));
+        // System.out.println(findMaxLength(new int[] { 0, 1, 1, 1, 1, 1, 0, 0, 0 }));
+        // maximumSubarraySum(new int[]{1,5}, 2);
+        maximumSubarraySum(new int[] { -677, -599, -452, -340, -561, -402, -741, -373, -1000, -842, -355, -717, -556,
+                -196, -126, -511, -174, -424, -569, -566, -161, -438, -402, -915, -709, -797, -377, -731, -380, -975,
+                -601, -280, -629, -171, -558, -626, -857, -942, -223, -632, -950, -449, -136, -865, -350, -791, -781,
+                -271, -953, -912, -100, -775, -938, -576, -268, -230, -269, -393, -844, -897, -828, -498, -598, -344,
+                -775, -187, -437, -797, -311, -287, -978, -334, -961, -264, -323, -282, -659, -980, -622, -701, -116,
+                -277, -861, -562, -647, -183, -856, -372, -111, -624, -514, -252, -275, -430, -273, -323, -774, -535,
+                -797, -291 }, 53);
     }
 }
