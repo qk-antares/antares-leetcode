@@ -358,6 +358,78 @@ public class HashT {
     }
 
     /*
+     * 1477. 找两个和为目标值且不重叠的子数组 [Medium]
+     * 
+     * 可以求出所有满足target的区间（尽可能小），然后选择两个区间，区间长度总和尽可能小（动态规划）
+     * len标记每个位置可以作为合法区间右端点的最小长度，如果不能作为右端点，则len[i]=Integer.MAX_VALUE
+     * leftMin标记每个位置（包含当前位置）左侧的最短合法区间
+     * 
+     * 滑动窗口+维护左侧的最短合法区间
+     */
+    public int minSumOfLengths0(int[] arr, int target) {
+        int n = arr.length;
+        int[] s = new int[n + 1];
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, 0);
+        int[] len = new int[n];
+        for (int i = 0; i < n; i++) {
+            s[i + 1] = s[i] + arr[i];
+            // 区间的长度
+            if (map.containsKey(s[i + 1] - target)) {
+                len[i] = i - map.get(s[i + 1] - target) + 1;
+            } else {
+                len[i] = Integer.MAX_VALUE;
+            }
+            map.put(s[i + 1], i + 1);
+        }
+
+        // 每个位置左侧的最小区间（包含）
+        int[] leftMin = new int[n];
+        leftMin[0] = len[0];
+        for (int i = 1; i < n; i++) {
+            leftMin[i] = Math.min(leftMin[i - 1], len[i]);
+        }
+
+        int ans = Integer.MAX_VALUE;
+        for (int i = 0; i < n; i++) {
+            // 当前位置可以作为第二个区间的右端点，则再往前找第一个最短区间leftMin[i-len[i]]
+            if (len[i] != -1 && i - len[i] >= 0 && leftMin[i - len[i]] != Integer.MAX_VALUE) {
+                ans = Math.min(ans, len[i] + leftMin[i - len[i]]);
+            }
+        }
+
+        return ans != Integer.MAX_VALUE ? ans : -1;
+    }
+
+    public int minSumOfLengths(int[] arr, int target) {
+        int n = arr.length;
+        int[] leftMin = new int[n + 1];
+        leftMin[0] = Integer.MAX_VALUE;
+
+        int ans = Integer.MAX_VALUE;
+
+        int l = 0, r = 0;
+        int s = 0;
+        while (r < n) {
+            s += arr[r++];
+            while (s > target) {
+                s -= arr[l++];
+            }
+
+            if (s == target) {
+                leftMin[r] = Math.min(r - l, leftMin[r - 1]);
+                // 该位置可以作为第二个区间（第一个区间leftMin[l]是存在的）
+                if (leftMin[l] != Integer.MAX_VALUE)
+                    ans = Math.min(ans, r - l + leftMin[l]);
+            } else {
+                leftMin[r] = leftMin[r - 1];
+            }
+        }
+
+        return ans != Integer.MAX_VALUE ? ans : -1;
+    }
+
+    /*
      * 2845. 统计趣味子数组的数目 [Medium] <Star>
      * 
      * 可以用一个长度与nums相同的数组，标记每个位置是否满足nums[i] % modulo == k
