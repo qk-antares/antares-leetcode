@@ -430,6 +430,64 @@ public class HashT {
     }
 
     /*
+     * 1546. 和为目标值且不重叠的非空子数组的最大数目 [Medium]
+     * 
+     * 滑动窗口+贪心
+     * 由于元素并不一定全是正的，所以不能简单地使用滑动窗口
+     */
+    public int maxNonOverlapping(int[] nums, int target) {
+        int s = 0;
+        Set<Integer> set = new HashSet<>();
+        set.add(0);
+        int ans = 0;
+        for (int num : nums) {
+            s += num;
+            if (set.contains(s - target)) {
+                ans++;
+                set.clear();
+            }
+            set.add(s);
+        }
+
+        return ans;
+    }
+
+    /*
+     * 1124. 表现良好的最长时间段 [Medium]
+     * 
+     * 将hours中劳累的置为1，不劳累的置为-1
+     * 计算前缀和
+     * 那么对于表现良好的时间段(j,i]
+     * s[i]-s[j] > 0
+     * s[i] > s[j]
+     * 
+     * TODO: 整理
+     */
+    public int longestWPI(int[] hours) {
+        int n = hours.length;
+        for (int i = 0; i < n; i++) {
+            if (hours[i] > 8)
+                hours[i] = 1;
+            else
+                hours[i] = -1;
+        }
+
+        int[] s = new int[n + 1];
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            s[i + 1] = s[i] + hours[i];
+            for (int j = 0; j <= i; j++) {
+                if (s[j] < s[i + 1]) {
+                    ans = Math.max(ans, i + 1 - j);
+                    break;
+                }
+            }
+        }
+
+        return ans;
+    }
+
+    /*
      * 2845. 统计趣味子数组的数目 [Medium] <Star>
      * 
      * 可以用一个长度与nums相同的数组，标记每个位置是否满足nums[i] % modulo == k

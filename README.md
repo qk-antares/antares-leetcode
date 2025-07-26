@@ -145,6 +145,8 @@ map.merge(key, 1, Integer::sum);
 map.put(key, map.getOrDefault(key, 0) + 1);
 ```
 
+#### 1.6.2 `TreeMap`
+
 ### 1.6 运算符优先级
 
 | 优先级 | 运算符                                                           | 结合性     |
