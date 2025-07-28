@@ -1,5 +1,7 @@
 package leetcode.datastruture.prefixsum;
 
+import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -453,7 +455,7 @@ public class HashT {
     }
 
     /*
-     * 1124. 表现良好的最长时间段 [Medium]
+     * 1124. 表现良好的最长时间段 [Medium] <Star>   [Link: 962. 最大宽度坡]
      * 
      * 将hours中劳累的置为1，不劳累的置为-1
      * 计算前缀和
@@ -461,9 +463,18 @@ public class HashT {
      * s[i]-s[j] > 0
      * s[i] > s[j]
      * 
-     * TODO: 整理
+     * 方法一是暴力枚举i之前的所有j（可以从0开始枚举j），如果找到了s[j] < s[i]，则更新ans
+     * 
+     * 单调栈stk，从前往后记录s中单调递减的元素idx（可以在s构造的过程中构造）
+     * 只有这些单调递减的元素idx可以作为区间的左端点
+     * 接下来从右往左遍历s，while s[i]>s[stk.peek()]: ans=Math.max(ans, i-stk.pop())
+     * 
+     * 从另一个角度考察s
+     * 当s>0时，左端点是0
+     * 当s<0时，左端点是首次出现s-1的位置（这是因为s是由1和-1累加构造的）
      */
-    public int longestWPI(int[] hours) {
+
+    public int longestWPI0(int[] hours) {
         int n = hours.length;
         for (int i = 0; i < n; i++) {
             if (hours[i] > 8)
@@ -482,6 +493,83 @@ public class HashT {
                     break;
                 }
             }
+        }
+
+        return ans;
+    }
+
+    public int longestWPI1(int[] hours) {
+        int n = hours.length;
+        ArrayDeque<Integer> stk = new ArrayDeque<>();
+        stk.push(0);
+        int[] s = new int[n + 1];
+
+        for (int i = 0; i < n; i++) {
+            s[i + 1] = s[i] + (hours[i] > 8 ? 1 : -1);
+            if (s[i + 1] < s[stk.peek()])
+                stk.push(i + 1);
+        }
+
+        int ans = 0;
+        for (int i = n; i >= 0; i--) {
+            while (!stk.isEmpty() && s[stk.peek()] < s[i])
+                ans = Math.max(ans, i - stk.pop());
+        }
+
+        return ans;
+    }
+
+    public int longestWPI(int[] hours) {
+        int n = hours.length;
+        int s = 0;
+        // s的值域是-n到+n，但我们只用记录负值s的最早出现位置
+        // idx[0]->-n-1,idx[1]->-n,...idx[n+1]->0
+        int[] idx = new int[n + 2];
+        Arrays.fill(idx, -1);
+
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            s += (hours[i] > 8 ? 1 : -1);
+            if (s > 0)
+                ans = Math.max(ans, i + 1);
+            else {
+                if (idx[s + n] != -1)
+                    ans = Math.max(ans, i - idx[s + n]);
+                if (idx[s + n + 1] != -1)
+                    idx[s + n + 1] = i;
+            }
+        }
+
+        return ans;
+    }
+
+    /*
+     * 3381. 长度可被 K 整除的子数组的最大元素和 [Medium]
+     * 
+     * 长度可以是k，2k，3k...
+     * 前缀和数组是肯定要求出来的
+     * 然后呢？我们依次向前寻找k，2k，3k
+     * 这实际上比较耗时
+     * 可以用另外一个大小为k的数组，来维护前面的最小元素（前缀和）
+     */
+    public long maxSubarraySum(int[] nums, int k) {
+        int n = nums.length;
+        long[] s = new long[n];
+        s[0] = nums[0];
+        for (int i = 1; i < n; i++) {
+            s[i] = s[i - 1] + nums[i];
+        }
+
+        long[] maxPreS = new long[k];
+        Arrays.fill(maxPreS, Long.MAX_VALUE / 2);
+        maxPreS[0] = 0;
+
+        long ans = Long.MIN_VALUE;
+        for (int i = 0; i < n; i++) {
+            int i1 = i + 1;
+            int i2 = i1 % k;
+            ans = Math.max(ans, s[i1] - maxPreS[i2]);
+            maxPreS[i2] = Math.min(maxPreS[i2], s[i1]);
         }
 
         return ans;
@@ -536,12 +624,19 @@ public class HashT {
     public void test() {
         // System.out.println(findMaxLength(new int[] { 0, 1, 1, 1, 1, 1, 0, 0, 0 }));
         // maximumSubarraySum(new int[]{1,5}, 2);
-        maximumSubarraySum(new int[] { -677, -599, -452, -340, -561, -402, -741, -373, -1000, -842, -355, -717, -556,
-                -196, -126, -511, -174, -424, -569, -566, -161, -438, -402, -915, -709, -797, -377, -731, -380, -975,
-                -601, -280, -629, -171, -558, -626, -857, -942, -223, -632, -950, -449, -136, -865, -350, -791, -781,
-                -271, -953, -912, -100, -775, -938, -576, -268, -230, -269, -393, -844, -897, -828, -498, -598, -344,
-                -775, -187, -437, -797, -311, -287, -978, -334, -961, -264, -323, -282, -659, -980, -622, -701, -116,
-                -277, -861, -562, -647, -183, -856, -372, -111, -624, -514, -252, -275, -430, -273, -323, -774, -535,
-                -797, -291 }, 53);
+        // maximumSubarraySum(new int[] { -677, -599, -452, -340, -561, -402, -741,
+        // -373, -1000, -842, -355, -717, -556,
+        // -196, -126, -511, -174, -424, -569, -566, -161, -438, -402, -915, -709, -797,
+        // -377, -731, -380, -975,
+        // -601, -280, -629, -171, -558, -626, -857, -942, -223, -632, -950, -449, -136,
+        // -865, -350, -791, -781,
+        // -271, -953, -912, -100, -775, -938, -576, -268, -230, -269, -393, -844, -897,
+        // -828, -498, -598, -344,
+        // -775, -187, -437, -797, -311, -287, -978, -334, -961, -264, -323, -282, -659,
+        // -980, -622, -701, -116,
+        // -277, -861, -562, -647, -183, -856, -372, -111, -624, -514, -252, -275, -430,
+        // -273, -323, -774, -535,
+        // -797, -291 }, 53);
+        longestWPI(new int[] { 6, 6, 9 });
     }
 }
