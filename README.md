@@ -67,6 +67,27 @@ res = s.replace("old", "new");
 res = s.replace('a', 'b');
 ```
 
+#### 1.3.3 `split()`
+
+```java
+//按照多个字符分隔字符串
+String[] parts = str.split("[ .,!]+");
+//按照一个或多个空格分割
+String[] parts = str.split("\\s+");
+//单纯按照一个空格分割
+String[] parts = str.split(" ");
+//按照特殊字符(|*)分割
+String[] parts = str.split("\\|");
+```
+
+#### 1.3.4 `join()`
+
+```java
+//将字符串数组用空格连接成一个字符串，最后一个字符串后面不会有空格
+String[] arr = {"Java", "is", "awesome"};
+String result = String.join(" ", arr);
+```
+
 ### 1.4 `stream()`
 
 Java中只要是实现了`Collection`接口的类，都可以使用`stream()`。另外，一些特定类（如`Array`、`Map`）虽然不是`Collection`，也可以通过辅助方法转换成`Stream`。
@@ -109,32 +130,9 @@ List<Integer> list = new ArrayList<>();
 int[] arr = list.stream().mapToInt(Integer::intValue).toArray();
 ```
 
-### 1.5 `String`
+### 1.5 `Map`
 
-#### 1.5.1 `split()`
-
-```java
-//按照多个字符分隔字符串
-String[] parts = str.split("[ .,!]+");
-//按照一个或多个空格分割
-String[] parts = str.split("\\s+");
-//单纯按照一个空格分割
-String[] parts = str.split(" ");
-//按照特殊字符(|*)分割
-String[] parts = str.split("\\|");
-```
-
-#### 1.5.2 `join()`
-
-```java
-//将字符串数组用空格连接成一个字符串，最后一个字符串后面不会有空格
-String[] arr = {"Java", "is", "awesome"};
-String result = String.join(" ", arr);
-```
-
-### 1.6 `Map`
-
-#### 1.6.1 `merge`
+#### 1.5.1 `merge`
 
 ```java
 //如果key不存在，则将key-value对添加到map中；如果key存在，则使用合并函数合并旧值和新值
@@ -145,7 +143,23 @@ map.merge(key, 1, Integer::sum);
 map.put(key, map.getOrDefault(key, 0) + 1);
 ```
 
-#### 1.6.2 `TreeMap`
+#### 1.5.2 `TreeMap`
+
+### 1.6 `Integer`
+
+```java
+//计算整数的二进制表示中1的个数
+int count = Integer.bitCount(num);
+
+//计算前导0的个数
+int leadingZeros = Integer.numberOfLeadingZeros(num);
+
+//获取整数的最高位1所在的位置
+int highestBit = Integer.highestOneBit(num);
+
+//获取整数的最低位1所在的位置
+int lowestBit = Integer.lowestOneBit(num);
+```
 
 ### 1.6 运算符优先级
 

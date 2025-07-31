@@ -1,6 +1,8 @@
 package leetcode.bit;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -166,6 +168,23 @@ public class LogTrick {
         int idx2 = r;
 
         return idx2 - idx1 + 1;
+    }
+
+    /*
+     * 898. 子数组按位或操作 [Medium]
+     */
+    public int subarrayBitwiseORs(int[] arr) {
+        Set<Integer> set = new HashSet<>();
+        // 枚举右端点
+        for (int i = 0; i < arr.length; i++) {
+            int x = arr[i];
+            set.add(x);
+            for (int j = i - 1; j >= 0 && (x | arr[j]) != arr[j]; j--) {
+                arr[j] |= x;
+                set.add(arr[j]);
+            }
+        }
+        return set.size();
     }
 
     /*
