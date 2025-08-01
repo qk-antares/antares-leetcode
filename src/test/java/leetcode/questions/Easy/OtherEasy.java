@@ -1,11 +1,11 @@
 package leetcode.questions.Easy;
 
-import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Antares
@@ -19,18 +19,6 @@ public class OtherEasy {
         int count = 0;
         for(int i = 0;i < 32;i++){
             if(((n >>> i) & 1) == 1)
-                count++;
-        }
-        return count;
-    }
-
-    /**
-     * 汉明距离(我的解法，位运算，将1依次左移)
-     */
-    public int hammingDistance(int x, int y) {
-        int count = 0;
-        for(int i = 0;i < 32;i++){
-            if(((1 << i) & x) != ((1 << i) & y))
                 count++;
         }
         return count;
