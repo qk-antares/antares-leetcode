@@ -97,4 +97,37 @@ public class BasicT {
         }
         return ans;
     }
+
+    /*
+     * 476. 数字的补数 [Easy]
+     * 
+     * 相当于num和全1做异或运算
+     */
+    public int findComplement(int num) {
+        return num ^ ((Integer.highestOneBit(num) << 1) - 1);
+    }
+
+    /*
+     * 1009. 十进制整数的反码 [Easy]
+     */
+    public int bitwiseComplement(int n) {
+        return n > 0 ? n ^ ((Integer.highestOneBit(n) << 1) - 1) : 1;
+    }
+
+    /*
+     * 868. 二进制间距 [Easy]
+     */
+    public int binaryGap(int n) {
+        int ans = 0;
+        int pre = -1;
+        for (int i = 0; i < 32; i++) {
+            if (((n >> i) & 1) == 1) {
+                if (pre != -1) {
+                    ans = Math.max(ans, i - pre);
+                }
+                pre = i;
+            }
+        }
+        return ans;
+    }
 }

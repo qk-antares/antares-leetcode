@@ -154,10 +154,12 @@ int count = Integer.bitCount(num);
 //计算前导0的个数
 int leadingZeros = Integer.numberOfLeadingZeros(num);
 
-//获取整数的最高位1所在的位置
+//获取整数的最高位1所构成的整数
+//例如：num=12(二进制1100)，则highestBit=8(二进制1000)
 int highestBit = Integer.highestOneBit(num);
 
-//获取整数的最低位1所在的位置
+//获取整数的最低位1所构成的整数
+//例如：num=12(二进制1100)，则lowestBit=4(二进制0100)
 int lowestBit = Integer.lowestOneBit(num);
 ```
 
