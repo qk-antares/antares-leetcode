@@ -130,4 +130,45 @@ public class BasicT {
         }
         return ans;
     }
+
+    /*
+     * 2917. 找出数组中的 K-or 值 [Easy]
+     */
+    public int findKOr(int[] nums, int k) {
+        int[] cnt = new int[32];
+        for (int num : nums) {
+            for (int i = 0; i < 32; i++) {
+                cnt[i] += ((num >> i) & 1);
+            }
+        }
+        int ans = 0;
+        for (int i = 0; i < 32; i++) {
+            if (cnt[i] >= k) {
+                ans |= (1 << i);
+            }
+        }
+        return ans;
+    }
+
+    /*
+     * 693. 交替位二进制数 [Easy]
+     * 
+     * 解法一：逐位比较
+     * 
+     * 解法二：如果n是交替位二进制数，则n>>1仍然是交替位二进制数，且 n ^ (n >> 1) 形如000..111
+     * 设x=n ^ (n >> 1)，则((x+1)&x) == 0
+     */
+    public boolean hasAlternatingBits0(int n) {
+        int bitCount = 32 - Integer.numberOfLeadingZeros(n);
+        for (int i = 1; i < bitCount; i++) {
+            if (((n >> (i - 1) & 1) ^ (n >> i & 1)) != 1)
+                return false;
+        }
+        return true;
+    }
+
+    public boolean hasAlternatingBits(int n) {
+        int x = n ^ n >> 1;
+        return (x & (x + 1)) == 0;
+    }
 }
