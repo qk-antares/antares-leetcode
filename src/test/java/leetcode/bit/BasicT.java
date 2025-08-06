@@ -2,6 +2,8 @@ package leetcode.bit;
 
 import java.util.Arrays;
 
+import org.junit.jupiter.api.Test;
+
 public class BasicT {
     /*
      * 3370. 仅含置位位的最小整数 [Easy]
@@ -170,5 +172,32 @@ public class BasicT {
     public boolean hasAlternatingBits(int n) {
         int x = n ^ n >> 1;
         return (x & (x + 1)) == 0;
+    }
+
+    /*
+     * 2657. 找到两个数组的前缀公共数组 [Medium]
+     * 
+     * 由于A和B的长度有限，可以用两个long来标记出现的元素
+     * 注意点是进行或运算时应该使用1L
+     */
+    public int[] findThePrefixCommonArray(int[] A, int[] B) {
+        long a = 0, b = 0;
+        int n = A.length;
+        int[] ans = new int[n];
+        for (int i = 0; i < n; i++) {
+            a |= (1L << A[i]);
+            b |= (1L << B[i]);
+            ans[i] = Long.bitCount(a & b);
+        }
+        return ans;
+    }
+
+    @Test
+    void test() {
+        findThePrefixCommonArray(
+                new int[] { 1, 11, 30, 28, 22, 26, 27, 4, 8, 29, 23, 24, 2, 16, 25, 5, 14, 13, 6, 17, 9, 3, 21, 31, 15,
+                        12, 10, 19, 7, 20, 18 },
+                new int[] { 28, 30, 17, 23, 13, 4, 7, 16, 19, 26, 12, 1, 15, 6, 9, 20, 27, 24, 21, 10, 8, 11, 29, 3, 31,
+                        22, 14, 5, 25, 18, 2 });
     }
 }
