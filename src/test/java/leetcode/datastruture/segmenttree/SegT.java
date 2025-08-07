@@ -8,6 +8,18 @@ import org.junit.jupiter.api.Test;
 public class SegT {
     /*
      * 3479. 水果成篮 III [Medium]
+     * 
+     * 关于max数组的长度，从以下几个角度理解：
+     * 1. 数组中的元素作为树的叶子节点，例如n=8，那么总节点数=8+4+2+1=2*8-1=15
+     * 又由于树节点的访问是从1开始的，因此需要16个元素，即2*n
+     * 
+     * 2. 如果n不是2的幂，那么可以将其补齐到2的幂，考虑冗余的话，我们可以直接使用n*4
+     * 而为了尽可能减少冗余，我们可以使用Integer.highestOneBit(n-1)<<1来代表补齐后的2的幂
+     * 然后将其乘以2得到max数组的长度，即Integer.highestOneBit(n-1)<<2
+     * 但上述方法在n=1时会导致max数组长度为0，这有以下解决方案：
+     * - 使用2<<(32-Integer.numberOfLeadingZeros(n-1))，也是最推荐的
+     * - 使用n==1 ? 2 : Integer.highestOneBit(n-1)<<2
+     * - 使用Integer.highestOneBit(n)<<2，这样的话会在n为2的幂时多出冗余，但在非2的幂时不会
      */
     public int numOfUnplacedFruits(int[] fruits, int[] baskets) {
         class SegmentTree {
@@ -64,8 +76,17 @@ public class SegT {
         return ans;
     }
 
-    // i到j的移动是单向的（从左到右），所以答案是heights中[Math.max(a,b),
-    // n-1]的区间内，第一个大于Math.max(heights[a], heights[b])的元素idx
+    /*
+     * 2940. 找到 Alice 和 Bob 可以相遇的建筑 [Hard]
+     * 
+     * i到j的移动是单向的（从左到右）
+     * 假设a<=b
+     * 当a==b || heights[a] < heights[b]时，a可以到达b
+     * 否则（heights[a]>=heights[b]）：
+     * 答案是heights中[b+1, n-1]的区间内，第一个大于heights[a]的元素idx
+     * 
+     * 注意区间查找的线段树findFrist方法有所不同，会多一个参数
+     */
     public int[] leftmostBuildingQueries(int[] heights, int[][] queries) {
         class SegmentTree {
             int[] max;
@@ -123,6 +144,7 @@ public class SegT {
 
     @Test
     public void testSegmentTree() {
-        leftmostBuildingQueries(new int[]{6,4,8,5,2,7}, new int[][]{{0, 1}, {0, 3}, {2, 4}, {3, 4}, {2, 2}});
+        leftmostBuildingQueries(new int[] { 6, 4, 8, 5, 2, 7 },
+                new int[][] { { 0, 1 }, { 0, 3 }, { 2, 4 }, { 3, 4 }, { 2, 2 } });
     }
 }

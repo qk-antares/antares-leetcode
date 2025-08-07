@@ -1,9 +1,9 @@
 package leetcode.algorithm.dp;
 
-import org.junit.jupiter.api.Test;
-
 import java.util.Arrays;
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Antares
@@ -36,34 +36,6 @@ public class PathDp {
             }
 
             return obstacleGrid[height-1][width-1];
-        }
-    }
-
-    /**
-     * 最小路径和
-     * dp[i][j]代表走到[i,j]的最小路径和
-     * dp[i][j] = min(dp[i-1][j], dp[i][j-1]) + grid[i][j]
-     *
-     * 初始化
-     * dp[0][0] = grid[0][0];
-     *
-     * 另外，我们可以直接在grid上进行操作，来节省内存空间
-     */
-    class MinPathSum {
-        public int minPathSum(int[][] grid) {
-            for(int i = 0;i < grid.length;i++){
-                for(int j = 0;j < grid[0].length;j++){
-                    if(i > 0 && j > 0){
-                        grid[i][j] += Math.min(grid[i-1][j], grid[i][j-1]);
-                    } else if (i > 0) {
-                        grid[i][j] += grid[i-1][0];
-                    } else if (j > 0) {
-                        grid[i][j] += grid[0][j-1];
-                    }
-                }
-            }
-
-            return grid[grid.length-1][grid[0].length-1];
         }
     }
 
