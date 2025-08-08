@@ -264,4 +264,51 @@ public class EnumMidT {
 
         return false;
     }
+
+    /*
+     * 2552. 统计上升四元组 [Hard]
+     * 
+     * 将nums[i],nums[j],nums[k],nums[l]画在图像上形如：
+     * ------+
+     * --+----
+     * ----+--
+     * +------
+     * i j k l
+     * 可以枚举中间的j k（O(n^2)）
+     * 每当满足nums[j]>nums[k]，我们需要知道：
+     * j左侧<nums[k]的元素数l，k右侧>nums[j]的元素数r
+     * 由于nums是[1,n]的一个排列
+     * 用leftLess[i][j]表示[0,i)区间内，小于j的元素数
+     * rightGreater[i][j]表示(i,n-1]区间内，大于j的元素数
+     * leftLess和rigtGreater均可通过O(n^2)预处理
+     */
+    public long countQuadruplets(int[] nums) {
+        int n = nums.length;
+        int[][] leftLess = new int[n][n + 1];
+        for (int i = 1; i < n; i++) {
+            leftLess[i] = leftLess[i - 1].clone();
+            for (int j = nums[i - 1] + 1; j <= n; j++) {
+                leftLess[i][j]++;
+            }
+        }
+
+        int[][] rightGreater = new int[n][n + 1];
+        for (int i = n - 2; i >= 0; i--) {
+            rightGreater[i] = rightGreater[i + 1].clone();
+            for (int j = nums[i + 1] - 1; j >= 1; j--) {
+                rightGreater[i][j]++;
+            }
+        }
+
+        long ans = 0;
+        for (int i = 1; i < n - 2; i++) {
+            for (int j = i + 1; j < n - 1; j++) {
+                if (nums[i] > nums[j]) {
+                    ans += leftLess[i][nums[j]] * rightGreater[j][nums[i]];
+                }
+            }
+        }
+
+        return ans;
+    }
 }

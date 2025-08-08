@@ -455,7 +455,7 @@ public class HashT {
     }
 
     /*
-     * 1124. 表现良好的最长时间段 [Medium] <Star>   [Link: 962. 最大宽度坡]
+     * 1124. 表现良好的最长时间段 [Medium] <Star> [Link: 962. 最大宽度坡]
      * 
      * 将hours中劳累的置为1，不劳累的置为-1
      * 计算前缀和
@@ -570,6 +570,62 @@ public class HashT {
             int i2 = i1 % k;
             ans = Math.max(ans, s[i1] - maxPreS[i2]);
             maxPreS[i2] = Math.min(maxPreS[i2], s[i1]);
+        }
+
+        return ans;
+    }
+
+    /*
+     * 2488. 统计中位数为 K 的子数组 [Hard]
+     * 
+     * k是nums的某个子数组的中位数
+     * 考虑该子数组长度为奇数的情况：
+     * <k的元素数 = >k的元素数
+     * 左侧<k + 右侧<k = 左侧>k + 右侧>k
+     * 左侧<k - 左侧>k = 右侧>k - 右侧<k
+     * 故而可以从nums中为k的位置，分别向左右进行遍历：
+     * 先向左遍历，过程中记录左侧<k - 左侧>k，并统计到HashMap中，即端点
+     * 再向右遍历，ans+=map.getOrDefault(右侧>k - 右侧<k, 0)
+     * 
+     * 考虑长度为偶数的情况
+     * <k的元素数+1 = >k的元素数
+     * 左侧<k + 右侧<k = 左侧>k + 右侧>k - 1
+     * 左侧<k - 左侧>k = 右侧>k - 右侧<k - 1
+     * 综上，ans += map.getOrDefault(右侧>k - 右侧<k, 0) + 
+     * map.getOrDefault(右侧>k - 右侧<k + 1, 0)
+     * 
+     * 综上和前缀和没啥关系
+     */
+    public int countSubarrays(int[] nums, int k) {
+        // 对nums进行1次遍历，先找到k的位置
+        int idx = -1;
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            if (nums[i] == k) {
+                idx = i;
+                break;
+            }
+        }
+
+        int ans = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        int cnt1 = 0, cnt2 = 0;
+        for (int i = idx; i >= 0; i--) {
+            if (nums[i] < k)
+                cnt1++;
+            else
+                cnt2++;
+            map.merge(cnt1 - cnt2, 1, Integer::sum);
+        }
+
+        cnt1 = 0;
+        cnt2 = 0;
+        for (int i = idx; i < n; i++) {
+            if (nums[i] > k)
+                cnt1++;
+            else
+                cnt2++;
+            ans += map.getOrDefault(cnt1 - cnt2, 0) + map.getOrDefault(cnt1 - cnt2 - 1, 0);
         }
 
         return ans;

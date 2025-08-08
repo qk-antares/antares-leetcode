@@ -145,6 +145,36 @@ map.put(key, map.getOrDefault(key, 0) + 1);
 
 #### 1.5.2 `TreeMap`
 
+```java
+TreeMap<Integer, String> map = new TreeMap<>();
+
+// put 添加元素
+map.put(3, "three");
+map.put(1, "one");
+map.put(2, "two");
+
+// firstKey/lastKey 获取最小/最大key
+int minKey = map.firstKey(); // 1
+int maxKey = map.lastKey();  // 3
+
+// ceilingKey/floorKey 查找大于等于/小于等于给定key的最小/最大key
+int ceil = map.ceilingKey(2); // 2
+int floor = map.floorKey(2);  // 2
+
+// higherKey/lowerKey 查找大于/小于给定key的最小/最大key
+int higher = map.higherKey(2); // 3
+int lower = map.lowerKey(2);   // 1
+
+// 返回 [fromKey, toKey) 范围的视图（左闭右开）
+map.subMap(fromKey, toKey);
+// 可指定边界是否包含
+map.subMap(fromKey, boolean fromInclusive, toKey, boolean toInclusive);
+// 返回所有小于 toKey 的键值对
+map.headMap(toKey);
+// 返回所有大于等于 fromKey 的键值对
+map.tailMap(fromKey);
+```
+
 ### 1.6 `Integer`
 
 ```java
@@ -269,7 +299,7 @@ $$
 \frac{m}{n} \% p \neq \frac{m \% p}{n \% p}
 $$
 
-关于这种除法运算求模，通常可以使用如下定理求解：当 $p$ 是质数，$a$ 是 $b$ 的倍数，且 $b$ 不是 $p$ 的倍数时：
+关于这种除法运算求模，通常可以使用如下定理求解：当 $p$ 是质数， $a$ 是 $b$ 的倍数，且 $b$ 不是 $p$ 的倍数时：
 
 $$
 \frac{a}{b} \% p = a \cdot b^{p-2} \% p
@@ -285,11 +315,13 @@ $$
 
 $$
 b^{p} \equiv b \mod p
-\\
+$$
+
+$$
 b^{p-1} \equiv 1 \mod p
 $$
 
-因此，$b^{p-2}$ 就是 $b$ 关于模 $p$ 的逆元。
+因此， $b^{p-2}$ 就是 $b$ 关于模 $p$ 的逆元。
 
 #### 2.3.3 组合数的计算
 组合数的计算可以通过预处理阶乘和逆元来实现：
