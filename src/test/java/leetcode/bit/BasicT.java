@@ -192,6 +192,87 @@ public class BasicT {
         return ans;
     }
 
+    /*
+     * 231. 2 的幂 [Easy]
+     */
+    public boolean isPowerOfTwo(int n) {
+        return n > 0 && Integer.bitCount(n) == 1;
+    }
+
+    /*
+     * 342. 4的幂 [Easy]
+     */
+    public boolean isPowerOfFour(int n) {
+        return n > 0 && Integer.bitCount(n) == 1 && (Integer.numberOfLeadingZeros(n) - 1) % 2 == 0;
+    }
+
+    /*
+     * 191. 位1的个数 [Easy]
+     */
+    public int hammingWeight(int n) {
+        return Integer.bitCount(n);
+    }
+
+    /*
+     * 338. 比特位计数 [Easy]
+     * 
+     * 规律：（copy，+1）重复，例如：
+     * [0], [1], [1,2], [1,2,2,3], [1,2,2,3,2,3,3,4]
+     * 
+     * 可以预处理，或者根据下标的规律直接构造ans
+     */
+    static int[] bitCnt = new int[200_002];
+
+    static {
+        bitCnt[1] = 1;
+        int cur = 2, delta = 1;
+        while (cur < 100_001) {
+            // copy
+            System.arraycopy(bitCnt, cur - delta, bitCnt, cur, delta);
+            // +1
+            for (int l = cur, r = cur + delta; l < cur + delta; l++, r++) {
+                bitCnt[r] = bitCnt[l] + 1;
+            }
+            delta *= 2;
+            cur += delta;
+        }
+    }
+
+    public int[] countBits0(int n) {
+        int[] ans = new int[n + 1];
+        System.arraycopy(bitCnt, 0, ans, 0, n + 1);
+        return ans;
+    }
+
+    public int[] countBits(int n) {
+        int[] ans = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
+            ans[i] = ans[i >> 1] + (i & 1);
+        }
+        return ans;
+    }
+
+    /*
+     * 2595. 奇偶位数 [Easy]
+     * 
+     * 第一种方法是逐位取，时间复杂度O(logn)
+     * 第二种方法是利用位掩码 0x55555555（二进制 0101⋯01）
+     */
+    public int[] evenOddBit0(int n) {
+        int[] ans = new int[2];
+        int i = 0;
+        int high = 32 - Integer.numberOfLeadingZeros(n);
+        while (i < high) {
+            ans[i % 2] += (1 & n >> i);
+            i++;
+        }
+        return ans;
+    }
+
+    public int[] evenOddBit(int n) {
+        return new int[] { Integer.bitCount(n & 0x55555555), Integer.bitCount(n & (~0x55555555)) };
+    }
+
     @Test
     void test() {
         findThePrefixCommonArray(
