@@ -464,6 +464,8 @@ public class BasicT {
         return false;
     }
 
+
+
     @Test
     public void test() {
         // System.out.println(shiftDistance("abab", "baba",
@@ -472,6 +474,7 @@ public class BasicT {
         // new int[] { 1, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         // 0, 0, 0, 0, 0 }));
 
-        platesBetweenCandles("**|**|***|", new int[][] { { 2, 5 }, { 5, 9 } });
+        // platesBetweenCandles("**|**|***|", new int[][] { { 2, 5 }, { 5, 9 } });
+
     }
 }

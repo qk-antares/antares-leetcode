@@ -591,7 +591,7 @@ public class HashT {
      * <k的元素数+1 = >k的元素数
      * 左侧<k + 右侧<k = 左侧>k + 右侧>k - 1
      * 左侧<k - 左侧>k = 右侧>k - 右侧<k - 1
-     * 综上，ans += map.getOrDefault(右侧>k - 右侧<k, 0) + 
+     * 综上，ans += map.getOrDefault(右侧>k - 右侧<k, 0) +
      * map.getOrDefault(右侧>k - 右侧<k + 1, 0)
      * 
      * 综上和前缀和没啥关系
@@ -629,6 +629,43 @@ public class HashT {
         }
 
         return ans;
+    }
+
+    /*
+     * 1590. 使数组和能被 P 整除 [Medium]
+     * 
+     * (total-s[i]+s[j]) %p = 0 (i>j)
+     * 这证明total和s[i]-s[j]同余
+     * (s[i]-s[j]) % p = total % p
+     * s[i] % p = n1
+     * s[j] % p = n2
+     * 如果n1 >= total % p，则n2 = n1-total%p
+     * 如果n1 < total % p，则n2 = n1+p-total%p
+     * 归纳为n2 = (n1-total+p)%p
+     * 故从左到右构造s，并用HashMap记录某个s%p最近出现的位置
+     */
+
+    public int minSubarray(int[] nums, int p) {
+        int n = nums.length;
+        long[] s = new long[n + 1];
+        for (int i = 0; i < n; i++) {
+            s[i + 1] = s[i] + nums[i];
+        }
+
+        int totalMod = (int) (s[n] % p);
+
+        Map<Integer, Integer> map = new HashMap<>();
+        int ans = Integer.MAX_VALUE;
+        for (int i = 0; i <= n; i++) {
+            int n1 = (int) (s[i] % p);
+            map.put(n1, i);
+            Integer j = map.get(n1 >= totalMod ? n1 - totalMod : n1 + p - totalMod);
+            if (j != null) {
+                ans = Math.min(ans, i - j);
+            }
+        }
+
+        return ans == n ? -1 : ans;
     }
 
     /*
@@ -676,6 +713,68 @@ public class HashT {
         return ans;
     }
 
+    /*
+     * 1074. 元素和为目标值的子矩阵数量 [Hard] <Star>
+     * 
+     * 枚举子矩阵的行区间，计算这些行区间的列之和subColS[]
+     * 子矩阵相当于从这些列中选出一个子数组，子数组的和为target，是对[560. 和为 K 的子数组]的变形
+     */
+    public int numSubmatrixSumTarget0(int[][] matrix, int target) {
+        int m = matrix.length, n = matrix[0].length;
+        // 先把各个列的前缀和算出来
+        int[][] colS = new int[m + 1][n];
+        for (int j = 0; j < n; j++) {
+            for (int i = 0; i < m; i++) {
+                colS[i + 1][j] = colS[i][j] + matrix[i][j];
+            }
+        }
+
+        int ans = 0;
+        // 枚举行区间
+        for (int i = 0; i < m; i++) {
+            for (int j = i; j < m; j++) {
+                Map<Integer, Integer> cnt = new HashMap<>();
+                cnt.put(0, 1);
+                // 计算subColS
+                int subColS = 0;
+                for (int k = 0; k < n; k++) {
+                    subColS += colS[j + 1][k] - colS[i][k];
+                    ans += cnt.getOrDefault(subColS - target, 0);
+                    cnt.merge(subColS, 1, Integer::sum);
+                }
+            }
+        }
+
+        return ans;
+    }
+
+    public int numSubmatrixSumTarget(int[][] matrix, int target) {
+        int m = matrix.length, n = matrix[0].length;
+
+        int ans = 0;
+        // 枚举行区间
+        for (int i = 0; i < m; i++) {
+            int[] subColS = new int[n];
+            for (int j = i; j < m; j++) {
+                // 更新subColsS
+                for (int k = 0; k < n; k++) {
+                    subColS[k] += matrix[j][k];
+                }
+
+                Map<Integer, Integer> cnt = new HashMap<>();
+                cnt.put(0, 1);
+                int s = 0;
+                for (int k = 0; k < n; k++) {
+                    s += subColS[k];
+                    ans += cnt.getOrDefault(s - target, 0);
+                    cnt.merge(s, 1, Integer::sum);
+                }
+            }
+        }
+
+        return ans;
+    }
+
     @Test
     public void test() {
         // System.out.println(findMaxLength(new int[] { 0, 1, 1, 1, 1, 1, 0, 0, 0 }));
@@ -693,6 +792,7 @@ public class HashT {
         // -277, -861, -562, -647, -183, -856, -372, -111, -624, -514, -252, -275, -430,
         // -273, -323, -774, -535,
         // -797, -291 }, 53);
-        longestWPI(new int[] { 6, 6, 9 });
+        // longestWPI(new int[] { 6, 6, 9 });
+        numSubmatrixSumTarget(new int[][] { { 0, 1, 0 }, { 1, 1, 1 }, { 0, 1, 0 } }, 0);
     }
 }
