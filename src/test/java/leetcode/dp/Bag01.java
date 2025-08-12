@@ -166,7 +166,7 @@ public class Bag01 {
     }
 
     /*
-     * 2787. 将一个数字表示成幂的和的方案数 [Medium]
+     * 2787. 将一个数字表示成幂的和的方案数 [Medium]    <Star>
      * 
      * 设 upper = (int) Math.round(Math.pow(n, 1.0 / x))
      * 本题相当于从[1..upper]中选取一些数，这些数的x次方和等于n

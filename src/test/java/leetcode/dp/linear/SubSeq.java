@@ -285,8 +285,7 @@ public class SubSeq {
         // 12, 58 };
         // System.out.println(longestArithSeqLength(nums)); // Example usage
 
-        System.out.println(minimumDifference(
-                new int[] { 16, 46, 43, 41, 42, 14, 36, 49, 50, 28, 38, 25, 17, 5, 18, 11, 14, 21, 23, 39, 23 })); // Example
-                                                                                                                   // usage
+        // System.out.println(minimumDifference(
+        //         new int[] { 16, 46, 43, 41, 42, 14, 36, 49, 50, 28, 38, 25, 17, 5, 18, 11, 14, 21, 23, 39, 23 })); // Example
     }
 }

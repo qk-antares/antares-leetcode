@@ -7,51 +7,6 @@ import org.junit.jupiter.api.Test;
  * @date 2022/9/5
  */
 public class DpEasy {
-    /**
-     * 爬楼梯（我的解法：递归，当n比较大时算法超时）
-     */
-    public int climbStairs(int n) {
-        if(n == 1)
-            return 1;
-        if(n == 2)
-            return 2;
-
-        return climbStairs(n-1) + climbStairs(n-2);
-    }
-
-    /**
-     * 解法二（使用一个临时数组来保存结果，消除递归）
-     */
-    public int climbStairs0(int n) {
-        if(n < 3)
-            return n;
-
-        int[] res = new int[n];
-        res[0] = 1;
-        res[1] = 2;
-        for(int i = 2;i < n;i++){
-            res[i] = res[i-1] + res[i-2];
-        }
-        return res[n-1];
-    }
-
-    /**
-     * 解法三（使用两个临时变量来保存结果）
-     */
-    public int climbStairs1(int n) {
-        if(n < 3)
-            return n;
-
-        int temp1 = 1;
-        int temp2 = 2;
-        int res = temp1 + temp2;
-        for(int i = 2;i < n;i++){
-            res = temp1 + temp2;
-            temp1 = temp2;
-            temp2 = res;
-        }
-        return res;
-    }
 
     /**
      * 买卖股票的最佳时机（我的解法）
