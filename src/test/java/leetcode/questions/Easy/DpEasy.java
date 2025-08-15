@@ -77,44 +77,6 @@ public class DpEasy {
     }
 
     /**
-     * 最大子序和（我的解法：参照上面的解法四，效率最高）
-     */
-    public int maxSubArray(int[] nums) {
-        if(nums == null || nums.length == 0)
-            return 0;
-
-        int cur = nums[0];
-        int max_sum = cur;
-        for(int i = 1;i < nums.length;i++){
-            cur = Math.max(cur, 0) + nums[i];
-            max_sum = Math.max(cur, max_sum);
-        }
-
-        return max_sum;
-    }
-
-    /**
-     * 解法二（动态规划解法，效率有较大的下降）
-     * dp[i]表示以i为右端点的子序的最大和
-     * dp[i] = max(nums[i], dp[i-1]+nums[i])
-     */
-    public int maxSubArray0(int[] nums) {
-        if(nums == null || nums.length == 0)
-            return 0;
-
-        int[] dp = new int[nums.length];
-        dp[0] = nums[0];
-        int max_sum = dp[0];
-        for(int i = 1;i < nums.length;i++){
-            dp[i] = Math.max(nums[i], dp[i-1]+nums[i]);
-            if(dp[i] > max_sum)
-                max_sum = dp[i];
-        }
-
-        return max_sum;
-    }
-
-    /**
      * 打家劫舍（我的解法，动态规划解法，效率还是不错滴）
      * dp[i][0]= max(dp[i-1][1], dp[i-1][0])
      * dp[i][1] = dp[i-1][0] + nums[i]

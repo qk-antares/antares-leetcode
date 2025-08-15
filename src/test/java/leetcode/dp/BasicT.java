@@ -328,7 +328,7 @@ public class BasicT {
     }
 
     /*
-     * 3186. 施咒的最大总伤害 [Medium]  <Star>
+     * 3186. 施咒的最大总伤害 [Medium] <Star>
      * 
      * 本题power的值域较大，不能用暴力算法
      * 用HashMap统计所有数字的出现次数，key为数字
@@ -364,6 +364,143 @@ public class BasicT {
         }
 
         return dp[n];
+    }
+
+    /*
+     * 2140. 解决智力问题 [Medium]
+     * 
+     * dp[i]表示[i..n-1]能获得的最大分数
+     * 倒序
+     */
+    public long mostPoints(int[][] questions) {
+        int n = questions.length;
+        long[] dp = new long[n + 1];
+        for (int i = n - 1; i >= 0; i--) {
+            dp[i] = Math.max(
+                    dp[i + 1],
+                    questions[i][0] + dp[Math.min(n, i + 1 + questions[i][1])]);
+        }
+
+        return dp[0];
+    }
+
+    /*
+     * 53. 最大子数组和 [Medium]
+     * 
+     * 前缀和，过程中记录前面的最小值
+     */
+    public int maxSubArray(int[] nums) {
+        int min = 0;
+        int s = 0;
+        int ans = Integer.MIN_VALUE;
+        for (int num : nums) {
+            s += num;
+            ans = Math.max(ans, s - min);
+            min = Math.min(min, s);
+        }
+        return ans;
+    }
+
+    /*
+     * 2606. 找到最大开销的子字符串 [Medium]
+     * 
+     * 前缀和
+     */
+    public int maximumCostSubstring(String s, String chars, int[] vals) {
+        int[] charVals = new int[26];
+        for (int i = 0; i < 26; i++) {
+            charVals[i] = i + 1;
+        }
+
+        for (int i = 0; i < vals.length; i++) {
+            charVals[chars.charAt(i) - 'a'] = vals[i];
+        }
+
+        int sum = 0;
+        int min = 0;
+        int ans = 0;
+        for (char ch : s.toCharArray()) {
+            sum += charVals[ch - 'a'];
+            ans = Math.max(ans, sum - min);
+            min = Math.min(min, sum);
+        }
+
+        return ans;
+    }
+
+    /*
+     * 1749. 任意子数组和的绝对值的最大值 [Medium]
+     * 
+     * 前缀和，记录最大以及最小
+     */
+    public int maxAbsoluteSum(int[] nums) {
+        int s = 0;
+        int min = 0;
+        int max = 0;
+        int ans1 = 0;
+        int ans2 = 0;
+        for (int num : nums) {
+            s += num;
+            ans1 = Math.max(ans1, s - min);
+            ans2 = Math.min(ans2, s - max);
+            min = Math.min(min, s);
+            max = Math.max(max, s);
+        }
+        return Math.max(Math.abs(ans1), Math.abs(ans2));
+    }
+
+    /*
+     * 1191. K 次串联后最大子数组之和 [Medium]
+     * 
+     * 前缀和，统计k=1以及k=2的答案
+     * 按照arr的s以及k的奇偶可以分为4种情况：
+     * 当s<=0时，重复arr是没有意义的，此时k=1则返回k1，否则返回k2
+     * 当s>0时，中间的arr都重复，重复(k-2)次，然后加上k2，当然这要求至少重复2次，所以k=1时返回k1
+     */
+    public int kConcatenationMaxSum(int[] arr, int k) {
+        int s = 0;
+        int min = 0;
+        int k1 = 0;
+        for (int i = 0; i < arr.length; i++) {
+            s += arr[i];
+            k1 = Math.max(k1, s - min);
+            min = Math.min(min, s);
+        }
+
+        int k2 = 0;
+        for (int i = 0; i < arr.length; i++) {
+            s += arr[i];
+            k2 = Math.max(k2, s - min);
+            min = Math.min(min, s);
+        }
+
+        if (s <= 0) {
+            return k < 2 ? k1 : k2;
+        } else {
+            return k < 2 ? k1 : (int) (((long) s / 2 * (k - 2) + k2) % 1_000_000_007);
+        }
+    }
+
+    /*
+     * 918. 环形子数组的最大和  [Medium]
+     * 
+     * 计算和最大/最小的子数组
+     * 则ans=Math.max(和最大的子数组，总和-和最小的子数组)
+     * 特殊情况是总和=和最小的子数组，由于题目要求子数组不能为空，此时不管和最大的子数组是><0，都要返回它
+     */
+    public int maxSubarraySumCircular(int[] nums) {
+        int min = 0, max = 0;
+        int s = 0;
+        int ans1 = Integer.MIN_VALUE, ans2 = Integer.MAX_VALUE;
+        for(int num : nums) {
+          s+=num;
+          ans1 = Math.max(ans1, s-min);
+          ans2 = Math.min(ans2, s-max);
+          min = Math.min(min, s);
+          max = Math.max(max, s);
+        }
+
+        return ans2 == s ? ans1 : Math.max(ans1, s-ans2);
     }
 
     @Test

@@ -8,21 +8,6 @@ import org.junit.jupiter.api.Test;
 
 public class ArrayLearn {
     /**
-     * 最大子数组和
-     * dp[i]表示nums[i]结尾的序列的最大值，则dp[i] = Math.max(dp[i-1]+nums[i], nums[i])，只跟上一个状态有关，可以进行压缩
-     */
-    public int maxSubArray(int[] nums) {
-        int lastState = nums[0], curState;
-        int ans = lastState;
-        for (int i = 1; i < nums.length; i++) {
-            curState = lastState > 0 ? lastState+nums[i] : nums[i];
-            ans = Math.max(ans, curState);
-            lastState = curState;
-        }
-        return ans;
-    }
-
-    /**
      * 合并区间
      */
     public int[][] merge(int[][] intervals) {
