@@ -775,6 +775,34 @@ public class HashT {
         return ans;
     }
 
+    /*
+     * 1504. 统计全 1 子矩形    [Medium]    [Link: 1074. 元素和为目标值的子矩阵数量]
+     * 
+     * 和1074的思路类似，同样是枚举行区间，然后用colS来记录行区间内列的和
+     * 只有列的和等于行高h，才能构成矩形。统计colS中全为h的子数组数量
+     */
+    public int numSubmat(int[][] mat) {
+        int m = mat.length, n = mat[0].length;
+        int ans = 0;
+        for(int i = 0; i < m; i++) {
+            int[] colS = new int[n];
+            for(int j = i; j < m; j++) {
+                int h = j-i+1;
+                // 2348. 全 h 子数组的数目
+                int preNH = -1;
+                for(int k = 0; k < n; k++) {
+                    colS[k] += mat[j][k];
+                    if(colS[k] != h) {
+                        preNH = k;
+                    } else {
+                        ans += k-preNH;
+                    } 
+                }
+            }
+        }
+        return ans;
+    }
+
     @Test
     public void test() {
         // System.out.println(findMaxLength(new int[] { 0, 1, 1, 1, 1, 1, 0, 0, 0 }));
