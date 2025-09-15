@@ -1,6 +1,8 @@
 package leetcode.bit;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -271,6 +273,67 @@ public class BasicT {
 
     public int[] evenOddBit(int n) {
         return new int[] { Integer.bitCount(n & 0x55555555), Integer.bitCount(n & (~0x55555555)) };
+    }
+
+    /*
+     * ========================== 分割线 ==========================
+     */
+
+    /*
+     * 1935. 可以输入的最大单词数 [Easy]
+     * 
+     * 使用int的mask标记brokenLetters所代表的26种字母
+     * 然后对text进行1次遍历
+     * 如果遇到的字母&mask != 0: 一直向后移动直至遇到空格+1
+     * 正常遇到了空格，ans+1
+     */
+    public int canBeTypedWords0(String text, String brokenLetters) {
+        String[] words = text.split(" ");
+        Set<Character> chars = new HashSet<>();
+        for (char ch : brokenLetters.toCharArray()) {
+            chars.add(ch);
+        }
+        int ans = 0;
+        for (String word : words) {
+            boolean flag = true;
+            for (char ch : word.toCharArray()) {
+                if (chars.contains(ch)) {
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag)
+                ans++;
+        }
+        return ans;
+    }
+
+    public int canBeTypedWords(String text, String brokenLetters) {
+        int ans = 0;
+        int mask = 0;
+        for (char ch : brokenLetters.toCharArray()) {
+            mask |= (1 << (ch - 'a'));
+        }
+
+        char[] s = text.toCharArray();
+        boolean flag = true;
+        for (int i = 0; i < s.length; i++) {
+            if (s[i] == ' ')
+                ans++;
+            else if (((1 << (s[i] - 'a')) & mask) != 0) {
+                flag = false;
+                while (i < s.length && s[i] != ' ')
+                    i++;
+            } else {
+                flag = true;
+            }
+        }
+
+        // 对最后一个单词做特殊处理
+        if (flag)
+            ans++;
+
+        return ans;
     }
 
     @Test
