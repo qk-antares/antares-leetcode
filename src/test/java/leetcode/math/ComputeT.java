@@ -1,5 +1,7 @@
 package leetcode.math;
 
+import java.util.HashMap;
+
 /*
  * 数学计算
  */
@@ -38,5 +40,53 @@ public class ComputeT {
         return ans;
     }
 
+    /*
+     * 166. 分数到小数  [Medium]
+     * 
+     * 模拟长除法的过程
+     */
+    public String fractionToDecimal(int numerator, int denominator) {
+        long a = (long)numerator;
+        long b = (long)denominator;
 
+        StringBuilder ans = new StringBuilder();
+        if(a < 0 ^ (a != 0 && b < 0)) {
+            ans.append('-');
+        }
+        a = Math.abs(a);
+        b = Math.abs(b);
+        ans.append(String.valueOf(a / b));
+        a = (a % b) * 10;
+
+        StringBuilder sb = new StringBuilder();
+        HashMap<Long, Integer> map = new HashMap<>();
+        int i = 0;
+        while(!map.containsKey(a) && a != 0L) {
+            map.put(a, i);
+            if(a < b) {
+                sb.append('0');
+                a *= 10;
+            } else {
+                sb.append(a / b);
+                a = (a % b) * 10;
+            }
+            i++;
+        }
+
+        if(sb.length() > 0) {
+            ans.append('.');
+        }
+
+        if(map.containsKey(a)) {
+            int pos = map.get(a);
+            ans.append(sb.substring(0, pos));
+            ans.append('(');
+            ans.append(sb.substring(pos));
+            ans.append(')');
+        } else {
+            ans.append(sb);
+        }
+
+        return ans.toString();
+    }
 }
