@@ -1,6 +1,7 @@
 package leetcode.dp;
 
 import java.util.Arrays;
+import java.util.List;
 
 /*
  * 网格DP
@@ -24,6 +25,33 @@ public class GridDp {
             }
         }
         return grid[m - 1][n - 1];
+    }
+
+    /*
+     * 120. 三角形最小路径和 [Medium]
+     * 
+     * 用dp[i]表示到达i的最小路径和
+     * 对每一层【从右往左】进行遍历：
+     * dp[i+1]=Math.min(dp[i+1], dp[i])+row[i+1]
+     * dp[0]=triangle[0][0]
+     */
+    public int minimumTotal(List<List<Integer>> triangle) {
+        int n = triangle.size();
+        int[] dp = new int[n];
+        dp[0] = triangle.get(0).get(0);
+        for (int i = 1; i < n; i++) {
+            List<Integer> row = triangle.get(i);
+            dp[i] = dp[i - 1] + row.get(i);
+            for (int j = i - 1; j > 0; j--) {
+                dp[j] = Math.min(dp[j], dp[j - 1]) + row.get(j);
+            }
+            dp[0] += row.get(0);
+        }
+        int ans = Integer.MAX_VALUE;
+        for (int d : dp) {
+            ans = Math.min(ans, d);
+        }
+        return ans;
     }
 
     /*
