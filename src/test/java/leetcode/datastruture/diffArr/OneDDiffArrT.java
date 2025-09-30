@@ -84,6 +84,31 @@ public class OneDDiffArrT {
     }
 
     /*
+     * 面试题 16.10. 生存人数 [Medium]
+     */
+    //年份的区间是[1900,2000]，这可以用一个长度2001的数组表示，则其差分数组的长度是2002
+    public int maxAliveYear(int[] birth, int[] death) {
+        int[] d = new int[2002];
+        for(int i = 0; i < birth.length; i++) {
+            d[birth[i]]++;
+            d[death[i]+1]--;
+        }
+
+        int max = 0;
+        int maxIdx = -1;
+        int s = 0;
+        for(int i = 0; i <= 2000; i++) {
+            s += d[i];
+            if(s > max) {
+                max = s;
+                maxIdx = i;
+            }
+        }
+
+        return maxIdx;
+    }
+
+    /*
      * 1094. 拼车 [Medium] <Star>
      * 
      * 数组a代表在每个位置上的乘客数
