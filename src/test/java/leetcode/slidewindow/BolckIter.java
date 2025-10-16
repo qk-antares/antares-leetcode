@@ -1,5 +1,9 @@
 package leetcode.slidewindow;
 
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
 /*
  * 分组循环
  */
@@ -41,5 +45,36 @@ public class BolckIter {
             }
         }
         return ans;
+    }
+
+    /*
+     * 3350. 检测相邻递增子数组 II [Medium]
+     * 
+     * 1次遍历
+     * 记录两个值
+     * 当前的递增序列的长度cur
+     * 前一个递增序列的长度pre
+     * ans = Math.max(ans, Math.max(cur/2, Math.min(cur, pre)))
+     */
+    public int maxIncreasingSubarrays(List<Integer> nums) {
+        int cur = 1;
+        int pre = 0;
+        int ans = 0;
+        int n = nums.size();
+        for(int i = 1; i < n; i++) {
+            if(nums.get(i) > nums.get(i-1)) {
+                cur++;
+            } else {
+                pre = cur;
+                cur = 1;
+            }
+            ans = Math.max(ans, Math.max(cur/2, Math.min(cur, pre)));
+        }
+        return ans;
+    }
+
+    @Test
+    void test() {
+        System.out.println(maxIncreasingSubarrays(List.of(2,5,7,8,9,2,3,4,3,1)));
     }
 }
