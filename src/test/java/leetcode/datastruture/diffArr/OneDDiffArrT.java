@@ -2,6 +2,7 @@ package leetcode.datastruture.diffArr;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -86,20 +87,20 @@ public class OneDDiffArrT {
     /*
      * 面试题 16.10. 生存人数 [Medium]
      */
-    //年份的区间是[1900,2000]，这可以用一个长度2001的数组表示，则其差分数组的长度是2002
+    // 年份的区间是[1900,2000]，这可以用一个长度2001的数组表示，则其差分数组的长度是2002
     public int maxAliveYear(int[] birth, int[] death) {
         int[] d = new int[2002];
-        for(int i = 0; i < birth.length; i++) {
+        for (int i = 0; i < birth.length; i++) {
             d[birth[i]]++;
-            d[death[i]+1]--;
+            d[death[i] + 1]--;
         }
 
         int max = 0;
         int maxIdx = -1;
         int s = 0;
-        for(int i = 0; i <= 2000; i++) {
+        for (int i = 0; i <= 2000; i++) {
             s += d[i];
-            if(s > max) {
+            if (s > max) {
                 max = s;
                 maxIdx = i;
             }
@@ -640,7 +641,7 @@ public class OneDDiffArrT {
      */
 
     /*
-     * 2200. 找出数组中的所有 K 近邻下标
+     * 2200. 找出数组中的所有 K 近邻下标 [Easy]
      * 
      * 二分
      * 首先找出所有key的下标 n
@@ -683,19 +684,21 @@ public class OneDDiffArrT {
 
     public List<Integer> findKDistantIndices1(int[] nums, int key, int k) {
         int n = nums.length;
-        int[] d = new int[n+1];
-        for(int i = 0; i < n; i++) {
-            if(nums[i] == key) {
-                d[Math.max(i-k, 0)]++;
-                d[Math.min(i+k+1, n)]--;
+        int[] d = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            if (nums[i] == key) {
+                d[Math.max(i - k, 0)]++;
+                d[Math.min(i + k + 1, n)]--;
             }
         }
 
         List<Integer> ans = new ArrayList<>();
-        if(d[0] > 0) ans.add(0);
-        for(int i = 1; i < n; i++) {
-            d[i] += d[i-1];
-            if(d[i] > 0) ans.add(i);
+        if (d[0] > 0)
+            ans.add(0);
+        for (int i = 1; i < n; i++) {
+            d[i] += d[i - 1];
+            if (d[i] > 0)
+                ans.add(i);
         }
 
         return ans;
@@ -722,10 +725,92 @@ public class OneDDiffArrT {
         return ans;
     }
 
+    /*
+     * 3347. 执行操作后元素的最高频率 II [Hard]
+     */
+    public int maxFrequency0(int[] nums, int k, int numOperations) {
+        Map<Integer, Integer> d = new TreeMap<>();
+        Map<Integer, Integer> cnt = new HashMap<>();
+        for (int num : nums) {
+            cnt.merge(num, 1, Integer::sum);
+
+            // num可变为num-k，num+k
+            d.merge(num - k, 1, Integer::sum);
+            d.merge(num + k + 1, -1, Integer::sum);
+        }
+
+        int s = 0;
+        int ans = 0;
+        for (Map.Entry<Integer, Integer> e : d.entrySet()) {
+            s += e.getValue();
+            Integer key = e.getKey();
+            Integer c = cnt.get(key);
+            if (c != null) {
+                ans = Math.max(ans, Math.min(s, c + numOperations));
+            } else {
+                ans = Math.max(ans, Math.min(s, numOperations));
+            }
+        }
+
+        return ans;
+    }
+
+    // c != null的分支还可以优化
+    public int maxFrequency1(int[] nums, int k, int numOperations) {
+        Map<Integer, Integer> d = new TreeMap<>();
+        Map<Integer, Integer> cnt = new HashMap<>();
+        for (int num : nums) {
+            cnt.merge(num, 1, Integer::sum);
+            d.putIfAbsent(num, 0); // 为了使下面的遍历能够遍历到num
+
+            // num可变为num-k，num+k
+            d.merge(num - k, 1, Integer::sum);
+            d.merge(num + k + 1, -1, Integer::sum);
+        }
+
+        int s = 0;
+        int ans = 0;
+        for (Map.Entry<Integer, Integer> e : d.entrySet()) {
+            s += e.getValue();
+            Integer key = e.getKey();
+            Integer c = cnt.get(key);
+            if (c != null) {
+                ans = Math.max(ans, Math.min(s, c + numOperations));
+            } else {
+                ans = Math.max(ans, Math.min(s, numOperations));
+            }
+        }
+
+        return ans;
+    }
+
+    public int maxFrequency(int[] nums, int k, int numOperations) {
+        Map<Integer, Integer> d = new TreeMap<>();
+        Map<Integer, Integer> cnt = new HashMap<>();
+        for (int num : nums) {
+            cnt.merge(num, 1, Integer::sum);
+            d.putIfAbsent(num, 0); // 为了使下面的遍历能够遍历到num
+
+            // num可变为num-k，num+k
+            d.merge(num - k, 1, Integer::sum);
+            d.merge(num + k + 1, -1, Integer::sum);
+        }
+
+        int s = 0;
+        int ans = 0;
+        for (Map.Entry<Integer, Integer> e : d.entrySet()) {
+            s += e.getValue();
+            ans = Math.max(ans, Math.min(s, cnt.getOrDefault(e.getKey(), 0) + numOperations));
+        }
+
+        return ans;
+    }
+
     @Test
     public void test() {
         // int[][] squares = { { 0, 0, 2 }, { 1, 1, 1 } };
         // System.out.println(separateSquares(squares));
+        maxFrequency(new int[] { 5, 11, 20, 20 }, 5, 1);
     }
 
 }
