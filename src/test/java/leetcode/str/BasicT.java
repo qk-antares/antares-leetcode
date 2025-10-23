@@ -58,10 +58,33 @@ public class BasicT {
         return 0;
     }
 
+    /*
+     * 3461. 判断操作后字符串中的数字是否相等 I [Easy]
+     * 
+     * 只用注意外层循环的边界条件是ss.length -2
+     */
+    public boolean hasSameDigits(String s) {
+        char[] ss = s.toCharArray();
+        int[] nums = new int[ss.length];
+        for(int i = 0; i < ss.length; i++) {
+            nums[i] = ss[i] - '0';
+        }
+
+        for(int i = 0; i < ss.length-2; i++) {
+            for(int j = 0; j < ss.length-1-i; j++) {
+                nums[j] = (nums[j] + nums[j+1]) % 10;
+            }
+        }
+
+        return nums[0] == nums[1];
+    }
+
     @Test
     public void test() {
-        String version1 = "1.2";
-        String version2 = "1.10";
-        System.out.println(compareVersion(version1, version2));
+        // String version1 = "1.2";
+        // String version2 = "1.10";
+        // System.out.println(compareVersion(version1, version2));
+
+        hasSameDigits("3902");
     }
 }
