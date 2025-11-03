@@ -1,4 +1,4 @@
-package leetcode.doublepointer;
+package leetcode.slidewindow_doublepointer;
 
 import java.util.Arrays;
 

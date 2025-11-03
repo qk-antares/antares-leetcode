@@ -1,4 +1,4 @@
-package leetcode.slidewindow.varT;
+package leetcode.slidewindow_doublepointer.varT;
 
 /*
  * [变长滑动窗口]/[求子数组个数]/[越短越合法]

@@ -1,4 +1,4 @@
-package leetcode.slidewindow;
+package leetcode.slidewindow_doublepointer;
 
 import java.util.List;
 
@@ -48,6 +48,31 @@ public class BolckIter {
     }
 
     /*
+     * 1578. 使绳子变成彩色的最短时间 [Medium]
+     * 
+     * 每个气球移除与不移除，深度优先遍历，但这样的话时间复杂度太高
+     * 移除的气球必定是连续序列中的代价较小的
+     */
+    public int minCost(String colors, int[] neededTime) {
+        char[] s = colors.toCharArray();
+        int total = neededTime[0];
+        int cur = 0;
+        int max = neededTime[0];
+        for (int i = 1; i < s.length; i++) {
+            total += neededTime[i];
+            if (s[i] != s[i - 1]) {
+                cur += max;
+                max = neededTime[i];
+            } else {
+                max = Math.max(max, neededTime[i]);
+            }
+        }
+
+        cur += max;
+        return total - cur;
+    }
+
+    /*
      * 3350. 检测相邻递增子数组 II [Medium]
      * 
      * 1次遍历
@@ -61,20 +86,20 @@ public class BolckIter {
         int pre = 0;
         int ans = 0;
         int n = nums.size();
-        for(int i = 1; i < n; i++) {
-            if(nums.get(i) > nums.get(i-1)) {
+        for (int i = 1; i < n; i++) {
+            if (nums.get(i) > nums.get(i - 1)) {
                 cur++;
             } else {
                 pre = cur;
                 cur = 1;
             }
-            ans = Math.max(ans, Math.max(cur/2, Math.min(cur, pre)));
+            ans = Math.max(ans, Math.max(cur / 2, Math.min(cur, pre)));
         }
         return ans;
     }
 
     @Test
     void test() {
-        System.out.println(maxIncreasingSubarrays(List.of(2,5,7,8,9,2,3,4,3,1)));
+        System.out.println(maxIncreasingSubarrays(List.of(2, 5, 7, 8, 9, 2, 3, 4, 3, 1)));
     }
 }

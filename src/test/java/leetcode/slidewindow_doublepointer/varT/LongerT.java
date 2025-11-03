@@ -1,4 +1,4 @@
-package leetcode.slidewindow.varT;
+package leetcode.slidewindow_doublepointer.varT;
 
 import java.util.HashMap;
 import java.util.HashSet;
