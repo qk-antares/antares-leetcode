@@ -1,5 +1,6 @@
 package leetcode.datastruture.heap;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -9,11 +10,11 @@ import java.util.PriorityQueue;
 import org.junit.jupiter.api.Test;
 
 /*
- * 懒删除堆（发现货不对板直接丢掉）
+ * 懒删除堆
  */
-public class LazyDelete {
+public class LazyHeapT {
     /*
-     * 3408. 设计任务管理器
+     * 3408. 设计任务管理器 [Medium]
      */
     class TaskManager {
         // 使用1个优先级队列，保存[priority, taskId, userId]三元组，
@@ -69,54 +70,80 @@ public class LazyDelete {
         }
     }
 
+
     /*
-     * 3318. 计算子数组的 x-sum I [Easy]
+     * 3607. 电网维护   [Medium]
      * 
-     * 由于nums[i]的范围在[1,50]，可以用一个大小为51的数组来统计各个数字的出现次数
-     * 再使用优先级队列（大根堆）
-     * 取出堆顶的x
-     * 
-     * TODO: 懒删除堆的方法待做
+     * 建图，通过深度优先遍历找到每个连通块
+     * 每个连通块用一个懒删除堆来维护
+     * 查询时，返回对应连通块堆顶元素
+     * 删除时，懒删除对应连通块的堆中元素
      */
-    public int[] findXSum(int[] nums, int k, int x) {
-        int n = nums.length;
-        int[] ans = new int[n - k + 1];
-        int[] cnt = new int[51];
-        for (int i = 0; i < k; i++) {
-            cnt[nums[i]]++;
+    @SuppressWarnings("unchecked")
+    public int[] processQueries(int c, int[][] connections, int[][] queries) {
+        List<Integer>[] g = new List[c + 1];
+        Arrays.setAll(g, i -> new ArrayList<>());
+        for (int[] con : connections) {
+            g[con[0]].add(con[1]);
+            g[con[1]].add(con[0]);
         }
 
-        for (int i = 0; i < n - k + 1; i++) {
-            // 大根堆要反过来
-            PriorityQueue<int[]> q = new PriorityQueue<>(
-                    (o1, o2) -> o2[1] - o1[1] != 0 ? o2[1] - o1[1] : o2[0] - o1[0]);
-            for (int j = 1; j < 51; j++) {
-                if (cnt[j] != 0) {
-                    q.add(new int[] { j, cnt[j] });
+        List<IntegerLazyHeap> heaps = new ArrayList<>();
+        // 记录每个节点属于哪个堆
+        int[] belongs = new int[c + 1];
+        Arrays.fill(belongs, -1);
+        for (int i = 1; i <= c; i++) {
+            if (belongs[i] != -1)
+                continue;
+
+            IntegerLazyHeap heap = new IntegerLazyHeap(Integer::compare);
+            dfs(g, i, belongs, heap, heaps.size());
+            heaps.add(heap);
+        }
+
+        int ansSize = 0;
+        for (int[] q : queries) {
+            if (q[0] == 1)
+                ansSize++;
+        }
+
+        int[] ans = new int[ansSize];
+        int cur = 0;
+        for (int[] q : queries) {
+            IntegerLazyHeap heap = heaps.get(belongs[q[1]]);
+            if(q[0] == 1) {
+                if(heap.removeCnt.containsKey(q[1])) {
+                    ans[cur++] = heap.peek();
+                } else {
+                    ans[cur++] = q[1];
                 }
-            }
-
-            int tmp = 0;
-            for (int j = 0; j < x; j++) {
-                int[] e = q.poll();
-                tmp += e[0] * e[1];
-            }
-            ans[i] = tmp;
-
-            if (i + k < n - k + 1) {
-                cnt[nums[i]]--;
-                cnt[nums[i + k]]++;
+            } else {
+                heap.remove(q[1]);
             }
         }
 
         return ans;
     }
 
+    void dfs(List<Integer>[] g, int i, int[] belongs, IntegerLazyHeap heap, int idx) {
+        heap.push(i);
+        belongs[i] = idx;
+
+        for (int nbr : g[i]) {
+            if (belongs[nbr] != -1)
+                continue;
+            dfs(g, nbr, belongs, heap, idx);
+        }
+    }
+
     @Test
     void test() {
-        int[] nums = { 1, 1, 2, 2, 3, 4, 2, 3 };
-        int k = 6, x = 2;
-        int[] res = findXSum(nums, k, x);
-        System.out.println(Arrays.toString(res));
+        // int c = 5;
+        // int[][] connections = { { 1, 2 }, {2, 3}, {3, 4}, { 4, 5 } };
+        // int[][] queries = { { 1,3 }, { 2, 1 }, { 1, 1 }, { 2, 2 }, { 1, 2 } };
+        int c = 1;
+        int[][] connections = {};
+        int[][] queries = { { 2, 1 }, { 1, 1 }, { 1, 1 } };
+        System.out.println(Arrays.toString(processQueries(c, connections, queries)));
     }
 }

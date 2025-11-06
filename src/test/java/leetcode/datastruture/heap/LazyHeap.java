@@ -123,3 +123,43 @@ class LazyHeapWithSum {
         return e;
     }
 }
+
+class IntegerLazyHeap {
+    PriorityQueue<Integer> q;
+    Map<Integer, Integer> removeCnt;
+    int size;
+
+    public IntegerLazyHeap(Comparator<Integer> comparator) {
+        q = new PriorityQueue<>(comparator);
+        removeCnt = new HashMap<>();
+        size = 0;
+    }
+
+    public void remove(Integer e) {
+        removeCnt.merge(e, 1, Integer::sum);
+        size--;
+    }
+
+    public void applyRemove() {
+        while(removeCnt.getOrDefault(q.peek(), 0) > 0) {
+            removeCnt.merge(q.poll(), -1, Integer::sum);
+        }
+    }
+
+    public Integer peek() {
+        applyRemove();
+        return q.isEmpty() ? -1 : q.peek();
+    }
+
+    public void push(Integer e) {
+        applyRemove();
+        q.offer(e);
+        size++;
+    }
+
+    public Integer pop() {
+        applyRemove();
+        size--;
+        return q.poll();
+    }
+}

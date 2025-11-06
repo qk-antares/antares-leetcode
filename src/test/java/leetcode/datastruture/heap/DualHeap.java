@@ -1,5 +1,6 @@
 package leetcode.datastruture.heap;
 
+import java.util.Arrays;
 import java.util.PriorityQueue;
 
 import org.junit.jupiter.api.Test;
@@ -137,8 +138,56 @@ public class DualHeap {
         return ans + nums[0];
     }
 
+    /*
+     * 3318. 计算子数组的 x-sum I [Easy]
+     * 
+     * 由于nums[i]的范围在[1,50]，可以用一个大小为51的数组来统计各个数字的出现次数
+     * 再使用优先级队列（大根堆）
+     * 取出堆顶的x
+     * 
+     * TODO: 对顶堆的方法待做
+     */
+    public int[] findXSum(int[] nums, int k, int x) {
+        int n = nums.length;
+        int[] ans = new int[n - k + 1];
+        int[] cnt = new int[51];
+        for (int i = 0; i < k; i++) {
+            cnt[nums[i]]++;
+        }
+
+        for (int i = 0; i < n - k + 1; i++) {
+            // 大根堆要反过来
+            PriorityQueue<int[]> q = new PriorityQueue<>(
+                    (o1, o2) -> o2[1] - o1[1] != 0 ? o2[1] - o1[1] : o2[0] - o1[0]);
+            for (int j = 1; j < 51; j++) {
+                if (cnt[j] != 0) {
+                    q.add(new int[] { j, cnt[j] });
+                }
+            }
+
+            int tmp = 0;
+            for (int j = 0; j < x; j++) {
+                int[] e = q.poll();
+                tmp += e[0] * e[1];
+            }
+            ans[i] = tmp;
+
+            if (i + k < n - k + 1) {
+                cnt[nums[i]]--;
+                cnt[nums[i + k]]++;
+            }
+        }
+
+        return ans;
+    }
+
     @Test
     void test() {
         medianSlidingWindow(new int[] { 1, 3, -1, -3, 5, 3, 6, 7 }, 3);
+
+        int[] nums = { 1, 1, 2, 2, 3, 4, 2, 3 };
+        int k = 6, x = 2;
+        int[] res = findXSum(nums, k, x);
+        System.out.println(Arrays.toString(res));
     }
 }
