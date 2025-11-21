@@ -124,7 +124,7 @@ public class EnumMidT {
         return ans.size();
     }
 
-    public int countPalindromicSubsequence(String s) {
+    public int countPalindromicSubsequence1(String s) {
         int[] cntR = new int[26];
         char[] arr = s.toCharArray();
         for (char ch : arr)
@@ -151,6 +151,27 @@ public class EnumMidT {
         int ans = 0;
         for (int row : flag) {
             ans += Integer.bitCount(row);
+        }
+
+        return ans;
+    }
+
+    public int countPalindromicSubsequence(String s) {
+        int ans = 0;
+        for (char c = 'a'; c <= 'z'; c++) {
+            int l = s.indexOf(c);
+            if (l < 0)
+                continue;
+            int r = s.lastIndexOf(c);
+
+            boolean[] flag = new boolean[26];
+            for (int i = l + 1; i < r; i++) {
+                flag[s.charAt(i) - 'a'] = true;
+            }
+            for (int i = 0; i < 26; i++) {
+                if (flag[i])
+                    ans++;
+            }
         }
 
         return ans;
