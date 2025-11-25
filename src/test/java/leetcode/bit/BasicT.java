@@ -195,6 +195,38 @@ public class BasicT {
     }
 
     /*
+     * 面试题 05.01. 插入
+     * 
+     * 解法一：逐位构造
+     * 
+     * 解法二：先将对应的区间清零再插入
+     * 构造111..[0..0]11..1的掩码mask
+     * N & mask清零
+     * M左移i位后与N相或
+     */
+    public int insertBits00(int N, int M, int i, int j) {
+        int ans = 0;
+        for (int idx = 0; idx < i; idx++) {
+            ans |= (1 << idx) & N;
+        }
+
+        M <<= i;
+        for (int idx = i; idx <= j; idx++) {
+            ans |= (1 << idx) & M;
+        }
+
+        for (int idx = j + 1; idx < 32; idx++) {
+            ans |= (1 << idx) & N;
+        }
+        return ans;
+    }
+
+    public int insertBits0(int N, int M, int i, int j) {
+        int mask = ~(((1 << (j-i+1)) - 1) << i);
+        return (N & mask) | (M << i);
+    }
+
+    /*
      * 231. 2 的幂 [Easy]
      */
     public boolean isPowerOfTwo(int n) {
