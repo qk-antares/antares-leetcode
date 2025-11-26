@@ -182,6 +182,52 @@ public class GridDp {
      * ========================== 分割线 ==========================
      */
 
+    /**
+     * 2435. 矩阵中和能被 K 整除的路径
+     * 
+     * 动态规划
+     * dp[i][j][mod]代表走到(i,j)路径和余mod的路径数
+     * dp[i][j][mod] = dp[i-1][j][(mod-grid[i][j]+k)%k] +
+     * dp[i][j-1][(mod-grid[i][j]+k)%k]
+     * 本质上是依赖上一行（左和上）
+     * 可以进行状态压缩：
+     * dp[j][mod] = dp[j][(mod-grid[i][j]+k)%k] + dp[j-1][(mod-grid[i][j]+k)%k]
+     * 可以吗？不可以，因为mod和(mod-grid[i][j]+k)%k的大小关系不固定
+     */
+    public int numberOfPaths(int[][] grid, int k) {
+        int m = grid.length, n = grid[0].length;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                grid[i][j] %= k;
+            }
+        }
+
+        int[][][] dp = new int[m][n][k];
+        // 边界状态
+        int sum = 0;
+        for (int j = 0; j < n; j++) {
+            sum += grid[0][j];
+            dp[0][j][sum % k] = 1;
+        }
+
+        sum = grid[0][0];
+        for (int i = 1; i < m; i++) {
+            sum += grid[i][0];
+            dp[i][0][sum % k] = 1;
+        }
+
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                for (int mod = 0; mod < k; mod++) {
+                    dp[i][j][mod] = (dp[i - 1][j][(mod - grid[i][j] + k) % k]
+                            + dp[i][j - 1][(mod - grid[i][j] + k) % k]) % 1_000_000_007;
+                }
+            }
+        }
+
+        return dp[m - 1][n - 1][0];
+    }
+
     /*
      * 3363. 最多可收集的水果数目 [Hard]
      * 
