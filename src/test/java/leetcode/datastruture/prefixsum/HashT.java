@@ -552,7 +552,7 @@ public class HashT {
      * 这实际上比较耗时
      * 可以用另外一个大小为k的数组，来维护前面的最小元素（前缀和）
      */
-    public long maxSubarraySum(int[] nums, int k) {
+    public long maxSubarraySum0(int[] nums, int k) {
         int n = nums.length;
         long[] s = new long[n];
         s[0] = nums[0];
@@ -572,6 +572,31 @@ public class HashT {
             maxPreS[i2] = Math.min(maxPreS[i2], s[i1]);
         }
 
+        return ans;
+    }
+
+    /**
+     * 前缀和
+     * 用大小为k的数组来计算各个mod结果上的最小值
+     * 维护左边的状态，向右遍历
+     * 
+     * 这里其实是需要注意点溢出问题的，因为min的初始值是Long.MAX_VALUE，中间的运算有s-min[idx]
+     * 但在测试用例上没有溢出
+     */
+    public long maxSubarraySum(int[] nums, int k) {
+        long s = 0;
+        long[] min = new long[k];
+        Arrays.fill(min, Long.MAX_VALUE);
+        min[0] = 0;
+        long ans = Long.MIN_VALUE;
+        for (int i = 0; i < nums.length; i++) {
+            s += nums[i];
+            int idx = (i + 1) % k;
+            if (i + 1 >= k) {
+                ans = Math.max(ans, s - min[idx]);
+            }
+            min[idx] = Math.min(min[idx], s);
+        }
         return ans;
     }
 
@@ -776,7 +801,7 @@ public class HashT {
     }
 
     /*
-     * 1504. 统计全 1 子矩形    [Medium]    [Link: 1074. 元素和为目标值的子矩阵数量]
+     * 1504. 统计全 1 子矩形 [Medium] [Link: 1074. 元素和为目标值的子矩阵数量]
      * 
      * 和1074的思路类似，同样是枚举行区间，然后用colS来记录行区间内列的和
      * 只有列的和等于行高h，才能构成矩形。统计colS中全为h的子数组数量
@@ -784,19 +809,19 @@ public class HashT {
     public int numSubmat(int[][] mat) {
         int m = mat.length, n = mat[0].length;
         int ans = 0;
-        for(int i = 0; i < m; i++) {
+        for (int i = 0; i < m; i++) {
             int[] colS = new int[n];
-            for(int j = i; j < m; j++) {
-                int h = j-i+1;
+            for (int j = i; j < m; j++) {
+                int h = j - i + 1;
                 // 2348. 全 h 子数组的数目
                 int preNH = -1;
-                for(int k = 0; k < n; k++) {
+                for (int k = 0; k < n; k++) {
                     colS[k] += mat[j][k];
-                    if(colS[k] != h) {
+                    if (colS[k] != h) {
                         preNH = k;
                     } else {
-                        ans += k-preNH;
-                    } 
+                        ans += k - preNH;
+                    }
                 }
             }
         }
