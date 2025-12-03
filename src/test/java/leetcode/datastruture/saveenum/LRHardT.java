@@ -278,4 +278,73 @@ public class LRHardT {
 
         return ans;
     }
+
+    /*
+     * ========================== 分割线 ==========================
+     */
+    /*
+     * 3625. 统计梯形的数目 II  [Hard]
+     * 
+     * O(n^2)枚举
+     * 将相同斜率的直线放到一组（HashMap，组内再通过HashMap统计各个截距的个数）
+     * 遍历每个斜率组Map<Double, Integer>
+     * pre = val[0]
+     * cur = val[1]
+     * ans += cur * pre
+     * pre += cur
+     * cur = val[next]
+     * 
+     * 上述过程会将平行四边形统计两次
+     * 所以还需要计算可组成的平行四边形个数
+     * 用线段中点法，两条线段的中点重合则它们可以组成平行四边形
+     * 将相同中点的线段放到一组（HashMap，组内再统计各种斜率的个数）
+     * 然后过程就和上面类似了
+     * 由于坐标的范围限制[-1000,1000]，中点可以压缩成一个唯一的int
+     */
+    public int countTrapezoids(int[][] points) {
+        Map<Double, Map<Double, Integer>> group1 = new HashMap<>();
+        Map<Integer, Map<Double, Integer>> group2 = new HashMap<>();
+        for (int i = 0; i < points.length; i++) {
+            for (int j = i + 1; j < points.length; j++) {
+                int x1 = points[i][0], y1 = points[i][1], x2 = points[j][0], y2 = points[j][1];
+                int dx = x2 - x1, dy = y2 - y1;
+                Double k = dx != 0 ? 1.0 * dy / dx : Double.MAX_VALUE;
+                Double b = dx != 0 ? 1.0 * (y1 * dx - x1 * dy) / dx : 1.0 * x1;
+
+                // 归一化 -0.0 为 0.0
+                if (k == -0.0) {
+                    k = 0.0;
+                }
+                if (b == -0.0) {
+                    b = 0.0;
+                }
+
+                group1.computeIfAbsent(k, unused -> new HashMap<>()).merge(b, 1, Integer::sum);
+
+                int mid = (x1 + x2 + 2000) * 10000 + (y1 + y2 + 2000);
+                group2.computeIfAbsent(mid, unused -> new HashMap<>()).merge(k, 1, Integer::sum);
+            }
+        }
+
+        // 开始统计梯形及平行四边形
+        int s1 = 0;
+        for (Map<Double, Integer> g : group1.values()) {
+            int pre = 0;
+            for (int val : g.values()) {
+                s1 += val * pre;
+                pre += val;
+            }
+        }
+
+        int s2 = 0;
+        for (Map<Double, Integer> g : group2.values()) {
+            int pre = 0;
+            for (int val : g.values()) {
+                s2 += val * pre;
+                pre += val;
+            }
+        }
+
+        return s1 - s2;
+    }
 }

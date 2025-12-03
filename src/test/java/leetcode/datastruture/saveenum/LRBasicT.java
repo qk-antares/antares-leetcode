@@ -348,6 +348,56 @@ public class LRBasicT {
     }
 
     /*
+     * 3623. 统计梯形的数目 I
+     * 
+     * 统计每个y轴上点的个数(HashMap)
+     * ans += C(s[1], 2) * C(s[0], 2)
+     * ans += C(s[2], 2) * [C(s[1], 2) + C(s[0], 2)]
+     * 
+     * 记录每一层的组合数C(cnt,2)
+     * 接着枚举组合数，ans+=枚举到的值+前面的和
+     * 这很好理解，就是当前层选2个数+前面层可选的数对
+     */
+    public int countTrapezoid0(int[][] points) {
+        Map<Integer, Integer> cnt = new HashMap<>();
+        for (int[] p : points) {
+            cnt.merge(p[1], 1, Integer::sum);
+        }
+
+        int n = cnt.size();
+        if (n < 2)
+            return 0;
+        List<Long> c = new ArrayList<>(n);
+        for (int val : cnt.values()) {
+            c.add((long) val * (val - 1) / 2);
+        }
+
+        long pre = c.get(0);
+        long ans = 0;
+        for (int i = 1; i < n; i++) {
+            ans = (ans + c.get(i) * pre) % 1_000_000_007;
+            pre += c.get(i);
+        }
+
+        return (int) ans;
+    }
+
+    public int countTrapezoids(int[][] points) {
+        Map<Integer, Integer> cnt = new HashMap<>(points.length, 1); // 预分配空间
+        for (int[] p : points) {
+            cnt.merge(p[1], 1, Integer::sum); // 统计每一行（水平线）有多少个点
+        }
+
+        long ans = 0, s = 0;
+        for (int c : cnt.values()) {
+            long k = (long) c * (c - 1) / 2;
+            ans += s * k;
+            s += k;
+        }
+        return (int) (ans % 1_000_000_007);
+    }
+
+    /*
      * 3371. 识别数组中的最大异常值 [Medium]
      * 
      * 先计算总体的和，并统计nums中各个数字的出现次数
