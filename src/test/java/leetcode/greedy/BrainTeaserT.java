@@ -58,4 +58,65 @@ public class BrainTeaserT {
         }
         return false;
     }
+
+    /*
+     * 2211. 统计道路上的碰撞次数
+     * 
+     * 模拟：维护左，遍历右
+     * SSRSSRLLRSLLRSRSSRLRRRRLLRRLSSRR
+     * 0001002101110101002
+     * 还需要记录连续的r的数量
+     * 
+     * 移除掉左边向左的车辆和右边向右的车辆，碰撞次数=运动中的车辆数
+     */
+    public int countCollisions0(String directions) {
+        char l = 'L'; // 左边的状态
+        int ans = 0;
+        int cnt = 0; // 连续的R
+        for (char c : directions.toCharArray()) {
+            if (c == 'L') {
+                if (l == 'R') {
+                    ans += cnt + 1;
+                    l = 'S';
+                    cnt = 0;
+                } else if (l == 'S') {
+                    ans++;
+                }
+            } else if (c == 'R') {
+                if (l != 'R') {
+                    l = 'R';
+                    cnt = 1;
+                } else {
+                    cnt++;
+                }
+            } else {
+                if (l == 'R') {
+                    ans += cnt;
+                }
+                l = 'S';
+            }
+        }
+        return ans;
+    }
+
+    public int countCollisions(String directions) {
+        char[] s = directions.toCharArray();
+        int l = 0;
+        while (l < s.length && s[l] == 'L') {
+            l++;
+        }
+
+        int r = s.length - 1;
+        while (r >= 0 && s[r] == 'R') {
+            r--;
+        }
+
+        int ans = 0;
+        for (int i = l; i <= r; i++) {
+            if (s[i] != 'S')
+                ans++;
+        }
+        return ans;
+    }
+
 }
