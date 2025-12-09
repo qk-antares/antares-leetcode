@@ -1,10 +1,17 @@
 package leetcode.questions.Medium;
 
-import leetcode.common.Node;
-import leetcode.common.TreeNode;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Stack;
+
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import leetcode.common.TreeNode;
 
 /**
  * @author Antares
@@ -152,61 +159,6 @@ public class TreeAndGraph {
             flag = !flag;
         }
         return ans;
-    }
-
-    /**
-     * 从前序与中序遍历序列构造二叉树（我的解法：递归，效率稍低）
-     * 前序遍历，第一个结点必定为根节点，找到根节点在中序遍历中的位置，之前的为左子树，之后的为右子树
-     */
-    public TreeNode buildTree(int[] preorder, int[] inorder) {
-        if(preorder.length == 0)
-            return null;
-
-        return buildTreeHelper(preorder, 0, preorder.length-1, inorder, 0, inorder.length-1);
-    }
-
-    public TreeNode buildTreeHelper(int[] preorder, int start0, int end0, int[] inorder, int start1, int end1){
-        if(start0 > end0 || start1 > end1)
-            return null;
-
-        //创建根节点
-        TreeNode root = new TreeNode(preorder[start0]);
-        //找到在中序中的位置(start1 + delta)，左子树的长度为delta，右子树长度为end1 - (start1 + delta)
-        int delta = 0;
-        while (inorder[start1 + delta] != preorder[start0]){
-            delta++;
-        }
-        root.left = buildTreeHelper(preorder, start0+1, start0+delta, inorder, start1, start1+delta-1);
-        root.right = buildTreeHelper(preorder, start0+delta+1, end0, inorder, start1+delta+1, end1);
-
-        return root;
-    }
-
-    /**
-     * 填充每个节点的下一个右侧节点指针（我的解法：深度优先遍历，使用队列）
-     */
-    public Node connect(Node root) {
-        if(root == null)
-            return null;
-
-        Queue<Node> nodes = new LinkedList<>();
-        nodes.offer(root);
-        int size;
-        while (!nodes.isEmpty()){
-            size = nodes.size();
-            Node poll = nodes.peek();
-            for(int i = 0;i < size;i++){
-                poll = nodes.poll();
-                poll.next = nodes.peek();
-                if(poll.left != null)
-                    nodes.offer(poll.left);
-                if(poll.right != null)
-                    nodes.offer(poll.right);
-            }
-            poll.next = null;
-        }
-
-        return root;
     }
 
     /**

@@ -2,9 +2,7 @@ package leetcode.hots100;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import leetcode.common.TreeNode;
 
@@ -247,53 +245,4 @@ public class TreeLearn {
         return ans;
     }
 
-    /**
-     * 二叉树展开为链表，寻找左子树的最右结点，把右子树挂到这个节点上，之后左子树设置为右子树
-     */
-    public void flatten(TreeNode root) {
-        TreeNode cur = root, next, prev;
-        while (cur != null){
-            if(cur.left != null){
-                next = cur.left;
-                prev = cur.left;
-                while (prev.right != null){
-                    prev = prev.right;
-                }
-                prev.right = cur.right;
-                cur.left = null;
-                cur.right = next;
-            }
-            cur = cur.right;
-        }
-    }
-
-
-    Map<Integer, Integer> map = new HashMap<>();
-    /**
-     * 从前序与中序遍历序列构造二叉树
-     */
-    public TreeNode buildTree(int[] preorder, int[] inorder) {
-        for (int i = 0; i < inorder.length; i++) {
-            map.put(inorder[i], i);
-        }
-        int len = preorder.length;
-        return buildTree(preorder, inorder, 0, len-1, 0, len-1);
-    }
-
-    public TreeNode buildTree(int[] preorder, int[] inorder, int preLeft, int preRight, int inLeft, int inRight){
-        if(preLeft > preRight){
-            return null;
-        }
-
-        TreeNode treeNode = new TreeNode();
-        treeNode.val = preorder[preLeft];
-
-        //获取根节点
-        Integer index = map.get(preorder[preLeft]);
-        int leftLen = index - inLeft;
-
-        treeNode.left = buildTree(preorder, inorder, preLeft+1, preLeft+leftLen, inLeft, index-1);
-        treeNode.right = buildTree(preorder, inorder, preLeft+leftLen+1, preRight, index+1, inRight);
-        return treeNode;
-    }
 }

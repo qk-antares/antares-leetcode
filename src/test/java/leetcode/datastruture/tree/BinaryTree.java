@@ -1,9 +1,16 @@
 package leetcode.datastruture.tree;
 
-import leetcode.common.Node;
-import leetcode.common.TreeNode;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Stack;
 
-import java.util.*;
+import leetcode.common.TreeNode;
 
 /**
  * @author Antares
@@ -262,201 +269,6 @@ public class BinaryTree {
         return isSymmetricHelper(left.left, right.right) && isSymmetricHelper(left.right, right.left);
     }
 
-    /**
-     * 路经总和（我的解法：递归，效率很高）
-     */
-    public boolean hasPathSum(TreeNode root, int targetSum) {
-        if(root == null)
-            return false;
-        if(root.left == null && root.right == null && root.val == targetSum)
-            return true;
-
-        return hasPathSum(root.left, targetSum-root.val) || hasPathSum(root.right, targetSum-root.val);
-    }
-
-    /**
-     * 解法二（广度优先遍历，时间复杂度稍高）
-     */
-    public boolean hasPathSum0(TreeNode root, int targetSum) {
-        if(root == null)
-            return false;
-
-        Queue<TreeNode> nodes = new LinkedList<>();
-        nodes.offer(root);
-        //注意这里减的是root.val的值
-        root.val = targetSum-root.val;
-        while (!nodes.isEmpty()){
-            TreeNode poll = nodes.poll();
-            //到了叶节点
-            if(poll.left == null && poll.right == null && poll.val == 0){
-                return true;
-            }
-            //以下修改的都是结点上的值而非targetSum
-            if(poll.left != null){
-                poll.left.val = poll.val - poll.left.val;
-                nodes.offer(poll.left);
-            }
-
-            if(poll.right != null){
-                poll.right.val = poll.val - poll.right.val;
-                nodes.offer(poll.right);
-            }
-
-        }
-
-        return false;
-    }
-
-    /**
-     * 从中序与后序遍历序列构造二叉树（不会解）
-     * 大致的思路是这样的
-     * 后序遍历的最后一个元素必然为根节点，在中序遍历中寻找这个根节点可以一分为二
-     *
-     * 后序遍历的倒数第二个元素为右子树的根节点
-     */
-    public TreeNode buildTree(int[] inorder, int[] postorder) {
-        int len = inorder.length;
-        if(len == 0)
-            return null;
-        return buildTreeHelper(inorder, 0, len-1, postorder, 0, len-1);
-    }
-
-    public TreeNode buildTreeHelper(int[] inorder, int start1, int end1, int[] postorder, int start2, int end2){
-        if(start2 > end2)
-            return null;
-
-        int val = postorder[end2];
-        TreeNode root = new TreeNode(val);
-
-        if(start2 == end2)
-            return root;
-
-        //找到该根节点所在位置（注意！！！这是相对与start1的位置，因此下面的左右子树的区间也都要加上start）
-        int mid = 0;
-        while (inorder[start1+mid] != val)
-            mid++;
-
-        root.left = buildTreeHelper(inorder, start1, start1+mid-1, postorder, start2, start2+mid-1);
-        root.right = buildTreeHelper(inorder, start1+mid+1, end1, postorder, start2+mid, end2-1);
-
-        return root;
-    }
-
-    /**
-     * 从前序与中序遍历序列构造二叉树（我的解法）
-     * 分析：前序：根-左子树-右子树
-     * 中序：左子树-根-右子树
-     */
-    public TreeNode buildTree0(int[] preorder, int[] inorder) {
-        int len = preorder.length;
-        if(len == 0)
-            return null;
-        return buildTree0Helper(preorder, 0, len-1, inorder, 0, len-1);
-    }
-
-    public TreeNode buildTree0Helper(int[] preorder, int start1, int end1, int[] inorder, int start2, int end2){
-        if(start1 > end1)
-            return null;
-
-        int val = preorder[start1];
-        TreeNode root = new TreeNode(val);
-
-        //寻找这个结点在中序遍历中的相对位置
-        int mid = 0;
-        while (inorder[start2+mid] != val) mid++;
-
-        root.left = buildTree0Helper(preorder, start1+1, start1+mid, inorder, start2, start2+mid-1);
-        root.right = buildTree0Helper(preorder, start1+mid+1, end1, inorder, start2+mid+1, end2);
-
-        return root;
-    }
-
-    /**
-     * 填充每个节点的下一个右侧节点指针（我的解法：广度优先遍历，效率还算可以）
-     */
-    public Node connect(Node root) {
-        if(root == null)
-            return null;
-
-        Queue<Node> nodes = new LinkedList<>();
-        nodes.offer(root);
-
-        int size;
-        int i;
-        while (!nodes.isEmpty()){
-            //当前行的结点数
-            size = nodes.size();
-            Node poll = nodes.poll();
-
-            for (i = 0;i < size;i++){
-                poll.next = nodes.peek();
-
-                if(poll.left != null)
-                    nodes.offer(poll.left);
-                if(poll.right != null)
-                    nodes.offer(poll.right);
-
-                if(i == size-1)
-                    continue;
-                poll = nodes.poll();
-            }
-            poll.next = null;
-        }
-
-        return root;
-    }
-
-    /**
-     * 答案解法（实际是左子树指向右子树的一个递归，效率最高）
-     */
-    public Node connect0(Node root) {
-        if(root!=null)
-            dfs(root.left,root.right);
-        return root;
-    }
-    void dfs(Node left,Node right){
-        if(left == null || left.next == right)
-            return;
-
-        left.next = right;
-        right.next = null;
-
-        dfs(left.left, left.right);
-        dfs(left.right,right.left);
-        dfs(right.left, right.right);
-    }
-
-
-    /**
-     * 填充每一个节点的下一个右侧节点II（我的解法，和上面我的解法相同，使用queue的深度优先遍历，但是效率明显比较低（下面这个改进还稍微好一点））
-     */
-    public Node connect1(Node root) {
-        if(root == null)
-            return null;
-
-        Queue<Node> nodes = new LinkedList<>();
-        nodes.offer(root);
-
-        int size;
-        int i;
-        while (!nodes.isEmpty()){
-            //当前行的结点数
-            size = nodes.size();
-            Node poll = nodes.peek();
-            for (i = 0;i < size;i++){
-                poll = nodes.poll();
-                poll.next = nodes.peek();
-
-                if(poll.left != null)
-                    nodes.offer(poll.left);
-                if(poll.right != null)
-                    nodes.offer(poll.right);
-            }
-            poll.next = null;
-        }
-
-        return root;
-    }
 
     /**
      * 二叉树的最近公共祖先(解不出来，答案解法：遍历树的同时记录每个结点的父节点)
