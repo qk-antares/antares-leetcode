@@ -119,4 +119,27 @@ public class BrainTeaserT {
         return ans;
     }
 
+    /*
+     * ========================== 分割线 ==========================
+     */
+
+    /**
+     * 3577. 统计计算机解锁顺序排列数
+     * 
+     * 由于要解锁所有的计算机
+     * 则后面元素的复杂度只会高于第0个元素
+     * 可以用0解锁所有，求的是解锁的顺序
+     * 只用验证0是不是唯一最小的
+     */
+    public int countPermutations(int[] complexity) {
+        final int MOD = 1_000_000_007;
+        long ans = 1;
+        for (int i = 1; i < complexity.length; i++) {
+            if (complexity[i] <= complexity[0]) {
+                return 0;
+            }
+            ans = ans * i % MOD;
+        }
+        return (int) ans;
+    }
 }
