@@ -1,5 +1,7 @@
 package leetcode.simulation;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -50,5 +52,52 @@ public class SimulationT {
         }
 
         return ans;
+    }
+
+    /**
+     * 3606. 优惠券校验器 [Easy]
+     */
+    @SuppressWarnings("unchecked")
+    public List<String> validateCoupons(String[] code, String[] businessLine, boolean[] isActive) {
+        List<String>[] ans = new List[4];
+        Arrays.setAll(ans, i -> new ArrayList<>());
+        for (int i = 0; i < code.length; i++) {
+            if (!isActive[i] || code[i].length() == 0)
+                continue;
+
+            boolean flag = true;
+            for (char ch : code[i].toCharArray()) {
+                if (!Character.isLetter(ch) && !Character.isDigit(ch) && ch != '_') {
+                    flag = false;
+                    break;
+                }
+            }
+            if (!flag)
+                continue;
+
+            switch (businessLine[i]) {
+                case "electronics":
+                    ans[0].add(code[i]);
+                    break;
+                case "grocery":
+                    ans[1].add(code[i]);
+                    break;
+                case "pharmacy":
+                    ans[2].add(code[i]);
+                    break;
+                case "restaurant":
+                    ans[3].add(code[i]);
+                    break;
+            }
+        }
+
+        for (int i = 0; i < 4; i++)
+            Collections.sort(ans[i]);
+
+        for (int i = 1; i < 4; i++) {
+            ans[0].addAll(ans[i]);
+        }
+
+        return ans[0];
     }
 }
