@@ -47,6 +47,52 @@ public class BolckIter {
         return ans;
     }
 
+    /**
+     * 2110. 股票平滑下跌阶段的数目 [Medium]
+     * 
+     * 计算prices之间的delta，然后在delta数组上应用滑动窗口
+     * 滑动窗户需要维护连续1的长度len
+     * ans += len + len-1 + ... + 1
+     * 即ans += (len+1)*len/2
+     * 
+     * 或者简单点，直接在遍历的时候记录就可以
+     */
+    public long getDescentPeriods0(int[] prices) {
+        int[] delta = new int[prices.length - 1];
+        for (int i = 0; i < prices.length - 1; i++) {
+            delta[i] = prices[i] - prices[i + 1];
+        }
+
+        long ans = prices.length;
+        int l = 0, r = 0;
+        while (r < prices.length - 1) {
+            if (delta[r] != 1) {
+                // [l,...r-1]都是1
+                ans += (long) (r - l + 1) * (r - l) / 2;
+                l = r + 1;
+            }
+            r++;
+        }
+
+        return ans + (long) (r - l + 1) * (r - l) / 2;
+    }
+
+    public long getDescentPeriods(int[] prices) {
+        long ans = 0;
+        // 连续下降1的长度
+        int desc = 1;
+        for (int i = 0; i < prices.length - 1; i++) {
+            if (prices[i] - prices[i + 1] == 1) {
+                desc += 1;
+            } else {
+                desc = 1;
+            }
+            ans += desc;
+        }
+
+        return ans + 1;
+    }
+
     /*
      * 1578. 使绳子变成彩色的最短时间 [Medium]
      * 
