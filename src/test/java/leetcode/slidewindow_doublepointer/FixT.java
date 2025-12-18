@@ -382,6 +382,67 @@ public class FixT {
     }
 
     /*
+     * 3652. 按策略买卖股票的最佳时机 [Medium]
+     * 
+     * 前缀和
+     * 首先计算prices[i]*strategy[i]的前缀和preSum1
+     * 然后计算prices[i]的前缀和preSum2
+     * k的窗口[i..i+k-1]修改后
+     * preSum1[i] + preSum2[i+k] - preSum2[i+k/2] + preSum1[n] - preSum1[i+k]
+     * 
+     * 定长滑动窗口
+     * 假设已经计算好了prices[i] * strategy[i]
+     * 计算窗口的delta，窗口每次移动会有3个元素发生变化，左端点/右端点/中间点
+     */
+    public long maxProfit0(int[] prices, int[] strategy, int k) {
+        int n = prices.length;
+        long[] preSum1 = new long[n + 1];
+        long[] preSum2 = new long[n + 1];
+        for (int i = 0; i < n; i++) {
+            preSum1[i + 1] = preSum1[i] + prices[i] * strategy[i];
+            preSum2[i + 1] = preSum2[i] + prices[i];
+        }
+
+        long ans = preSum1[n];
+        for (int i = 0; i + k - 1 < n; i++) {
+            ans = Math.max(ans, preSum1[i] + preSum2[i + k] - preSum2[i + k / 2] + preSum1[n] - preSum1[i + k]);
+        }
+
+        return ans;
+    }
+
+    public long maxProfit(int[] prices, int[] strategy, int k) {
+        int n = prices.length;
+        long[] arr = new long[n];
+        long tot = 0;
+        for (int i = 0; i < n; i++) {
+            arr[i] = prices[i] * strategy[i];
+            tot += arr[i];
+        }
+
+        long delta = 0;
+        long maxDelta = 0;
+        for (int i = 0; i < k / 2; i++) {
+            delta += 0 - arr[i];
+        }
+        for (int i = k / 2; i < k; i++) {
+            delta += prices[i] - arr[i];
+        }
+
+        maxDelta = Math.max(maxDelta, delta);
+        int l = 0, r = k;
+        while (r < n) {
+            // 窗口右移
+            delta += (prices[r] - arr[r]) + (arr[l] - 0) + (0 - prices[l + k / 2]);
+            r++;
+            l++;
+            maxDelta = Math.max(maxDelta, delta);
+        }
+
+        return tot + maxDelta;
+    }
+
+    /*
      * 2134. 最少交换次数来组合所有的 1 II [Medium]
      * 
      * 首先对nums进行1次遍历，统计出包含了多少个1
