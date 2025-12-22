@@ -307,6 +307,35 @@ public class LIST {
         return n - sum;
     }
 
+    /**
+     * 960. 删列造序 III [Hard]
+     * 
+     * 设dp[i]是以i结尾的最长递增子序列的长度
+     */
+    // 设dp[i]是以i结尾的最长递增子序列的长度
+    public int minDeletionSize(String[] strs) {
+        int n = strs[0].length();
+        int[] dp = new int[n];
+        int maxLen = 0;
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < i; j++) {
+                if(dp[i] < dp[j] && checkIJ(strs, i, j)) {
+                    dp[i] = dp[j];
+                }
+            }
+            dp[i]++;
+            maxLen = Math.max(maxLen, dp[i]);
+        }
+        return n-maxLen;
+    }
+
+    public boolean checkIJ(String[] strs, int i, int j) {
+        for(String str : strs) {
+            if(str.charAt(j) > str.charAt(i)) return false;
+        }
+        return true;
+    }
+
     /*
      * 673. 最长递增子序列的个数 [Medium]
      * 
@@ -451,6 +480,7 @@ public class LIST {
     public void test() {
         // minimumMountainRemovals(new int[] { 2, 1, 1, 5, 6, 2, 3, 1 });
         // kIncreasing(new int[] { 5, 4, 3, 2, 1 }, 1);
-        findNumberOfLIS(new int[] { 1, 1, 1, 2, 2, 2, 3, 3, 3 });
+        // findNumberOfLIS(new int[] { 1, 1, 1, 2, 2, 2, 3, 3, 3 });
+        minDeletionSize(new String[] {"babca","bbazb"});
     }
 }

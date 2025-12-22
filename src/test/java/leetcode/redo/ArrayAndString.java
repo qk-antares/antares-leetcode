@@ -1,8 +1,11 @@
 package leetcode.redo;
 
-import org.junit.jupiter.api.Test;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
-import java.util.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Antares
@@ -52,47 +55,6 @@ public class ArrayAndString {
     }
 
     /**
-     * 移动零（双指针试一试），答案解法：快慢指针
-     */
-    class MoveZeroes {
-        public void moveZeroes(int[] nums) {
-            //j是当前遍历到的元素,i j之间的元素为0
-            int i = -1, j = 0;
-            //首先找到第一个为0的元素
-            while (j < nums.length){
-                if(nums[j] == 0){
-                    i = j;
-                    break;
-                }
-                j++;
-            }
-            //如果里面有0，才继续操作
-            if(i != -1){
-                for(j = i+1;j < nums.length;j++){
-                    if(nums[j] != 0){
-                        nums[i++] = nums[j];
-                        nums[j] = 0;
-                    }
-                }
-            }
-        }
-
-        public void moveZeroes0(int[] nums) {
-            int i = 0, j = 0;
-
-            while (j < nums.length){
-                if(nums[j] != 0){
-                    nums[i++] = nums[j];
-                }
-                j++;
-            }
-
-            for(;i < nums.length;i++)
-                nums[i] = 0;
-        }
-    }
-
-    /**
      * 多数元素，我的解法：hashmap，效率太低；先排序再返回，效率比hashmap高；摩尔投票法（效率最高），将数组中的不同数字想象成不同国家的人，进行两两抵消
      */
     class MajorityElement {
@@ -134,7 +96,6 @@ public class ArrayAndString {
     @Test
     public void invoke(){
 //        new Generate().generate(5);
-//         new MoveZeroes().moveZeroes(new int[]{1,0,3,12,0,0,15,0,0});
         new MajorityElement().majorityElement(new int[]{3,2,3});
     }
 }
