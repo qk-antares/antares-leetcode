@@ -312,7 +312,6 @@ public class LIST {
      * 
      * 设dp[i]是以i结尾的最长递增子序列的长度
      */
-    // 设dp[i]是以i结尾的最长递增子序列的长度
     public int minDeletionSize(String[] strs) {
         int n = strs[0].length();
         int[] dp = new int[n];
