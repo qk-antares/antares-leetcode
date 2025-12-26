@@ -677,4 +677,34 @@ public class LRBasicT {
 
         return ans;
     }
+
+    /**
+     * 2483. 商店的最少代价 [Medium]
+     * 
+     * 维护左遍历右
+     */
+    public int bestClosingTime(String customers) {
+        char[] s = customers.toCharArray();
+        int rightY = 0;
+        for (char c : s) {
+            if (c == 'Y')
+                rightY++;
+        }
+
+        int leftN = 0;
+        int ans = -1;
+        int minCost = rightY;
+        for (int i = 0; i < s.length; i++) {
+            if (s[i] == 'Y') {
+                rightY--;
+            } else {
+                leftN++;
+            }
+            if (leftN + rightY < minCost) {
+                minCost = leftN + rightY;
+                ans = i;
+            }
+        }
+        return ans + 1;
+    }
 }
