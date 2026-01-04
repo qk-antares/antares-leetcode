@@ -1,8 +1,6 @@
 package leetcode.interview150;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
 
 import leetcode.common.TreeNode;
 
@@ -107,55 +105,5 @@ public class Tree {
             return false;
         }
         return isSymmetricHelper(tree1.left, tree2.right) && isSymmetricHelper(tree1.right, tree2.left);
-    }
-
-    /**
-     * 637. 二叉树的层平均值
-     * 二叉树的层次遍历，使用队列
-     */
-    public List<Double> averageOfLevels(TreeNode root) {
-        ArrayDeque<TreeNode> queue = new ArrayDeque<TreeNode>();
-        queue.addLast(root);
-        ArrayList<Double> ans = new ArrayList<>();
-        while (!queue.isEmpty()) {
-            int size = queue.size();
-            Double sum = 0.0;
-            for (int i = 0; i < size; i++) {
-                TreeNode poll = queue.removeFirst();
-                sum += poll.val;
-                if (poll.left != null) {
-                    queue.addLast(poll.left);
-                }
-                if (poll.right != null) {
-                    queue.addLast(poll.right);
-                }
-            }
-            ans.add(sum / size);
-        }
-        return ans;
-    }
-
-    /**
-     * 530. 二叉搜索树的最小绝对差
-     * 对二叉搜索树进行前序遍历
-     */
-    public int getMinimumDifference(TreeNode root) {
-        List<Integer> preOrder = new ArrayList<>();
-        preOrder(root, preOrder);
-        int ans = Integer.MAX_VALUE;
-        for (int i = 1; i < preOrder.size(); i++) {
-            ans = Math.min(ans, preOrder.get(i) - preOrder.get(i-1));
-        }
-        return ans;
-    }
-
-    public void preOrder(TreeNode root, List<Integer> preOrder) {
-        if(root.left != null) {
-            preOrder(root.left, preOrder);
-        }
-        preOrder.add(root.val);
-        if(root.right != null) {
-            preOrder(root.right, preOrder);
-        }
     }
 }

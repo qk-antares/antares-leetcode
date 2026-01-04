@@ -1,9 +1,6 @@
 package leetcode.questions.Medium;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -67,97 +64,6 @@ public class TreeAndGraph {
                }
         }
 
-        return ans;
-    }
-
-    /**
-     * 二叉树的锯齿形层次遍历（我的解法，使用队列和一个临时变量来判断锯齿方向，思路有问题）
-     */
-    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
-        if (root == null)
-            return new ArrayList<>();
-
-        List<List<Integer>> ans = new ArrayList<>();
-
-        Deque<TreeNode> treeNodes = new LinkedList<>();
-        treeNodes.addFirst(root);
-        ans.add(new ArrayList<Integer>(Arrays.asList(root.val)));
-
-        //size是层中的结点数
-        int size;
-        //flag代表锯齿的方向，true代表左，false代表右
-        boolean flag = false;
-        while (!treeNodes.isEmpty()){
-            size = treeNodes.size();
-            System.out.println(size);
-            ArrayList<Integer> level = new ArrayList<>();
-            if(flag){
-                for(int i = 0;i < size;i++) {
-                    TreeNode node = treeNodes.removeLast();
-                    if (node.left != null){
-                        treeNodes.addLast(node.left);
-                        level.add(node.left.val);
-                    }
-                    if (node.right != null){
-                        treeNodes.addLast(node.right);
-                        level.add(node.right.val);
-                    }
-                }
-            }else {
-                for(int i = 0;i < size;i++) {
-                    TreeNode node = treeNodes.removeFirst();
-                    if(node.right != null){
-                        treeNodes.addLast(node.right);
-                        level.add(node.right.val);
-                    }
-                    if(node.left != null){
-                        treeNodes.addLast(node.left);
-                        level.add(node.left.val);
-                    }
-                }
-            }
-            flag = !flag;
-            if(!level.isEmpty())
-                ans.add(level);
-        }
-        return ans;
-    }
-
-    /**
-     * 答案解法：就是普通的深度优先遍历，只不过有些层的结果调用以下reverse
-     */
-    public List<List<Integer>> zigzagLevelOrder0(TreeNode root) {
-        if (root == null)
-            return new ArrayList<>();
-
-        List<List<Integer>> ans = new ArrayList<>();
-        Queue<TreeNode> treeNodes = new LinkedList<>();
-        treeNodes.offer(root);
-
-        //size是层中的结点数
-        int size;
-        //flag代表锯齿的方向，true代表左，false代表右
-        boolean flag = true;
-        while (!treeNodes.isEmpty()){
-            size = treeNodes.size();
-            ArrayList<Integer> level = new ArrayList<>();
-
-            for(int i = 0;i < size;i++){
-                TreeNode poll = treeNodes.poll();
-                level.add(poll.val);
-
-                if(poll.left != null)
-                    treeNodes.offer(poll.left);
-                if(poll.right != null)
-                    treeNodes.offer(poll.right);
-            }
-
-            if(!flag){
-                Collections.reverse(level);
-            }
-            ans.add(level);
-            flag = !flag;
-        }
         return ans;
     }
 

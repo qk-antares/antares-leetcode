@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 /*
- * 
+ * 数论其他题
  */
 public class OtherT {
     /*

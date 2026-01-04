@@ -2,7 +2,6 @@ package leetcode.questions.Easy;
 
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
 
@@ -206,60 +205,6 @@ public class EasyTree {
             queue.add(right.left);
         }
         return true;
-    }
-
-    /**
-     * 二叉树的层序遍历（我的解法：BFS广度优先遍历，效率并不是很高）
-     */
-    public List<List<Integer>> levelOrder(TreeNode root) {
-        List<List<Integer>> res = new LinkedList<>();
-
-        if(root == null)
-            return res;
-
-        Queue<TreeNode> treeNodes = new LinkedList<>();
-        treeNodes.add(root);
-        //size是当前层的结点个数
-        int size;
-        while (!treeNodes.isEmpty()){
-            size = treeNodes.size();
-            //这里存放当前层的结果
-            List<Integer> temp = new LinkedList<>();
-            while (size-- > 0){
-                TreeNode poll = treeNodes.poll();
-                temp.add(poll.val);
-                if(poll.left != null)
-                    treeNodes.add(poll.left);
-                if(poll.right != null)
-                    treeNodes.add(poll.right);
-            }
-            res.add(temp);
-        }
-
-        return res;
-    }
-
-    /**
-     * 解法二（DFS深度优先遍历，只是添加了一个level变量，时间复杂度相比于BFS还是有提升的）
-     */
-    public List<List<Integer>> levelOrder0(TreeNode root) {
-        List<List<Integer>> res = new LinkedList<>();
-        DFS(root, res, 1);
-        return res;
-    }
-
-    //level代表当前所在层
-    public void DFS(TreeNode root, List<List<Integer>> res, int level){
-        if(root == null)
-            return;
-
-        if(level > res.size())
-            res.add(new LinkedList<>());
-
-        res.get(level).add(root.val);
-
-        DFS(root.left, res, level + 1);
-        DFS(root.right, res, level + 1);
     }
 
     /**

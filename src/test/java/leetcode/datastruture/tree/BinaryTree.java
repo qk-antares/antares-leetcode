@@ -3,8 +3,6 @@ package leetcode.datastruture.tree;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -149,96 +147,7 @@ public class BinaryTree {
         return ans;
     }
 
-    /**
-     * 二叉树的层序遍历(我的解法，使用双队列，解决了，但是效率有点低)
-     */
-    public List<List<Integer>> levelOrder(TreeNode root) {
-        List<List<Integer>> ans = new ArrayList<>();
-
-        if(root == null)
-            return ans;
-
-        Queue<TreeNode> lastLevel = new LinkedList<>();
-        Queue<TreeNode> newLevel = new LinkedList<>();
-        lastLevel.offer(root);
-
-        while (true){
-            ArrayList<Integer> levelAns = new ArrayList<>();
-            while (!lastLevel.isEmpty()){
-                TreeNode pop = lastLevel.poll();
-                levelAns.add(pop.val);
-                if(pop.left != null)
-                    newLevel.offer(pop.left);
-                if(pop.right != null)
-                    newLevel.offer(pop.right);
-            }
-
-            ans.add(levelAns);
-
-            if(newLevel.isEmpty())
-                break;
-
-            lastLevel = newLevel;
-            newLevel = new LinkedList<>();
-        }
-
-        return ans;
-    }
-
-    /**
-     * 解法二（广度优先遍历，使用的是队列不是栈！精髓之处在于while循环中判定当前行的结点个数）
-     */
-    public List<List<Integer>> levelOrder0(TreeNode root) {
-        List<List<Integer>> ans = new ArrayList<>();
-
-        if(root == null)
-            return ans;
-
-        Queue<TreeNode> nodes = new LinkedList<>();
-        nodes.offer(root);
-        int size,i;
-        while (!nodes.isEmpty()){
-            size = nodes.size();
-            ArrayList<Integer> levelAns = new ArrayList<>();
-            for(i = 0;i < size;i++){
-                TreeNode poll = nodes.poll();
-                levelAns.add(poll.val);
-                if(poll.left != null)
-                    nodes.offer(poll.left);
-                if(poll.right != null)
-                    nodes.offer(poll.right);
-            }
-            ans.add(levelAns);
-        }
-
-        return ans;
-    }
-
-    /**
-     * 解法三（深度优先遍历，效率是最高的）
-     */
-    public List<List<Integer>> levelOrder1(TreeNode root) {
-        List<List<Integer>> ans = new ArrayList<>();
-        levelOrderHelper(ans, root, 0);
-        return ans;
-    }
-
-    public void levelOrderHelper(List<List<Integer>> ans, TreeNode root, int level){
-        if(root == null)
-            return;
-
-        //说明到下一层了
-        if(level >= ans.size()){
-            ans.add(new ArrayList<Integer>());
-        }
-
-        ans.get(level).add(root.val);
-
-        levelOrderHelper(ans, root.left, level+1);
-        levelOrderHelper(ans, root.right, level+1);
-    }
-
-
+    
     /**
      * 二叉树的最大深度（我的解法：递归，效率挺高）
      */
@@ -268,65 +177,6 @@ public class BinaryTree {
 
         return isSymmetricHelper(left.left, right.right) && isSymmetricHelper(left.right, right.left);
     }
-
-
-    /**
-     * 二叉树的最近公共祖先(解不出来，答案解法：遍历树的同时记录每个结点的父节点)
-     */
-    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        HashMap<TreeNode, TreeNode> parents = new HashMap<>();
-        //深度优先遍历
-        Stack<TreeNode> nodes = new Stack<>();
-        nodes.push(root);
-        while (!nodes.isEmpty()){
-            TreeNode pop = nodes.pop();
-
-            if(pop.right != null){
-                nodes.push(pop.right);
-                parents.put(pop.right, pop);
-            }
-            if(pop.left != null){
-                nodes.push(pop.left);
-                parents.put(pop.left, pop);
-            }
-        }
-
-        //寻找p到root的路径
-        HashSet<TreeNode> path = new HashSet<>();
-        while (p != null){
-            path.add(p);
-            p = parents.get(p);
-        }
-
-        //寻找q的到root的路径，知道和上面的路径重合
-        while (q != null){
-            if(path.contains(q))
-                return q;
-            q = parents.get(q);
-        }
-
-        return null;
-    }
-
-    /**
-     * 解法二：递归解法（和我最开始的想法一样）
-     */
-    public TreeNode lowestCommonAncestor0(TreeNode cur, TreeNode p, TreeNode q) {
-        if (cur == null || cur == p || cur == q)
-            return cur;
-        TreeNode left = lowestCommonAncestor(cur.left, p, q);
-        TreeNode right = lowestCommonAncestor(cur.right, p, q);
-        //如果left为空，说明这两个节点在cur结点的右子树上，我们只需要返回右子树查找的结果即可
-        if (left == null)
-            return right;
-        //同上
-        if (right == null)
-            return left;
-        //如果left和right都不为空，说明这两个节点一个在cur的左子树上一个在cur的右子树上，
-        //我们只需要返回cur结点即可。
-        return cur;
-    }
-
 
     /**
      * 二叉树的序列化与反序列化（答案解法：BFS，用#代表空，用，分隔，存储所有的null结点）
