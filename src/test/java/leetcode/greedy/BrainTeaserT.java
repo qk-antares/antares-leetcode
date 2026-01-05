@@ -119,6 +119,68 @@ public class BrainTeaserT {
         return ans;
     }
 
+    /**
+     * 1975. 最大方阵和 [Medium]
+     * 
+     * 可以实现任意两个元素乘以-1，所以收集所有元素到一个List中，排序
+     * 把所有的负数变成正数，同时记录负数的个数，以及matrix中绝对值最小的数
+     * 如果负数的个数是偶数，很好
+     * 负数的个数是奇数：
+     * 1. 有0：很好
+     * 2. 无0：绝对值最小的那个数变成负数
+     * 
+     * 实际实现时无需对0进行特殊判断
+     */
+    public long maxMatrixSum0(int[][] matrix) {
+        boolean flag0 = false;
+        int negCnt = 0;
+        int minAbs = Integer.MAX_VALUE;
+
+        long ans = 0;
+        int m = matrix.length, n = matrix[0].length;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] > 0) {
+                    ans += matrix[i][j];
+                    minAbs = Math.min(minAbs, matrix[i][j]);
+                } else if (matrix[i][j] < 0) {
+                    ans -= matrix[i][j];
+                    minAbs = Math.min(minAbs, -matrix[i][j]);
+                    negCnt++;
+                } else {
+                    flag0 = true;
+                }
+            }
+        }
+
+        if (negCnt % 2 == 0 || flag0) {
+            return ans;
+        }
+
+        return ans - 2 * minAbs;
+    }
+
+    public long maxMatrixSum(int[][] matrix) {
+        long total = 0;
+        int negCnt = 0;
+        int mn = Integer.MAX_VALUE;
+        for (int[] row : matrix) {
+            for (int x : row) {
+                if (x < 0) {
+                    negCnt++;
+                    x = -x; // 先把负数都变成正数
+                }
+                mn = Math.min(mn, x);
+                total += x;
+            }
+        }
+
+        if (negCnt % 2 > 0) {
+            total -= mn * 2; // 给绝对值最小的数添加负号
+        }
+        return total;
+    }
+
     /*
      * ========================== 分割线 ==========================
      */
