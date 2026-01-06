@@ -93,4 +93,35 @@ public class BFST {
         }
         return ans;
     }
+
+    /**
+     * 1161. 最大层内元素和 [Medium]
+     * 
+     * 二叉树的层序遍历
+     */
+    public int maxLevelSum(TreeNode root) {
+        ArrayDeque<TreeNode> q = new ArrayDeque<>();
+        q.offer(root);
+        int idx = 0;
+        int ans = 0;
+        int maxSum = Integer.MIN_VALUE;
+        while (!q.isEmpty()) {
+            idx++;
+            int size = q.size();
+            int sum = 0;
+            for (int i = 0; i < size; i++) {
+                TreeNode tmp = q.poll();
+                sum += tmp.val;
+                if (tmp.left != null)
+                    q.offer(tmp.left);
+                if (tmp.right != null)
+                    q.offer(tmp.right);
+            }
+            if (sum > maxSum) {
+                maxSum = sum;
+                ans = idx;
+            }
+        }
+        return ans;
+    }
 }
