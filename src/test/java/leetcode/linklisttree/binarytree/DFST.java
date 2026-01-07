@@ -64,4 +64,61 @@ public class DFST {
         }
         return ans;
     }
+
+    /**
+     * 1339. 分裂二叉树的最大乘积 [Medium]
+     * 
+     * 本质是计算每个子树的和
+     * 先计算每个子树的和，保存在一个list中
+     * (total-sum) * sum = total*sum-sum*sum
+     * 
+     * 或者两次dfs
+     */
+    long ans = 0;
+
+    public int maxProduct(TreeNode root) {
+        int total = dfs1(root);
+        dfs2(root, total);
+        return (int) (ans % 1_000_000_007);
+    }
+
+    public int dfs1(TreeNode root) {
+        int sum = root.val;
+        if (root.left != null)
+            sum += dfs1(root.left);
+        if (root.right != null)
+            sum += dfs1(root.right);
+        return sum;
+    }
+
+    public int dfs2(TreeNode root, int total) {
+        int sum = root.val;
+        if (root.left != null)
+            sum += dfs2(root.left, total);
+        if (root.right != null)
+            sum += dfs2(root.right, total);
+        ans = Math.max(ans, (long) (total - sum) * sum);
+
+        return sum;
+    }
+
+    public int maxProduct0(TreeNode root) {
+        List<Integer> treeSum = new ArrayList<>();
+        int total = computeTreeSum(root, treeSum);
+        long ans = 0;
+        for (int sum : treeSum) {
+            ans = Math.max(ans, (long) (total - sum) * sum);
+        }
+        return (int) (ans % 1_000_000_007);
+    }
+
+    public int computeTreeSum(TreeNode root, List<Integer> treeSum) {
+        int sum = root.val;
+        if (root.left != null)
+            sum += computeTreeSum(root.left, treeSum);
+        if (root.right != null)
+            sum += computeTreeSum(root.right, treeSum);
+        treeSum.add(sum);
+        return sum;
+    }
 }
