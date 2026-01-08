@@ -4,8 +4,10 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -876,6 +878,51 @@ public class DBFST {
             if (hasKey[box] == 1)
                 dfs(box, hasKey, hasBox, candies, keys, containedBoxes);
         }
+    }
+
+    /**
+     * 133. 克隆图 [Medium]
+     * 
+     * 创建一个Map，记录原Node到克隆Node的映射，如果map.containsKey，则该Node已经创建过了
+     * 
+     */
+    class Node {
+        public int val;
+        public List<Node> neighbors;
+
+        public Node() {
+            val = 0;
+            neighbors = new ArrayList<Node>();
+        }
+
+        public Node(int _val) {
+            val = _val;
+            neighbors = new ArrayList<Node>();
+        }
+
+        public Node(int _val, ArrayList<Node> _neighbors) {
+            val = _val;
+            neighbors = _neighbors;
+        }
+    }
+
+    Map<Node, Node> map = new HashMap<>();
+
+    public Node cloneGraph(Node node) {
+        if (node == null)
+            return null;
+
+        Node cloneN = map.get(node);
+        if (cloneN == null) {
+            cloneN = new Node(node.val);
+            map.put(node, cloneN);
+
+            for (Node n : node.neighbors) {
+                cloneN.neighbors.add(cloneGraph(n));
+            }
+        }
+
+        return cloneN;
     }
 
     @Test

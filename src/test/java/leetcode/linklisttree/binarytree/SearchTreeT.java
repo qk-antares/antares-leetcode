@@ -78,4 +78,29 @@ public class SearchTreeT {
         }
         inorder(root.right, k);
     }
+
+    /**
+     * 98. 验证二叉搜索树
+     * 
+     * 中序遍历，记录上一个节点
+     */
+    long prev1 = Long.MIN_VALUE;
+    boolean ans1 = true;
+
+    public boolean isValidBST(TreeNode root) {
+        inorder1(root);
+        return ans1;
+    }
+
+    void inorder1(TreeNode root) {
+        if (root == null)
+            return;
+        inorder1(root.left);
+        if (root.val <= prev1) {
+            ans1 = false;
+            return;
+        }
+        prev1 = root.val;
+        inorder1(root.right);
+    }
 }

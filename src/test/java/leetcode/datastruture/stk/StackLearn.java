@@ -1,7 +1,6 @@
 package leetcode.datastruture.stk;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -122,42 +121,6 @@ public class StackLearn {
         public Node(int _val, ArrayList<Node> _neighbors) {
             val = _val;
             neighbors = _neighbors;
-        }
-    }
-
-    class CloneGraph {
-        public Node cloneGraph(Node node) {
-            if(node == null)
-                return null;
-
-            Node root = new Node(node.val);
-
-            Stack<Node> stack0 = new Stack<>();
-            stack0.push(node);
-
-            Stack<Node> stack1 = new Stack<>();
-            stack1.push(root);
-
-            HashMap<Node, Node> hashMap = new HashMap<>();
-            hashMap.put(node, root);
-
-            while (!stack0.isEmpty()){
-                Node pop = stack0.pop();
-                Node cur = stack1.pop();
-                for (Node neighbor : pop.neighbors) {
-                    if(!hashMap.containsKey(neighbor)){
-                        Node newNode = new Node(neighbor.val);
-                        hashMap.put(neighbor, newNode);
-
-                        stack0.push(neighbor);
-                        stack1.push(newNode);
-                    }
-
-                    cur.neighbors.add(hashMap.get(neighbor));
-                }
-            }
-
-            return root;
         }
     }
 

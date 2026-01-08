@@ -84,66 +84,6 @@ public class EasyTree {
         return max;
     }
 
-    /**
-     * 验证二叉搜索树(没想出来，解法一：递归写法，效率极高)
-     */
-    public boolean isValidBST(TreeNode root) {
-        //注意这里必须使用Long而不是Integer，因为根节点取Integer.MIN_VALUE,或者Integer.MAX_VALUE都是可以的
-        return isValidBST(root, Long.MIN_VALUE, Long.MAX_VALUE);
-    }
-
-    public boolean isValidBST(TreeNode root, long min, long max){
-        if(root == null)
-            return true;
-        if(root.val >= max || root.val <= min)
-            return false;
-        return isValidBST(root.left, min, root.val) && isValidBST(root.right, root.val, max);
-    }
-
-    /**
-     * 解法二：中序遍历（左子树，根节点，右子树）递归写法(内存消耗稍高)
-     * 二叉搜索树的中序遍历结果有序（递增）
-     */
-    //前一个结点
-    TreeNode pre;
-    public boolean isValidBST0(TreeNode root){
-        if(root == null)
-            return true;
-
-        if(!isValidBST0(root.left))
-            return false;
-
-        if(pre != null && pre.val >= root.val)
-            return false;
-        pre = root;
-        if(!isValidBST0(root.right))
-            return false;
-        return true;
-    }
-
-    /**
-     * 解法三：中序遍历非递归(不管是时间还是空间表现都比较差)
-     */
-    public boolean isValidBST1(TreeNode root){
-        if(root == null)
-            return true;
-
-        Stack<TreeNode> treeNodes = new Stack<>();
-        TreeNode pre = null;
-        while (root != null || !treeNodes.isEmpty()){
-            while (root != null){
-                treeNodes.push(root);
-                root = root.left;
-            }
-
-            root = treeNodes.pop();
-            if(pre != null && root.val <= pre.val)
-                return false;
-            pre = root;
-            root = root.right;
-        }
-        return true;
-    }
 
     /**
      * 对称二叉树（我的解法：递归，效率还算可以哦！）
