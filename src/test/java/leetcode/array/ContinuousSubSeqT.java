@@ -40,7 +40,7 @@ public class ContinuousSubSeqT {
     }
 
     /**
-     * 128. 最长连续序列    [Medium]
+     * 128. 最长连续序列 [Medium]
      */
     private int longestConsecutive(int[] nums) {
         Set<Integer> st = new HashSet<>();
@@ -62,5 +62,42 @@ public class ContinuousSubSeqT {
             ans = Math.max(ans, y - x); // 从 x 到 y-1 一共 y-x 个数
         }
         return ans;
+    }
+
+    /**
+     * 2975. 移除栅栏得到的正方形田地的最大面积 [Medium]
+     * 
+     * 先统计比如横线的所有可能情况，用一个set记录
+     * 接下来再统计竖线的所有可能情况，只有该情况在set中存在才有效，统计最大
+     */
+    public int maximizeSquareArea(int m, int n, int[] hFences, int[] vFences) {
+        Set<Integer> set = new HashSet<>();
+        Arrays.sort(hFences);
+        set.add(m - 1);
+        for (int i = 0; i < hFences.length; i++) {
+            set.add(hFences[i] - 1);
+            for (int j = 0; j < i; j++) {
+                set.add(hFences[i] - hFences[j]);
+            }
+            set.add(m - hFences[i]);
+        }
+
+        Arrays.sort(vFences);
+        int maxD = set.contains(n - 1) ? n - 1 : -1;
+        for (int i = 0; i < vFences.length; i++) {
+            int d = vFences[i] - 1;
+            if (set.contains(d))
+                maxD = Math.max(maxD, d);
+            for (int j = 0; j < i; j++) {
+                d = vFences[i] - vFences[j];
+                if (set.contains(d))
+                    maxD = Math.max(maxD, d);
+            }
+            d = n - vFences[i];
+            if (set.contains(d))
+                maxD = Math.max(maxD, d);
+        }
+
+        return maxD == -1 ? -1 : (int) ((long) maxD * maxD % 1_000_000_007);
     }
 }
