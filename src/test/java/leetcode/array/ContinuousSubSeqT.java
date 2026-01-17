@@ -100,4 +100,25 @@ public class ContinuousSubSeqT {
 
         return maxD == -1 ? -1 : (int) ((long) maxD * maxD % 1_000_000_007);
     }
+
+    /**
+     * 3047. 求交集区域内的最大正方形面积 [Medium]
+     * 
+     * 双层for循环
+     * 求两个矩形相交部分的长和宽的公式是精髓
+     */
+    public long largestSquareArea(int[][] bottomLeft, int[][] topRight) {
+        int n = bottomLeft.length;
+        int maxD = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                maxD = Math.max(maxD,
+                        Math.min(
+                                Math.min(topRight[i][0], topRight[j][0]) - Math.max(bottomLeft[i][0], bottomLeft[j][0]),
+                                Math.min(topRight[i][1], topRight[j][1])
+                                        - Math.max(bottomLeft[i][1], bottomLeft[j][1])));
+            }
+        }
+        return (long) maxD * maxD;
+    }
 }
