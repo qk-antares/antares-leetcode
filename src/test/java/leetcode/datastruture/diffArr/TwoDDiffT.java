@@ -90,4 +90,36 @@ public class TwoDDiffT {
         }
         return ans;
     }
+
+    /**
+     * 1292. 元素和小于等于阈值的正方形的最大边长 [Medium]
+     * 
+     * 精髓在于宽度直接从ans开始枚举，因为更小的宽度没有意义
+     */
+    public int maxSideLength(int[][] mat, int threshold) {
+        int m = mat.length, n = mat[0].length;
+        int[][] s = new int[m + 1][n + 1];
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                s[i + 1][j + 1] = s[i + 1][j] + s[i][j + 1] + mat[i][j] - s[i][j];
+            }
+        }
+
+        int ans = 0;
+        // 枚举左上角
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                // 枚举宽度
+                for (int d = ans; i + d < m && j + d < n; d++) {
+                    if (s[i + d + 1][j + d + 1] - s[i + d + 1][j] - s[i][j + d + 1] + s[i][j] > threshold)
+                        break;
+                    else
+                        ans = Math.max(ans, d + 1);
+                }
+            }
+        }
+
+        return ans;
+    }
 }
