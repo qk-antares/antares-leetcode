@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 模拟
+ * 模拟/暴力
  */
 public class SimulationT {
     /**
@@ -99,5 +99,39 @@ public class SimulationT {
         }
 
         return ans[0];
+    }
+
+    /**
+     * 3507. 移除最小数对使数组有序 I   [Easy]
+     * 
+     * 用一个list维护最新的数组，合并元素相当于set+remove操作
+     */
+    public int minimumPairRemoval(int[] nums) {
+        List<Integer> list = new ArrayList<>();
+        for(int num : nums) list.add(num);
+        int cnt = 0;
+
+        while(list.size() > 1) {
+            boolean flag = true;
+            int len = list.size();
+            int min = Integer.MAX_VALUE;
+            int minIdx = -1;
+
+            for(int i = 1; i < len; i++) {
+                if(list.get(i) < list.get(i-1)) flag = false;
+                int sum = list.get(i) + list.get(i-1);
+                if(sum < min) {
+                    min = sum;
+                    minIdx = i-1;
+                }
+            }
+
+            if(flag) break;
+            
+            cnt++;
+            list.set(minIdx, min);
+            list.remove(minIdx+1);
+        }
+        return cnt;
     }
 }
