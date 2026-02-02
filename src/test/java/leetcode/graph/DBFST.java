@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -925,9 +926,60 @@ public class DBFST {
         return cloneN;
     }
 
+    /**
+     * 433. 最小基因变化
+     * 
+     * 深度优先搜索
+     * 每个节点有3*8种变换
+     */
+    public int minMutation(String startGene, String endGene, String[] bank) {
+        char[] choices = { 'A', 'C', 'G', 'T' };
+        Set<String> valid = new HashSet<>();
+        for (String str : bank)
+            valid.add(str);
+        if (!valid.contains(endGene))
+            return -1;
+
+        Set<String> vis = new HashSet<>();
+        vis.add(startGene);
+        Queue<String> q = new ArrayDeque<>();
+        q.offer(startGene);
+
+        int ans = 0;
+
+        while (!q.isEmpty()) {
+            int size = q.size();
+
+            for (int k = 0; k < size; k++) {
+                String s = q.poll();
+                if (s.equals(endGene))
+                    return ans;
+                char[] cur = s.toCharArray();
+                for (int i = 0; i < 8; i++) {
+                    for (int j = 0; j < 4; j++) {
+                        if (cur[i] != choices[j]) {
+                            cur[i] = choices[j];
+                            String tmp = new String(cur);
+
+                            if (valid.contains(tmp) && !vis.contains(tmp)) {
+                                q.offer(tmp);
+                                vis.add(tmp);
+                            }
+                        }
+                    }
+                    cur[i] = s.charAt(i);
+                }
+            }
+
+            ans++;
+        }
+
+        return -1;
+    }
+
     @Test
     public void test() {
-        minMalwareSpread(new int[][] { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } }, new int[] { 1, 2 });
+        // minMalwareSpread(new int[][] { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } }, new int[] { 1, 2 });
 
         // int[] status = { 1, 0, 1, 0 };
         // int[] candies = { 7, 5, 4, 100 };
@@ -935,5 +987,7 @@ public class DBFST {
         // int[][] containedBoxes = { { 1, 2 }, { 3 }, {}, {} };
         // int[] initialBoxes = { 0 };
         // maxCandies(status, candies, keys, containedBoxes, initialBoxes);
+
+        minMutation("AACCGGTT", "AACCGGTA", new String[] { "AACCGGTA" });
     }
 }
