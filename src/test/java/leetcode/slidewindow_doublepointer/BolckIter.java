@@ -144,6 +144,36 @@ public class BolckIter {
         return ans;
     }
 
+    /*
+     * ========================== 分割线 ==========================
+     */
+
+    /**
+     * 3637. 三段式数组 I   [Easy]
+     */
+    public boolean isTrionic(int[] nums) {
+        int idx1 = 0;
+        // 递增
+        while (idx1 + 1 < nums.length && nums[idx1 + 1] > nums[idx1])
+            idx1++;
+        if (idx1 - 0 + 1 < 2)
+            return false;
+        int idx2 = idx1;
+        // 递减
+        while (idx2 + 1 < nums.length && nums[idx2 + 1] < nums[idx2])
+            idx2++;
+        if (idx2 - idx1 + 1 < 2)
+            return false;
+        // 递增
+        int idx3 = idx2;
+        while (idx3 + 1 < nums.length && nums[idx3 + 1] > nums[idx3])
+            idx3++;
+        if (idx3 - idx2 + 1 < 2)
+            return false;
+        // 必须到结尾了
+        return idx3 == nums.length - 1;
+    }
+
     @Test
     void test() {
         System.out.println(maxIncreasingSubarrays(List.of(2, 5, 7, 8, 9, 2, 3, 4, 3, 1)));
