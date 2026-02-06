@@ -96,6 +96,62 @@ public class LongShortEstT {
         return ans - 1;
     }
 
+    /**
+     * 3634. 使数组平衡的最少移除数目 [Medium]
+     * 
+     * 滑动窗口，满足时一直扩展右边界，不满足时一直收缩左边界
+     * 
+     * 枚举左端点，根据二分找右端点
+     */
+    public int minRemoval(int[] nums, int k) {
+        Arrays.sort(nums);
+        int n = nums.length;
+        int ans = Integer.MAX_VALUE;
+        int l = 0, r = 0;
+        while (r < n) {
+            long target = (long) nums[l] * k;
+            while (r < n && target >= nums[r]) {
+                r++;
+            }
+
+            if (r == n) {
+                ans = Math.min(ans, l);
+                return ans;
+            }
+            ans = Math.min(ans, n - (r - l));
+
+            while ((long) nums[l] * k < nums[r]) {
+                l++;
+            }
+        }
+
+        return ans;
+    }
+
+    public int minRemoval0(int[] nums, int k) {
+        Arrays.sort(nums);
+        int n = nums.length;
+        int ans = Integer.MAX_VALUE;
+        for(int i = 0; i < n; i++) {
+            long target = (long)nums[i] * k;
+
+            // 寻找第一个<=target的元素
+            int l = i, r = n-1;
+            while(l <= r) {
+                int mid = (l+r)/2;
+                if(nums[mid] > target) {
+                    r = mid-1;
+                } else {
+                    l = mid+1;
+                }
+            }
+            ans = Math.min(ans, n-(r-i+1));
+            if(r == n-1) return ans;
+        }
+
+        return ans;
+    }
+
     /*
      * 1208. 尽可能使字符串相等 [Medium]
      * 
@@ -1379,7 +1435,7 @@ public class LongShortEstT {
     }
 
     /*
-     * 632. 最小区间    [Hard]  [Link: 76. 最小覆盖子串]
+     * 632. 最小区间 [Hard] [Link: 76. 最小覆盖子串]
      * 
      * 首先对nums中所有的区间进行合并，合并的同时需要标记元素来自于那个区间，
      * 用List<int[]> merge来存储，[val, idx]
@@ -1453,6 +1509,7 @@ public class LongShortEstT {
 
         // longestSubstring("aaabb", 3);
 
-        longestNiceSubstring("YazaAay");
+        // longestNiceSubstring("YazaAay");
+        minRemoval(new int[] { 2, 1, 5 }, 2);
     }
 }
