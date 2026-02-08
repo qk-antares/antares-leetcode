@@ -7,7 +7,7 @@ import java.util.List;
 import leetcode.common.TreeNode;
 
 /**
- * DFS遍历框架
+ * DFS遍历框架（自顶向下）
  */
 public class DFST {
     /**

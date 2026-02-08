@@ -70,9 +70,8 @@ public class LazyHeapT {
         }
     }
 
-
     /*
-     * 3607. 电网维护   [Medium]
+     * 3607. 电网维护 [Medium]
      * 
      * 建图，通过深度优先遍历找到每个连通块
      * 每个连通块用一个懒删除堆来维护
@@ -111,8 +110,8 @@ public class LazyHeapT {
         int cur = 0;
         for (int[] q : queries) {
             IntegerLazyHeap heap = heaps.get(belongs[q[1]]);
-            if(q[0] == 1) {
-                if(heap.removeCnt.containsKey(q[1])) {
+            if (q[0] == 1) {
+                if (heap.removeCnt.containsKey(q[1])) {
                     ans[cur++] = heap.peek();
                 } else {
                     ans[cur++] = q[1];
