@@ -1,6 +1,8 @@
 package leetcode.linklisttree.binarytree;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import leetcode.common.TreeNode;
@@ -9,6 +11,54 @@ import leetcode.common.TreeNode;
  * 二叉树的构造
  */
 public class ConstructT {
+    /**
+     * 108. 将有序数组转换为二叉搜索树 [Easy]
+     */
+    public TreeNode sortedArrayToBST(int[] nums) {
+        return dfs(nums, 0, nums.length - 1);
+    }
+
+    // 将有序数组nums的[l, r]部分转换为二叉搜索树
+    TreeNode dfs(int[] nums, int l, int r) {
+        if (l > r)
+            return null;
+
+        int mid = (l + r) / 2;
+        return new TreeNode(nums[mid], dfs(nums, l, mid - 1), dfs(nums, mid + 1, r));
+    }
+
+    /**
+     * 1382. 将二叉搜索树变平衡 [Medium]
+     * 
+     * 先中序遍历得到有序的节点列表，再用分治法构造平衡二叉树
+     */
+    public TreeNode balanceBST(TreeNode root) {
+        List<TreeNode> res = new ArrayList<>();
+        inorder(root, res);
+        return buildTree(res, 0, res.size() - 1);
+    }
+
+    void inorder(TreeNode root, List<TreeNode> res) {
+        if (root == null) {
+            return;
+        }
+
+        inorder(root.left, res);
+        res.add(root);
+        inorder(root.right, res);
+    }
+
+    TreeNode buildTree(List<TreeNode> res, int l, int r) {
+        if (l > r)
+            return null;
+
+        int mid = (l + r) / 2;
+        TreeNode root = res.get(mid);
+        root.left = buildTree(res, l, mid - 1);
+        root.right = buildTree(res, mid + 1, r);
+        return root;
+    }
+
     /**
      * 106. 从中序与后序遍历序列构造二叉树 [Medium]
      * 
