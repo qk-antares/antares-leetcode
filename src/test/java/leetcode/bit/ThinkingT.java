@@ -32,4 +32,28 @@ public class ThinkingT {
         }
         return ans;
     }
+
+    /*
+     * ========================== 分割线 ==========================
+     */
+
+    /**
+     * 1404. 将二进制表示减到 1 的步骤数
+     * 
+     * 偶数，相当于字符串>>1
+     * 奇数，相当于把连续1全变成0，然后前面的0变成1；同理这个1又会使前面进位
+     * 故一旦遇到一个奇数产生进位，前面就都会进位
+     */
+    public int numSteps(String s) {
+        char[] ss = s.toCharArray();
+        int n = ss.length;
+        int ans = n - 1; // 除了最高位，其余位都需要执行1次除以2
+        int carry = 0; // 产生的进位
+        for (int i = n - 1; i > 0; i--) {
+            int cur = ss[i] - '0' + carry;
+            ans += cur % 2; // 当cur为1时要执行+1
+            carry = (cur + cur % 2) / 2; // 当前位产生的进位
+        }
+        return ans + carry;
+    }
 }
