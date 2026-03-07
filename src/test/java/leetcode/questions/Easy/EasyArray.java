@@ -257,21 +257,6 @@ public class EasyArray {
     }
 
     /**
-     * 移动零
-     * 我的解法：双指针法(答案解法)
-     */
-    public void moveZeroes(int[] nums) {
-        int j = 0;
-        for(int i=0;i < nums.length;i++){
-            if(nums[i] != 0)
-                nums[j++] = nums[i];
-        }
-        for(;j < nums.length;j++){
-            nums[j] = 0;
-        }
-    }
-
-    /**
      * 有效的数独
      * 我的解法(勉强通过，多看看答案)
      */

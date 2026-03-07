@@ -1,48 +1,12 @@
 package leetcode.hots100;
 
-import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
+
 public class DoublePointerLearn {
-    /**
-     * 移动零
-     */
-    public void moveZeroes(int[] nums) {
-        int cur = 0;
-        for (int i = 0; i < nums.length; i++) {
-            if(nums[i] != 0){
-                nums[cur] = nums[i];
-                cur++;
-            }
-        }
-        for (int i = cur; i < nums.length; i++) {
-            nums[i] = 0;
-        }
-    }
-
-    /**
-     * 盛最多水的容器
-     */
-    public int maxArea(int[] height) {
-        int l = 0, r = height.length - 1;
-        int ans = Integer.MIN_VALUE;
-        while (l < r){
-            ans = Math.max(ans, (r-l)*Math.min(height[l], height[r]));
-            if(height[l] < height[r]){
-                l++;
-            } else if (height[l] > height[r]){
-                r--;
-            } else {
-                l++;
-                r--;
-            }
-        }
-        return ans;
-    }
-
     /**
      * 三数之和
      */

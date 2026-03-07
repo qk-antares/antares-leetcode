@@ -23,6 +23,8 @@ public class LongShortEstT {
      * l向右扩展，直至满足条件
      * 这样一个迭代的过程
      * 虽然在代码上我们会看到两个while循环，但算法整体的时间复杂度是O(n)
+     * 
+     * 精髓之处在于使用一个cnt数组来统计窗口中字符的出现情况，甚至还可以压缩成一个boolean[]，而不用使用Set
      */
     public int lengthOfLongestSubstring(String s) {
         int ans = 0;
