@@ -1,9 +1,7 @@
 package leetcode.datastruture.array;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.PriorityQueue;
 
 import org.junit.jupiter.api.Test;
 
@@ -102,51 +100,6 @@ public class ArrayLearn {
             else {
                 return binarySearch(nums, mid+1, right, target);
             }
-        }
-    }
-
-    /**
-     * 合并区间（我的解法：使用优先级队列，执行用时比较长，可以用排序进行优化）
-     */
-    class Merge {
-        public int[][] merge(int[][] intervals) {
-            ArrayList<int[]> ans = new ArrayList<>();
-
-            //首先对各个区间，按照开始进行排序（放进优先级队列里）
-            PriorityQueue<int[]> priorityQueue = new PriorityQueue<>((o1, o2) -> o1[0] - o2[0]);
-            for(int i = 0;i < intervals.length;i++){
-                priorityQueue.add(intervals[i]);
-            }
-
-            ans.add(priorityQueue.poll());
-            while (!priorityQueue.isEmpty()){
-                int[] poll = priorityQueue.poll();
-                if(poll[0] <= ans.get(ans.size()-1)[1]){
-                    ans.set(ans.size()-1, new int[]{ans.get(ans.size()-1)[0], Math.max(ans.get(ans.size()-1)[1], poll[1])});
-                }else{
-                    ans.add(poll);
-                }
-            }
-
-            return ans.toArray(new int[ans.size()][2]);
-        }
-
-        public int[][] merge0(int[][] intervals) {
-            ArrayList<int[]> ans = new ArrayList<>();
-            Arrays.sort(intervals, (o1, o2) -> o1[0]-o2[0]);
-
-            ans.add(intervals[0]);
-            int index;
-            for(int i = 1;i < intervals.length;i++){
-                index = ans.size()-1;
-                if(intervals[i][0] <= ans.get(index)[1]){
-                    ans.set(index, new int[]{ans.get(index)[0], Math.max(intervals[i][1], ans.get(index)[1])});
-                }else {
-                    ans.add(intervals[i]);
-                }
-            }
-
-            return ans.toArray(new int[ans.size()][2]);
         }
     }
 

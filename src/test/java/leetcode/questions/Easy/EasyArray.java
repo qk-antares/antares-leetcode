@@ -69,36 +69,6 @@ public class EasyArray {
     }
 
     /**
-     * 旋转数组
-     * 我的解法1，数组反转法
-     */
-    public void rotate(int[] nums, int k) {
-        if(k == 0 || nums.length == 1)
-            return;
-        reverse(nums,0,nums.length-1);
-        reverse(nums,0,k-1);
-        reverse(nums,k,nums.length-1);
-    }
-    public void reverse(int[] nums,int start,int end){
-        int temp;
-        for(int i = 0;i <= (end-start)/2;i++){
-            temp = nums[start+i];
-            nums[start+i] = nums[end-i];
-            nums[end-i] = temp;
-        }
-    }
-
-    /**
-     * 我的解法2：临时数组法
-     */
-    public void rotate0(int[] nums, int k) {
-        int[] temp = Arrays.copyOf(nums, nums.length);
-        for(int i = 0;i < nums.length;i++){
-            nums[(i+k)%nums.length] = temp[i];
-        }
-    }
-
-    /**
      * 存在重复元素
      * 我的解法1：排序法（内存消耗和执行用时都不理想）
      */

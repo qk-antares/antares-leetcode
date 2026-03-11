@@ -3,7 +3,6 @@ package leetcode.questions.Medium;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
 
@@ -323,27 +322,6 @@ public class Sort {
             return mid;
         }
 
-    }
-
-    /**
-     * 合并区间(我的解法，先对intervals按照区间左端点进行排序，再逐个遍历。执行用时太高了！)，精华之点在于先依据左端点进行排序，不进行这步就得不到正确答案
-     */
-    static class Merge {
-        public int[][] merge(int[][] intervals) {
-            Arrays.sort(intervals, (o1, o2) -> o1[0] - o2[0]);
-            List<int[]> ans = new ArrayList<>();
-
-            for(int i = 0;i < intervals.length;i++){
-                int index = ans.size()-1;
-                if(index < 0 || intervals[i][0] > ans.get(index)[1]){
-                    ans.add(intervals[i]);
-                } else {
-                    ans.set(index, new int[]{ans.get(index)[0], Math.max(intervals[i][1], ans.get(index)[1])});
-                }
-            }
-
-            return ans.toArray(new int[ans.size()][2]);
-        }
     }
 
     @Test
