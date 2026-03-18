@@ -146,20 +146,7 @@ public class BinaryTree {
 
         return ans;
     }
-
     
-    /**
-     * 二叉树的最大深度（我的解法：递归，效率挺高）
-     */
-    public int maxDepth(TreeNode root) {
-        if(root == null)
-            return 0;
-        if(root.left == null && root.right == null)
-            return 1;
-
-        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
-    }
-
     /**
      * 对称二叉树（我的解法：递归，内存消耗有点大）
      */

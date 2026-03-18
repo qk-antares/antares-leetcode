@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * 最长连续序列
+ */
 public class ContinuousSubSeqT {
 
     /**

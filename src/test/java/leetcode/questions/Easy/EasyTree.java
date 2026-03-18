@@ -1,9 +1,7 @@
 package leetcode.questions.Easy;
 
-import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Stack;
 
 import org.junit.jupiter.api.Test;
 
@@ -14,77 +12,6 @@ import leetcode.common.TreeNode;
  * @date 2022/9/5
  */
 public class EasyTree {
-    /**
-     * 二叉树的最大深度我的解法(递归解法，内存消耗比较大)
-     */
-    public int maxDepth(TreeNode root) {
-        if(root == null)
-            return 0;
-
-        if(root.left == null && root.right == null){
-            return 1;
-        }
-        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
-    }
-
-    /**
-     * 解法二：BFS(广度优先遍历，使用了双端队列Dequeue，内存消耗小了，但是时间复杂度高)
-     * 需要注意的是，Dequeue还是可以使用push和pop的，这两个函数操作的都是队头
-     */
-    public int maxDepth0(TreeNode root) {
-        if(root == null)
-            return 0;
-
-        Deque<TreeNode> deque = new LinkedList<>();
-        int count = 0;
-        int size;
-        deque.addFirst(root);
-        while (!deque.isEmpty()){
-            //记录每一层的结点数
-            size = deque.size();
-            while (size > 0){
-                TreeNode pop = deque.removeFirst();
-                if(pop.left != null)
-                    deque.addLast(pop.left);
-                if(pop.right != null)
-                    deque.addLast(pop.right);
-                size--;
-            }
-            count++;
-        }
-        return count;
-    }
-
-    /**
-     * 解法三：DFS（深度优先遍历，内存消耗更小了，但是时间复杂度依然较高）
-     * 使用两个stack，一个记录结点，另一个记录节点所在的层数
-     * 深度优先遍历只有一层for循环，而广度优先遍历是两层for循环
-     */
-    public int maxDepth1(TreeNode root) {
-        if(root == null)
-            return 0;
-        Stack<TreeNode> treeNodes = new Stack<>();
-        Stack<Integer> levels = new Stack<>();
-        treeNodes.push(root);
-        levels.push(1);
-        int max = 0;
-        while (!treeNodes.isEmpty()){
-            TreeNode node = treeNodes.pop();
-            int level = levels.pop();
-            max = Math.max(level, max);
-            if(node.left != null){
-                treeNodes.push(node.left);
-                levels.add(level + 1);
-            }
-            if(node.right != null){
-                treeNodes.push(node.right);
-                levels.add(level + 1);
-            }
-        }
-        return max;
-    }
-
-
     /**
      * 对称二叉树（我的解法：递归，效率还算可以哦！）
      */

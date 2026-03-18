@@ -104,54 +104,6 @@ public class ArrayLearn {
     }
 
     /**
-     * 旋转矩阵（转置再对称）
-     *   [1,2,3],   [7,4,1],
-     *   [4,5,6],   [8,5,2],
-     *   [7,8,9]    [9,6,3]
-     *
-     *   两次对称是旋转180°
-     *   [3,2,1]
-     *   [6,5,4]
-     *   [9,8,7]
-     *
-     *   [9,8,7]
-     *   [6,5,4]
-     *   [3,2,1]
-     *
-     *   转置(swap(matrix[i][j], matrix[j][i]) (j>i))
-     *   [1,4,7]
-     *   [2,5,8]
-     *   [3,6,9]
-     *   再对称
-     *   [7,4,1],
-     *   [8,5,2],
-     *   [9,6,3]
-     */
-    class Rotate {
-        public void rotate(int[][] matrix) {
-            int N = matrix.length;
-            //先转置
-            for(int i = 0;i < N-1;i++){
-                for(int j = i+1; j < N;j++)
-                    swap(matrix, i, j, j, i);
-            }
-
-            //再对称（左右）
-            for(int i = 0;i < N;i++){
-                for(int j = 0;j < N/2;j++){
-                    swap(matrix, i, j, i, N-1-j);
-                }
-            }
-        }
-
-        public void swap(int[][] matrix, int i0, int j0, int i1, int j1){
-            int temp = matrix[i0][j0];
-            matrix[i0][j0] = matrix[i1][j1];
-            matrix[i1][j1] = temp;
-        }
-    }
-
-    /**
      * 对角线遍历
      * 来看一下访问坐标
      * (0,0)

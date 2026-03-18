@@ -1,11 +1,88 @@
 package leetcode.array;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * 二维数组Grid
  */
 public class GridT {
+    /**
+     * 54. 螺旋矩阵 [Medium]
+     * 
+     * 访问过的格子标记为Integer.MAX_VALUE
+     * 用dir数组维护方向
+     */
+    public List<Integer> spiralOrder(int[][] matrix) {
+        int[][] dir = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
+        int idx = 0;
+        List<Integer> ans = new ArrayList<>();
+        int i = 0, j = 0;
+        int m = matrix.length, n = matrix[0].length;
+        for (int k = 0; k < m * n; k++) {
+            ans.add(matrix[i][j]);
+            matrix[i][j] = Integer.MAX_VALUE;
+            int nextI = i + dir[idx][0];
+            int nextJ = j + dir[idx][1];
+            if (nextI >= 0 && nextI < m && nextJ >= 0 && nextJ < n && matrix[nextI][nextJ] != Integer.MAX_VALUE) {
+                i = nextI;
+                j = nextJ;
+            } else {
+                idx = (idx + 1) % 4;
+                i = i + dir[idx][0];
+                j = j + dir[idx][1];
+            }
+        }
+        return ans;
+    }
+
+    /**
+     * 48. 旋转图像 [Medium]
+     * 
+     * 转置后对称
+     */
+    public void rotate(int[][] matrix) {
+        int n = matrix[0].length;
+        // 转置
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                int tmp = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = tmp;
+            }
+        }
+
+        // 对称
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n / 2; j++) {
+                int tmp = matrix[i][j];
+                matrix[i][j] = matrix[i][n - 1 - j];
+                matrix[i][n - 1 - j] = tmp;
+            }
+        }
+    }
+
+    /**
+     * 240. 搜索二维矩阵 II [Medium]
+     * 
+     * 从右上角开始搜索，逐渐缩小查找范围
+     */
+    public boolean searchMatrix(int[][] matrix, int target) {
+        int m = matrix.length, n = matrix[0].length;
+        int i = 0, j = n - 1;
+        while (i >= 0 && i < m && j >= 0 && j < n) {
+            if (matrix[i][j] == target)
+                return true;
+            else if (matrix[i][j] > target) {
+                j--;
+            } else if (matrix[i][j] < target) {
+                i++;
+            }
+        }
+        return false;
+    }
+
     /**
      * 3531. 统计被覆盖的建筑 [Medium]
      * 

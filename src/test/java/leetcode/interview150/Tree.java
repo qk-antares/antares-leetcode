@@ -35,32 +35,6 @@ public class Tree {
     }
 
     /**
-     * 104. 二叉树的最大深度
-     * 深度优先遍历解法
-     */
-    int maxDepth = 0;
-
-    public int maxDepth(TreeNode root) {
-        if (root == null) {
-            return 0;
-        }
-
-        dfs(root, 0);
-        return maxDepth;
-    }
-
-    public void dfs(TreeNode root, int curDepth) {
-        curDepth++;
-        maxDepth = Math.max(curDepth, maxDepth);
-        if (root.left != null) {
-            dfs(root.left, curDepth);
-        }
-        if (root.right != null) {
-            dfs(root.right, curDepth);
-        }
-    }
-
-    /**
      * 100. 相同的树
      */
     public boolean isSameTree(TreeNode p, TreeNode q) {

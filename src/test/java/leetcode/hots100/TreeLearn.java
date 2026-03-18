@@ -41,38 +41,6 @@ public class TreeLearn {
     }
 
     /**
-     * 二叉树的最大深度
-     */
-    public int maxDepth0(TreeNode root) {
-        if (root == null) {
-            return 0;
-        }
-        return 1 + Math.max(maxDepth0(root.left), maxDepth0(root.right));
-    }
-    public int maxDepth(TreeNode root) {
-        if(root == null){
-            return 0;
-        }
-        int ans = 0;
-        ArrayDeque<TreeNode> queue = new ArrayDeque<>();
-        queue.offer(root);
-        while (!queue.isEmpty()){
-            ans++;
-            int levelSize = queue.size();
-            for (int i = 0; i < levelSize; i++) {
-                TreeNode poll = queue.poll();
-                if(poll.left != null){
-                    queue.offer(poll.left);
-                }
-                if(poll.right != null){
-                    queue.offer(poll.right);
-                }
-            }
-        }
-        return ans;
-    }
-
-    /**
      * 翻转二叉树
      */
     public TreeNode invertTree(TreeNode root) {

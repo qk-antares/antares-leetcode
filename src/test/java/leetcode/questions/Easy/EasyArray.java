@@ -278,37 +278,6 @@ public class EasyArray {
         return true;
     }
 
-    /**
-     * 旋转图像
-     * 我的解法：旋转等于转置再对称
-     */
-    public void rotate(int[][] matrix) {
-        //先对矩阵进行转置
-        int temp;
-        for(int i = 0;i < matrix.length;i++){
-            for(int j = 0;j < matrix.length;j++){
-                if(i > j) {
-                    temp = matrix[i][j];
-                    matrix[i][j] = matrix[j][i];
-                    matrix[j][i] = temp;
-                }
-            }
-        }
-        //之后对矩阵对称操作
-        for(int i = 0;i < matrix.length;i++){
-            for(int j = 0;j < matrix.length/2;j++){
-                temp = matrix[i][j];
-                matrix[i][j] = matrix[i][matrix.length-j-1];
-                matrix[i][matrix.length-j-1] = temp;
-            }
-        }
-
-    }
-
-    /**
-     * 答案的解法也很巧妙，可以看看
-     */
-
     @Test
     public void invoke(){
 //        int i = removeDuplicates(new int[]{1, 1});
@@ -324,8 +293,6 @@ public class EasyArray {
 //                                    ,{'.','.','.','4','1','9','.','.','5'}
 //                                    ,{'.','.','.','.','8','.','.','7','9'}};
 //        isValidSudoku(board);
-        int[][] pic = {{1,2,3},{4,5,6},{7,8,9}};
-        rotate(pic);
     }
 
 }

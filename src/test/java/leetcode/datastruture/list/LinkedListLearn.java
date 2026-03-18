@@ -1,9 +1,12 @@
 package leetcode.datastruture.list;
 
-import leetcode.common.ListNode;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import leetcode.common.ListNode;
 
 public class LinkedListLearn {
     /**
@@ -82,55 +85,6 @@ public class LinkedListLearn {
                 head.next = head.next.next;
                 len--;
             }
-        }
-    }
-
-    /**
-     * 环形链表 II
-     * 快慢指针
-     * 第一次相遇时，slow走了m个结点，则fast走了2m个结点，m是环的长度
-     * 此时从相遇点和头节点分别出发，再次相遇就是第一个环中结点
-     *
-     */
-    public class DetectCycle {
-        public ListNode detectCycle(ListNode head) {
-            ListNode slow, fast;
-            try {
-                slow = head.next;
-                fast = head.next.next;
-                while (slow != fast){
-                    slow = slow.next;
-                    fast = fast.next.next;
-                }
-            } catch (Exception e) {
-                return null;
-            }
-            slow = head;
-            while (slow != fast){
-                slow = slow.next;
-                fast = fast.next;
-            }
-
-            return slow;
-        }
-    }
-
-    /**
-     * 相交链表，LA+LB和LB+LA，从头节点开始遍历，然后就可以找到
-     */
-    public class GetIntersectionNode {
-        public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
-            ListNode l1 = headA, l2 = headB;
-            while (l1 != l2){
-                l1 = l1.next;
-                l2 = l2.next;
-                if (l1 == null && l2 == null)
-                    return null;
-                if(l1 == null) l1 = headB;
-                if (l2 == null) l2 = headA;
-            }
-
-            return l1;
         }
     }
 
@@ -228,44 +182,6 @@ public class LinkedListLearn {
                 dfs(head.child, ans);
                 dfs(head.next, ans);
             }
-        }
-    }
-
-    /**
-     * 复制带随机指针的链表，建立一个原结点和拷贝结点的hashmap，整个过程两次普通的next遍历
-     */
-    class CopyRandomList {
-        class Node {
-            int val;
-            Node next;
-            Node random;
-
-            public Node(int val) {
-                this.val = val;
-                this.next = null;
-                this.random = null;
-            }
-        }
-
-        public Node copyRandomList(Node head) {
-            HashMap<Node, Node> hashMap = new HashMap<>();
-            Node cur = head;
-
-            while (cur != null){
-                hashMap.put(cur, new Node(cur.val));
-                cur = cur.next;
-            }
-
-            cur = head;
-            Node node;
-            while (cur != null){
-                node = hashMap.get(cur);
-                node.next = hashMap.get(cur.next);
-                node.random = hashMap.get(cur.random);
-                cur = cur.next;
-            }
-
-            return hashMap.get(head);
         }
     }
 

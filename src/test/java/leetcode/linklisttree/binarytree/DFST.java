@@ -11,6 +11,15 @@ import leetcode.common.TreeNode;
  */
 public class DFST {
     /**
+     * 104. 二叉树的最大深度 [Easy]
+     */
+    public int maxDepth(TreeNode root) {
+        if (root == null)
+            return 0;
+        return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
+    }
+
+    /**
      * 199. 二叉树的右视图
      * 
      * 层序遍历

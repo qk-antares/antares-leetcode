@@ -9,37 +9,7 @@ import org.junit.jupiter.api.Test;
 import leetcode.common.ListNode;
 
 public class LinkedList {
-    /**
-     * 138. 随机链表的复制
-     */
-    class Node {
-        int val;
-        Node next;
-        Node random;
 
-        public Node(int val) {
-            this.val = val;
-            this.next = null;
-            this.random = null;
-        }
-    }
-
-    public Node copyRandomList(Node head) {
-        HashMap<Node, Node> map = new HashMap<>();
-        Node tmp = head;
-        while (tmp != null){
-            map.put(tmp, new Node(tmp.val));
-            tmp = tmp.next;
-        }
-        tmp = head;
-        while (tmp != null){
-            Node copy = map.get(tmp);
-            copy.random = map.get(tmp.random);
-            copy.next = map.get(tmp.next);
-            tmp = tmp.next;
-        }
-        return map.get(head);
-    }
 
     /**
      * 92. 反转链表 II
@@ -187,28 +157,6 @@ public class LinkedList {
         head.next = reverseKGroup(nextHead, k);
 
         return nextHeadPre;
-    }
-
-    /**
-     * 19. 删除链表的倒数第 N 个结点
-     */
-    public ListNode removeNthFromEnd(ListNode head, int n) {
-        ListNode dumyNode = new ListNode();
-        dumyNode.next = head;
-        
-        ListNode fast = dumyNode, slow = dumyNode;
-        while (n >= 0) {
-            fast = fast.next;
-            n--;
-        }
-        while (fast != null) {
-            fast = fast.next;
-            slow = slow.next;
-        }
-
-        //此时slow指向要删除的节点的前一个节点
-        slow.next = slow.next.next;
-        return dumyNode.next;
     }
 
     /**

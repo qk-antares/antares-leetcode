@@ -1,4 +1,4 @@
-package leetcode.linklisttree;
+package leetcode.linklisttree.linklist;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,14 +12,15 @@ public class DeleteNodeT {
     /*
      * 3217. 从链表中移除在数组中存在的节点
      */
-        public ListNode modifiedList(int[] nums, ListNode head) {
+    public ListNode modifiedList(int[] nums, ListNode head) {
         ListNode dummy = new ListNode();
         Set<Integer> set = new HashSet<>();
-        for(int num : nums) set.add(num);
+        for (int num : nums)
+            set.add(num);
 
         ListNode cur = dummy;
-        while(head != null) {
-            if(!set.contains(head.val)) {
+        while (head != null) {
+            if (!set.contains(head.val)) {
                 cur.next = head;
                 cur = head;
             }

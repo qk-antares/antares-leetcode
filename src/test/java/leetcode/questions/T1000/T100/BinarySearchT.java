@@ -105,30 +105,4 @@ public class BinarySearchT {
         ans[1] = r;
         return ans;
     }
-
-    /*
-     * 74. 搜索二维矩阵
-     * 
-     * 假设是m行n列的矩阵，则进行m次二分，但是每次二分，右边界都缩小
-     */
-    public boolean searchMatrix(int[][] matrix, int target) {
-        int m = matrix.length, n = matrix[0].length;
-        int end = n - 1;
-        for (int i = 0; i < m; i++) {
-            int l = 0, r = end;
-            // 要找到小于target的最大index
-            while (l <= r) {
-                int mid = (l + r) / 2;
-                if (matrix[i][mid] == target)
-                    return true;
-                else if (matrix[i][mid] < target) {
-                    l = mid + 1;
-                } else {
-                    r = mid - 1;
-                }
-            }
-            end = r;
-        }
-        return false;
-    }
 }
