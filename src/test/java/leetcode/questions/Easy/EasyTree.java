@@ -3,8 +3,6 @@ package leetcode.questions.Easy;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import org.junit.jupiter.api.Test;
-
 import leetcode.common.TreeNode;
 
 /**
@@ -73,32 +71,4 @@ public class EasyTree {
         }
         return true;
     }
-
-    /**
-     * 将有序数组转换为二叉搜索树（没想出来，看完解释的第一句恍悟，使用递归解决）
-     * 每次都取数组的中间值来作为根节点，左侧构成左子树，右侧构成右子树
-     */
-    public TreeNode sortedArrayToBST(int[] nums) {
-        int len = nums.length;
-        if(len == 0)
-            return null;
-        return sortedArrayToBSTHelper(nums, 0, len-1);
-    }
-
-    public TreeNode sortedArrayToBSTHelper(int[] nums, int startIndex, int endIndex){
-        if(startIndex <= endIndex){
-            TreeNode root = new TreeNode(nums[(startIndex + endIndex)/2]);
-            root.left = sortedArrayToBSTHelper(nums, startIndex, (startIndex + endIndex)/2-1);
-            root.right = sortedArrayToBSTHelper(nums, (startIndex + endIndex)/2+1, endIndex);
-            return root;
-        }
-        return null;
-    }
-
-    @Test
-    public void invoke(){
-//        merge2(new int[]{1,2,3,0,0,0},3,new int[]{2,5,6},3);
-    }
-
-
 }

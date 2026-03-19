@@ -1,7 +1,5 @@
 package leetcode.datastruture.prefixsum;
 
-import org.junit.jupiter.api.Test;
-
 /*
  * 二维前缀和
  */
@@ -38,21 +36,48 @@ public class TwoDPreSumT {
         int ans = 0;
         int m = grid.length, n = grid[0].length;
         int[] s = new int[n];
-        for(int i = 0; i < m; i++) {
+        for (int i = 0; i < m; i++) {
             int tmp = 0;
-            for(int j = 0; j < n; j++) {
+            for (int j = 0; j < n; j++) {
                 tmp += grid[i][j];
                 s[j] += tmp;
-                if(s[j] <= k) ans++;
+                if (s[j] <= k)
+                    ans++;
             }
         }
         return ans;
     }
 
-    @Test
-    public void test() {
-        int[][] grid = {{7,2,9},{1,5,0},{2,6,6}};
-        int k = 20;
-        System.out.println(countSubmatrices(grid, k));
+    /**
+     * 3212. 统计 X 和 Y 频数相等的子矩阵数量 [Medium]
+     */
+    public int numberOfSubmatrices(char[][] grid) {
+        int m = grid.length, n = grid[0].length;
+
+        // 记录每一行的状态
+        int[] x = new int[n];
+        int[] y = new int[n];
+
+        int ans = 0;
+        for (int i = 0; i < m; i++) {
+            int cntX = 0, cntY = 0;
+            for (int j = 0; j < n; j++) {
+                switch (grid[i][j]) {
+                    case 'X':
+                        cntX++;
+                        break;
+                    case 'Y':
+                        cntY++;
+                        break;
+                }
+                x[j] += cntX;
+                y[j] += cntY;
+
+                if (x[j] > 0 && x[j] == y[j])
+                    ans++;
+            }
+        }
+
+        return ans;
     }
 }

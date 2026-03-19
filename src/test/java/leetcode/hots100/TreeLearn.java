@@ -75,42 +75,6 @@ public class TreeLearn {
     }
 
     /**
-     * 二叉树的直径
-     */
-    public int ans = Integer.MIN_VALUE;
-    public int diameterOfBinaryTree(TreeNode root) {
-        travelNodeCount(root);
-        return ans-1;
-    }
-    public int travelNodeCount(TreeNode root){
-        if(root == null){
-            return 0;
-        }
-        int L = travelNodeCount(root.left);
-        int R = travelNodeCount(root.right);
-        ans = Math.max(ans, L+R+1);
-        return 1 + Math.max(L, R);
-    }
-
-    /**
-     * 将有序数组转换为二叉搜索树
-     */
-    public TreeNode sortedArrayToBST(int[] nums) {
-        return sortedArrayToBST(nums, 0, nums.length-1);
-    }
-    public TreeNode sortedArrayToBST(int[] nums, int start, int end) {
-        if(start > end){
-            return null;
-        }
-
-        int mid = (start + end) / 2;
-        TreeNode root = new TreeNode(nums[mid]);
-        root.left = sortedArrayToBST(nums, start, mid-1);
-        root.right = sortedArrayToBST(nums, mid+1, end);
-        return root;
-    }
-
-    /**
      * 验证二叉搜索树
      */
     public boolean isValidBST(TreeNode root) {
