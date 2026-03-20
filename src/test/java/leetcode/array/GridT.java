@@ -219,4 +219,37 @@ public class GridT {
         return grid[x][y] + grid[x + 1][y + 1] + grid[x + 2][y + 2] == 15
                 && grid[x + 2][y] + grid[x + 1][y + 1] + grid[x][y + 2] == 15;
     }
+
+    /**
+     * 3567. 子矩阵的最小绝对差 [Medium]
+     * 
+     * 暴力枚举
+     */
+    public int[][] minAbsDiff(int[][] grid, int k) {
+        int m = grid.length, n = grid[0].length;
+        int[][] ans = new int[m - k + 1][n - k + 1];
+
+        for (int i = 0; i <= m - k; i++) {
+            for (int j = 0; j <= n - k; j++) {
+                int idx = 0;
+                int[] tmp = new int[k * k];
+                for (int x = 0; x < k; x++) {
+                    for (int y = 0; y < k; y++) {
+                        tmp[idx++] = grid[i + x][j + y];
+                    }
+                }
+                Arrays.sort(tmp);
+
+                int res = Integer.MAX_VALUE;
+                for (int x = 1; x < k * k; x++) {
+                    if (tmp[x] == tmp[x - 1])
+                        continue;
+                    res = Math.min(res, tmp[x] - tmp[x - 1]);
+                }
+                ans[i][j] = (res != Integer.MAX_VALUE ? res : 0);
+            }
+        }
+
+        return ans;
+    }
 }
