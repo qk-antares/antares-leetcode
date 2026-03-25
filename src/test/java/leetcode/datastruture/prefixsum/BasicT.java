@@ -408,7 +408,7 @@ public class BasicT {
     }
 
     /*
-     * 2145. 统计隐藏数组数目   [Medium]
+     * 2145. 统计隐藏数组数目 [Medium]
      * 
      * 统计数组的前缀和（delta）的最大值和最小值，注意初始化为0
      * 还有一个注意点是delta在累积的过程中可能会溢出，所以要么使用long，要么在循环中判断是否已经超出范围了
@@ -426,6 +426,43 @@ public class BasicT {
         }
 
         return Math.max(upper - lower - maxDelta + minDelta + 1, 0);
+    }
+
+    /**
+     * 3546. 等和矩阵分割 I [Medium]
+     * 
+     * 使用两个数组分别记录每行和每列的和
+     * 然后计算前缀和
+     */
+    public boolean canPartitionGrid(int[][] grid) {
+        int m = grid.length, n = grid[0].length;
+        long[] rows = new long[m];
+        long[] cols = new long[n];
+
+        long sum = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                rows[i] += grid[i][j];
+                cols[j] += grid[i][j];
+                sum += grid[i][j];
+            }
+        }
+
+        long preSum = 0;
+        for (int i = 0; i < m; i++) {
+            preSum += rows[i];
+            if (preSum * 2 == sum)
+                return true;
+        }
+
+        preSum = 0;
+        for (int j = 0; j < n; j++) {
+            preSum += cols[j];
+            if (preSum * 2 == sum)
+                return true;
+        }
+
+        return false;
     }
 
     @Test
