@@ -228,6 +228,44 @@ public class GridDp {
         return dp[m - 1][n - 1][0];
     }
 
+    /**
+     * 329. 矩阵中的最长递增路径 [Hard]
+     * 
+     * 记忆化搜索
+     * 用memo[i][j]表示matrix[i][j]终点的最长路径
+     * memo[i][j] = 1 + max{memo[i-1][j], memo[i][j-1], memo[i+1][j], memo[i][j+1]}
+     */
+    public int[][] dirs = { { 0, -1 }, { 0, 1 }, { -1, 0 }, { 1, 0 } };
+
+    public int longestIncreasingPath(int[][] matrix) {
+        int m = matrix.length, n = matrix[0].length;
+        int[][] memo = new int[m][n];
+
+        int ans = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                ans = Math.max(ans, dfs(matrix, i, j, memo));
+            }
+        }
+
+        return ans;
+    }
+
+    int dfs(int[][] matrix, int i, int j, int[][] memo) {
+        if (memo[i][j] != 0)
+            return memo[i][j];
+        memo[i][j] = 1;
+
+        for (int[] dir : dirs) {
+            int x = i + dir[0];
+            int y = j + dir[1];
+            if (x >= 0 && x < matrix.length && y >= 0 && y < matrix[0].length && matrix[x][y] < matrix[i][j]) {
+                memo[i][j] = Math.max(memo[i][j], dfs(matrix, x, y, memo) + 1);
+            }
+        }
+        return memo[i][j];
+    }
+
     /*
      * 3363. 最多可收集的水果数目 [Hard]
      * 

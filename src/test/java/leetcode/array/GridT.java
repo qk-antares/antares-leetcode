@@ -252,4 +252,23 @@ public class GridT {
 
         return ans;
     }
+
+    /**
+     * 2946. 循环移位后的矩阵相似检查 [Easy]
+     * 
+     * 比较移位后的位置
+     * 统一右移即可，因为如果左移k位不变，则其逆过程右移k位也不变
+     */
+    public boolean areSimilar(int[][] mat, int k) {
+        int m = mat.length, n = mat[0].length;
+        for (int i = 0; i < m; i++) {
+            int[] row = mat[i];
+            for (int j = 0; j < n; j++) {
+                if (row[j] != row[(j + k) % n])
+                    return false;
+            }
+        }
+
+        return true;
+    }
 }
