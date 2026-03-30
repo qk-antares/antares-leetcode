@@ -1,7 +1,9 @@
 package leetcode.dp;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,7 @@ import org.junit.jupiter.api.Test;
  * 打家劫舍
  * 最大子数组和
  */
+@SuppressWarnings("unchecked")
 public class BasicT {
     /*
      * 70. 爬楼梯 [Easy]
@@ -162,6 +165,7 @@ public class BasicT {
 
     /*
      * ========================== 分割线 ==========================
+     * 打家劫舍
      */
 
     /*
@@ -187,9 +191,9 @@ public class BasicT {
         int n = nums.length;
         int prepre = 0, pre = nums[0];
         for (int i = 1; i < n; i++) {
-            int tmp = pre;
-            pre = Math.max(pre, nums[i] + prepre);
-            prepre = tmp;
+            int cur = Math.max(pre, nums[i] + prepre);
+            prepre = pre;
+            pre = cur;
         }
         return pre;
     }
@@ -385,6 +389,11 @@ public class BasicT {
     }
 
     /*
+     * ========================== 分割线 ==========================
+     * 最大子数组和
+     */
+
+    /*
      * 53. 最大子数组和 [Medium]
      * 
      * 前缀和，过程中记录前面的最小值
@@ -482,7 +491,7 @@ public class BasicT {
     }
 
     /*
-     * 918. 环形子数组的最大和  [Medium]
+     * 918. 环形子数组的最大和 [Medium]
      * 
      * 计算和最大/最小的子数组
      * 则ans=Math.max(和最大的子数组，总和-和最小的子数组)
@@ -492,15 +501,86 @@ public class BasicT {
         int min = 0, max = 0;
         int s = 0;
         int ans1 = Integer.MIN_VALUE, ans2 = Integer.MAX_VALUE;
-        for(int num : nums) {
-          s+=num;
-          ans1 = Math.max(ans1, s-min);
-          ans2 = Math.min(ans2, s-max);
-          min = Math.min(min, s);
-          max = Math.max(max, s);
+        for (int num : nums) {
+            s += num;
+            ans1 = Math.max(ans1, s - min);
+            ans2 = Math.min(ans2, s - max);
+            min = Math.min(min, s);
+            max = Math.max(max, s);
         }
 
-        return ans2 == s ? ans1 : Math.max(ans1, s-ans2);
+        return ans2 == s ? ans1 : Math.max(ans1, s - ans2);
+    }
+
+    /**
+     * 152. 乘积最大子数组 [Medium]
+     * 
+     * maxP和maxN分别表示以当前元素结尾的最大/最小乘积
+     */
+    public int maxProduct(int[] nums) {
+        int ans = nums[0];
+        int maxP = nums[0], maxN = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            int tmp = maxP;
+            maxP = Math.max(Math.max(nums[i], maxP * nums[i]), maxN * nums[i]);
+            maxN = Math.min(Math.min(nums[i], tmp * nums[i]), maxN * nums[i]);
+
+            if (maxP > ans) {
+                ans = maxP;
+            }
+        }
+        return ans;
+    }
+
+    /*
+     * ========================== 分割线 ==========================
+     * 其他
+     */
+
+    /**
+     * 118. 杨辉三角 [Easy]
+     * 
+     * 或可进行预处理
+     */
+    public List<List<Integer>> generate(int numRows) {
+        List<List<Integer>> ans = new ArrayList<>();
+        ans.add(Arrays.asList(1));
+        for (int i = 2; i <= numRows; i++) {
+            List<Integer> row = new ArrayList<>(i);
+            row.add(1);
+            List<Integer> preRow = ans.getLast();
+            for (int j = 1; j < i - 1; j++) {
+                row.add(preRow.get(j - 1) + preRow.get(j));
+            }
+            row.add(1);
+            ans.add(row);
+        }
+        return ans;
+    }
+
+
+    static List<Integer>[] rows;
+
+    static {
+        rows = new List[30];
+        for (int i = 0; i < 30; i++) {
+            rows[i] = new ArrayList<>();
+            for (int j = 0; j < i + 1; j++) {
+                if (j == 0 || j == i) {
+                    rows[i].add(1);
+                } else {
+                    rows[i].add(rows[i - 1].get(j - 1) + rows[i - 1].get(j));
+                }
+            }
+        }
+    }
+
+    public List<List<Integer>> generate0(int numRows) {
+        List<List<Integer>> ans = new ArrayList<>(numRows);
+        for (int i = 0; i < numRows; i++) {
+            ans.add(rows[i]);
+        }
+        return ans;
     }
 
     @Test

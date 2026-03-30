@@ -2,17 +2,6 @@ package leetcode.questions.T1000.T200;
 
 public class BitT {
     /*
-     * 136. 只出现一次的数字 [Easy]
-     */
-    public int singleNumberEasy(int[] nums) {
-        int ans = 0;
-        for (int num : nums) {
-            ans ^= num;
-        }
-        return ans;
-    }
-
-    /*
      * ========================== 分割线 ==========================
      */
 

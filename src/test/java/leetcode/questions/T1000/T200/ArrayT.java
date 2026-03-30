@@ -4,29 +4,6 @@ import java.util.Arrays;
 
 public class ArrayT {
     /*
-     * TODO 169. 多数元素 [Easy]
-     * 这一题用"一换一"的思想，即一个非多数元素换一个多数元素，最后剩下的那个肯定是多数元素
-     */
-    public int majorityElement(int[] nums) {
-        int ans = nums[0], cnt = 1;
-        for (int i = 1; i < nums.length; i++) {
-            if (nums[i] == ans)
-                cnt++;
-            else if (cnt > 0) {
-                cnt--;
-            } else {
-                ans = nums[i];
-                cnt = 1;
-            }
-        }
-        return ans;
-    }
-
-    /*
-     * ========================== 分割线 ==========================
-     */
-
-    /*
      * 164. 最大间距 [Medium]
      * 
      * 解法1是使用暴力算法，首先使用常规的排序算法（nlogn），然后遍历数组寻找最大间距

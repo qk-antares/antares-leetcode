@@ -107,4 +107,24 @@ public class SlowFastT {
 
         return null;
     }
+
+    /**
+     * 287. 寻找重复数 [Medium]
+     * 
+     * 可以转化为链表中寻找环的入口问题，数组值作为指针
+     */
+    public int findDuplicate(int[] nums) {
+        int slow = 0, fast = 0;
+        do {
+            slow = nums[slow];
+            fast = nums[nums[fast]];
+        } while (slow != fast);
+
+        slow = 0;
+        while (slow != fast) {
+            slow = nums[slow];
+            fast = nums[fast];
+        }
+        return slow;
+    }
 }

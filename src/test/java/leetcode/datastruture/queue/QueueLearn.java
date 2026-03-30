@@ -1,8 +1,11 @@
 package leetcode.datastruture.queue;
 
-import org.junit.jupiter.api.Test;
+import java.util.ArrayDeque;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 
-import java.util.*;
+import org.junit.jupiter.api.Test;
 
 public class QueueLearn {
     /**
@@ -273,76 +276,9 @@ public class QueueLearn {
         }
     }
 
-    /**
-     * 完全平方数，BFS
-     * 每个结点上是当前的和，空间复杂度太高，爆内存，到后期可能会有几千个结点（缓解这个问题的途径是添加一个Set，只有从未添加过的结点才加进去）
-     * BFS的效率太低，使用动态规划
-     */
-    class NumSquares {
-        public int numSquares(int n) {
-            Set<Integer> set = new HashSet<>();
-
-            Queue<Integer> queue = new ArrayDeque<>();
-            queue.offer(0);
-
-            int size;
-            int ans = 0;
-            int delta;
-            double sqrt;
-            int temp;
-            while (!queue.isEmpty()){
-                size = queue.size();
-                ans++;
-                for(int i = 0;i < size;i++){
-                    Integer cur = queue.poll();
-                    set.add(cur);
-                    if(cur == n){
-                        return ans-1;
-                    }
-                    delta = n - cur;
-                    sqrt = Math.sqrt(delta);
-                    for(int j = (int)sqrt;j >= 1;j--){
-                        temp = cur + j * j;
-                        if(!set.contains(temp)){
-                            queue.offer(temp);
-                        }
-                    }
-                }
-            }
-
-            return -1;
-        }
-
-        /**
-         * dp[0] = 0;
-         * dp[i] = min{dp[i-j*j]} + 1 (1<=j<=(int)sqrt(i), 1<=i<=n)
-         * 效率有非常明显的提高
-         */
-        public int numSquares0(int n) {
-            int[] dp = new int[n + 1];
-            dp[0] = 0;
-            int min;
-            for(int i = 1;i <= n;i++){
-                min = Integer.MAX_VALUE;
-                for(int j = 1;j <= (int)Math.sqrt(i);j++){
-                    if(dp[i - j * j] < min){
-                        min = dp[i - j * j];
-                    }
-                    dp[i] = min + 1;
-                }
-            }
-
-            return dp[n];
-        }
-    }
-
-
-
     @Test
     public void invoke(){
         // new NumIslands().numIslands(new char[][]{{'1','1','1','1','0'},{'1','1','0','1','0'},{'1','1','0','0','0'},{'0','0','0','0','0'}});
         // new OpenLock().openLock(new String[]{"0201","0101","0102","1212","2002"}, "0202");
-        // new NumSquares().numSquares(9999);
-
     }
 }

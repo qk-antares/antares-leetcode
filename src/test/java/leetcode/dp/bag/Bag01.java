@@ -1,10 +1,13 @@
-package leetcode.dp;
+package leetcode.dp.bag;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * 0-1背包问题
+ */
 public class Bag01 {
     /*
      * 416. 分割等和子集 [Medium]
@@ -16,6 +19,8 @@ public class Bag01 {
      * 当nums[i] > j时：dp[i][j] = dp[i-1][j]
      * 当nums[i] <= j时：dp[i][j] = dp[i-1][j] || dp[i-1][j-nums[i]]
      * dp中的状态依赖于上一行，所以按行构造dp
+     * 
+     * 进依赖上一行左侧，可进行状态压缩
      */
     public boolean canPartition(int[] nums) {
         int n = nums.length;
@@ -51,6 +56,30 @@ public class Bag01 {
         }
 
         return dp[n - 1][target];
+    }
+
+    public boolean canPartition0(int[] nums) {
+        int s = 0;
+        for (int num : nums)
+            s += num;
+
+        if (s % 2 != 0)
+            return false;
+        int target = s / 2;
+
+        int n = nums.length;
+        boolean[] dp = new boolean[target + 1];
+        dp[0] = true;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = target; j >= nums[i]; j--) {
+                dp[j] = dp[j] || dp[j - nums[i]];
+            }
+            if (dp[target])
+                return true;
+        }
+
+        return false;
     }
 
     /*
@@ -166,7 +195,7 @@ public class Bag01 {
     }
 
     /*
-     * 2787. 将一个数字表示成幂的和的方案数 [Medium]    <Star>
+     * 2787. 将一个数字表示成幂的和的方案数 [Medium] <Star>
      * 
      * 设 upper = (int) Math.round(Math.pow(n, 1.0 / x))
      * 本题相当于从[1..upper]中选取一些数，这些数的x次方和等于n
@@ -280,7 +309,7 @@ public class Bag01 {
     }
 
     /*
-     * 474. 一和零  [Medium]
+     * 474. 一和零 [Medium]
      * 
      * 相当于背包里面的dp多了一个维度
      * 用dp[i][j][k]表示从strs的前i个选取一些元素，这些元素最多有j个0和k个1，最大子集的长度
@@ -314,19 +343,19 @@ public class Bag01 {
 
     public int findMaxForm(String[] strs, int m, int n) {
         int len = strs.length;
-        int[][] dp = new int[m+1][n+1];
+        int[][] dp = new int[m + 1][n + 1];
 
         int[][] cnt01 = new int[len][2];
-        for(int i = 0; i < len; i++) {
-            for(char ch : strs[i].toCharArray()) {
-                cnt01[i][ch-'0']++;
+        for (int i = 0; i < len; i++) {
+            for (char ch : strs[i].toCharArray()) {
+                cnt01[i][ch - '0']++;
             }
         }
 
-        for(int[] c : cnt01) {
-            for(int j = m; j >= c[0]; j--) {
-                for(int k = n; k >= c[1]; k--) {
-                    dp[j][k] = Math.max(dp[j][k], 1+dp[j-c[0]][k-c[1]]);
+        for (int[] c : cnt01) {
+            for (int j = m; j >= c[0]; j--) {
+                for (int k = n; k >= c[1]; k--) {
+                    dp[j][k] = Math.max(dp[j][k], 1 + dp[j - c[0]][k - c[1]]);
                 }
             }
         }
@@ -338,7 +367,7 @@ public class Bag01 {
     public void test() {
         // int[] nums = { 1, 6, 4, 3, 2 };
         // System.out.println(maxTotalReward(nums));
-        String[] strs = {"10001110","11000","111110"};
+        String[] strs = { "10001110", "11000", "111110" };
         findMaxForm(strs, 6, 6);
     }
 }

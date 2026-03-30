@@ -186,6 +186,64 @@ public class BrainTeaserT {
      */
 
     /**
+     * 169. 多数元素 [Easy]
+     * 
+     * 元素两两相互抵消，剩下的那个是答案
+     */
+    public int majorityElement(int[] nums) {
+        int ans = nums[0];
+        int cnt = 1;
+        for (int i = 1; i < nums.length; i++) {
+            if (cnt == 0) {
+                ans = nums[i];
+                cnt++;
+            } else if (nums[i] == ans)
+                cnt++;
+            else
+                cnt--;
+        }
+
+        return ans;
+    }
+
+    /**
+     * 31. 下一个排列 [Medium]
+     * 
+     * 思路：
+     * 要把后面的大数与前面的小数交换
+     * 要尽可能在低位进行交换
+     * 参与交换的大数要尽可能小
+     * 【交换后】要将大数后面的序列重排列（反转）成升序
+     * 
+     * 从右往左边里，找到第一个降序(i-1, i)，然后交换i-1与[i..]中>nums[i-1]最小的数
+     * 这相当于在[i..]中从右往左遍历，找到第一个大于nums[i-1]的数
+     * 最后反转[i..]，这段原本是降序（从左往右），反转后是升序
+     */
+    public void nextPermutation(int[] nums) {
+        int n = nums.length;
+        int i = n - 1;
+        while (i - 1 >= 0 && nums[i - 1] >= nums[i])
+            i--;
+        if (i > 0) {
+            int j = n - 1;
+            while (nums[j] <= nums[i - 1])
+                j--;
+            int tmp = nums[i - 1];
+            nums[i - 1] = nums[j];
+            nums[j] = tmp;
+        }
+
+        int l = i, r = n - 1;
+        while (l < r) {
+            int tmp = nums[l];
+            nums[l] = nums[r];
+            nums[r] = tmp;
+            l++;
+            r--;
+        }
+    }
+
+    /**
      * 3577. 统计计算机解锁顺序排列数
      * 
      * 由于要解锁所有的计算机

@@ -138,69 +138,6 @@ public class DpT {
     }
 
     /**
-     * 32. 最长有效括号 [Hard]
-     * dp[i]代表s[i]结尾的字符串形成的最长有效括号，显然s[i]='('，dp[i] = 0，s[i] = ')'时：
-     * s[i-1]='('：dp[i] = dp[i-2]+2
-     * s[i-1]=')'：
-     * s[i-dp[i-1]-1] == '('：dp[i] = dp[i-1] + 2 + dp[i-dp[i-1]-2]
-     * 【中间的那段有效括号+新形成的括号+再往前的括号】
-     * else: 0
-     */
-    public int longestValidParentheses0(String s) {
-        int len = s.length();
-        int[] dp = new int[len + 1];
-        int ans = 0;
-        for (int i = 1; i <= s.length(); i++) {
-            if (s.charAt(i - 1) == '(')
-                dp[i] = 0;
-            else {
-                if (s.charAt(i - 1) == '(') {
-                    dp[i] = dp[i - 2] + 2;
-                    ans = Math.max(ans, dp[i]);
-                } else {
-                    if (i - dp[i - 1] - 2 >= 0 && s.charAt(i - dp[i - 1] - 2) == '(') {
-                        dp[i] = dp[i - 1] + 2 + dp[i - dp[i - 1] - 2];
-                        ans = Math.max(ans, dp[i]);
-                    } else
-                        dp[i] = 0;
-                }
-            }
-
-        }
-        return ans;
-    }
-
-    // 另一个角度思考，可能更清晰些
-    public int longestValidParentheses(String s) {
-        int n = s.length();
-        if (n == 0)
-            return 0;
-
-        int[] dp = new int[n];
-        dp[0] = 0;
-        int ans = 0;
-        char[] arr = s.toCharArray();
-        for (int i = 1; i < n; i++) {
-            if (arr[i] == '(')
-                dp[i] = 0;
-            else {
-                if (arr[i - 1] == '(') {
-                    dp[i] = (i - 2 < 0 ? 0 : dp[i - 2]) + 2;
-                    ans = Math.max(ans, dp[i]);
-                } else {
-                    if (i - dp[i - 1] - 1 >= 0 && arr[i - dp[i - 1] - 1] == '(') {
-                        dp[i] = dp[i - 1] + 2 + (i - dp[i - 1] - 2 < 0 ? 0 : dp[i - dp[i - 1] - 2]);
-                        ans = Math.max(ans, dp[i]);
-                    } else
-                        dp[i] = 0;
-                }
-            }
-        }
-
-        return ans;
-    }
-
-    /**
      * 44. 通配符匹配 [Hard]
      * dp[i][j]代表s的前i位和p的前j位是否能够匹配
      * ① p[j]=a-z，dp[i][j]=s[i]==p[j] && dp[i-1][j-1]

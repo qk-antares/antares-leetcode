@@ -77,25 +77,6 @@ public class ArrayAndString {
     }
 
     /**
-     * 169. 多数元素
-     * 采用对战的思想，生存下来的那个元素就是大多数
-     */
-    public int majorityElement(int[] nums) {
-        int survivor = nums[0], count = 1;
-        for (int i = 1;i < nums.length;i++){
-            if(count == 0){
-                survivor = nums[i];
-                count = 1;
-            } else if(nums[i] == survivor){
-                count++;
-            } else {
-                count--;
-            }
-        }
-        return survivor;
-    }
-
-    /**
      * 121. 买卖股票的最佳时机
      */
     public int maxProfit(int[] prices) {

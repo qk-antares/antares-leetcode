@@ -1,8 +1,11 @@
 package leetcode.questions.Medium;
 
-import org.junit.jupiter.api.Test;
+import java.util.HashMap;
+import java.util.PriorityQueue;
+import java.util.Set;
+import java.util.Stack;
 
-import java.util.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Antares
@@ -34,43 +37,6 @@ public class OtherMedium {
                 }
             }
             return integers.pop();
-        }
-    }
-
-    /**
-     * 多数元素，我的解法：使用Java自带的优先级队列，可以解决，但是效率太低、答案解法：摩尔投票
-     */
-    class MajorityElement {
-        public int majorityElement(int[] nums) {
-            //统计每个数字出现次数
-            HashMap<Integer, Integer> count = new HashMap<>();
-            for (int num : nums) {
-                count.put(num, count.getOrDefault(num, 0) + 1);
-            }
-
-            PriorityQueue<int[]> priorityQueue = new PriorityQueue<>((o1, o2) -> o2[1] - o1[1]);
-            Set<Integer> keySet = count.keySet();
-            for (Integer integer : keySet) {
-                priorityQueue.add(new int[]{integer, count.get(integer)});
-            }
-
-            return priorityQueue.peek()[0];
-        }
-
-        public int majorityElement0(int[] nums) {
-            int ans = nums[0];
-            int count = 0;
-            for(int i = 0;i < nums.length;i++){
-                if(nums[i] == ans)
-                    count++;
-                else
-                    count--;
-                if(count == -1){
-                    ans = nums[i];
-                    count = 1;
-                }
-            }
-            return ans;
         }
     }
 
@@ -126,6 +92,5 @@ public class OtherMedium {
 
     @Test
     public void invoke(){
-        new MajorityElement().majorityElement(new int[]{3,2,3});
     }
 }

@@ -2,10 +2,68 @@ package leetcode.dp;
 
 import java.util.Arrays;
 
+import org.junit.jupiter.api.Test;
+
 /**
  * 最长公共子序列
  */
 public class LCST {
+    /**
+     * 1143. 最长公共子序列 [Medium]
+     * 
+     * dp[i][j]表示text1[-1,i)与text2[-1,j)的最长公共子序列
+     * 如果text1[i]=text2[j] dp[i+1][j+1] = 1+dp[i][j]
+     * dp[i+1][j+1] = Math.max(dp[i][j], Math.max(dp[i+1][j], dp[i][j+1]))
+     */
+    public int longestCommonSubsequence(String text1, String text2) {
+        char[] s1 = text1.toCharArray();
+        char[] s2 = text2.toCharArray();
+        int m = s1.length, n = s2.length;
+        int[][] dp = new int[m + 1][n + 1];
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (s1[i] == s2[j])
+                    dp[i + 1][j + 1] = 1 + dp[i][j];
+                else
+                    dp[i + 1][j + 1] = Math.max(dp[i][j], Math.max(dp[i + 1][j], dp[i][j + 1]));
+            }
+        }
+
+        return dp[m][n];
+    }
+
+    /**
+     * 72. 编辑距离 [Medium]
+     * 
+     * dp[i][j]表示word1[-1,i)与word2[-1,j)之间的编辑距离
+     * 当word1[i]==word2[j]: dp[i+1][j+1] = dp[i][j]
+     * 否则: dp[i+1][j+1] = 1 + Math.min(dp[i][j], Math.min(dp[i+1][j], dp[i][j+1]))
+     */
+    public int minDistance(String word1, String word2) {
+        char[] s1 = word1.toCharArray();
+        char[] s2 = word2.toCharArray();
+        int m = s1.length, n = s2.length;
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 1; i <= m; i++) {
+            dp[i][0] = i;
+        }
+        for (int j = 1; j <= n; j++) {
+            dp[0][j] = j;
+        }
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (s1[i] == s1[j])
+                    dp[i + 1][j + 1] = dp[i][j];
+                else
+                    dp[i + 1][j + 1] = 1 + Math.min(dp[i][j], Math.min(dp[i + 1][j], dp[i][j + 1]));
+            }
+        }
+
+        return dp[m][n];
+    }
+
     /**
      * 1458. 两个子序列的最大点积 [Hard]
      * 
@@ -117,5 +175,10 @@ public class LCST {
             }
         }
         return dp[m][n];
+    }
+
+    @Test
+    public void invoke() {
+        minDistance("horse", "ros");
     }
 }

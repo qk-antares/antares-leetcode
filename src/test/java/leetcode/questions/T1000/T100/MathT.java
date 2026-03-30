@@ -1,7 +1,5 @@
 package leetcode.questions.T1000.T100;
 
-import java.util.Arrays;
-
 import org.junit.jupiter.api.Test;
 
 public class MathT {
@@ -100,47 +98,6 @@ public class MathT {
             count <<= 1;
         }
         return count + div(a - tb, b);
-    }
-
-    /**
-     * 31. 下一个排列 [Medium]
-     * 思路：
-     * 要把后面的大数与前面的小数交换
-     * 要尽可能在低位进行交换
-     * 参与交换的大数要尽可能小
-     * 交换后要将大数后面的序列重排列成升序
-     */
-    public void nextPermutation(int[] nums) {
-        // 首先从后往前遍历，找到第一个升序
-        int len = nums.length;
-        int end = len - 1;
-        while (end - 1 >= 0 && nums[end - 1] > nums[end])
-            end--;
-        if (end == 0)
-            reverse(nums, 0, len - 1);
-        else {
-            int minIndex = end - 1;
-            int maxIndex = len - 1;
-            while (nums[maxIndex] <= nums[minIndex]) {
-                maxIndex--;
-            }
-
-            int tmp = nums[maxIndex];
-            nums[maxIndex] = nums[minIndex];
-            nums[minIndex] = tmp;
-
-            Arrays.sort(nums, minIndex + 1, len);
-        }
-    }
-
-    public void reverse(int[] nums, int start, int end) {
-        while (start < end) {
-            int tmp = nums[start];
-            nums[start] = nums[end];
-            nums[end] = tmp;
-            start++;
-            end--;
-        }
     }
 
     /**

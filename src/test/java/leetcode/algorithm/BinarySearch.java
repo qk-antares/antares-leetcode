@@ -54,21 +54,6 @@ public class BinarySearch {
     }
 
     /**
-     * 寻找重复数（我的解法，求和再减）
-     */
-    class FindDuplicate {
-        public int findDuplicate(int[] nums) {
-            HashSet<Integer> integers = new HashSet<>();
-            for (int num : nums) {
-                if(!integers.add(num))
-                    return num;
-            }
-
-            return -1;
-        }
-    }
-
-    /**
      * 寻找两个正序数组的中位数
      */
     class FindMedianSortedArrays {

@@ -120,40 +120,6 @@ public class ArrayT {
         return ans;
     }
 
-    /*
-     * TODO 31. 下一个排列 [Medium]
-     * 
-     * 算法的整个流程可以描述为：
-     * 从右往左遍历，找到第一个降序数对(i-1,i)，满足nums[i-1]<nums[i]，
-     * 接下来交换nums[i-1]与[i..]中的某个元素j，具体来说：
-     * 从右往左找[i..]这一段，>nums[i-1]的最小的数nums[j]
-     * 最后反转[i..]
-     * 
-     * 在上述算法流程中，[i..]这一段一直是单调递减的，在反转后变为单调递增
-     */
-    public void nextPermutation(int[] nums) {
-        int i = nums.length - 1;
-        while (i - 1 >= 0 && nums[i - 1] >= nums[i])
-            i--;
-        if (i > 0) {
-            // 从右往左找[i..]这一段，>nums[i-1]的最小的数nums[j]
-            int j = nums.length - 1;
-            while (nums[j] <= nums[i - 1])
-                j--;
-            swap(nums, i - 1, j);
-        }
-
-        reverse(nums, i, nums.length - 1);
-    }
-
-    void reverse(int[] nums, int l, int r) {
-        while (l < r) {
-            swap(nums, l, r);
-            l++;
-            r--;
-        }
-    }
-
     void swap(int[] nums, int i, int j) {
         int tmp = nums[i];
         nums[i] = nums[j];
@@ -191,32 +157,8 @@ public class ArrayT {
         }
     }
 
-    /*
-     * TODO 75. 颜色分类    [Medium]
-     * 
-     * 最简单的方法是记录三种颜色的数量，然而这种方法需要对nums遍历两遍
-     * 
-     * 一种更优的方法是使用两个指针p0和p1，p0记录0插入的位置，p1记录1插入的位置
-     * 接下来对nums进行遍历，如果遇到了0，就交换p0和i（再判断一下交换过来的nums[i]是不是1）
-     * 如果遇到了1，就交换p1和i
-     */
-    public void sortColors(int[] nums) {
-        int p0 = 0, p1 = 0;
-        for(int i = 0; i < nums.length; i++) {
-            if(nums[i] == 0) {
-                swap(nums, p0, i);
-                if(nums[i] == 1) swap(nums, p1, i);
-                p0++;
-                p1++;
-            } else if(nums[i] == 1) {
-                swap(nums, p1++, i);
-            }
-        }
-    }
-
     @Test
     void test() {
         // combinationSum2(new int[] { 10, 1, 2, 7, 6, 1, 5 }, 8);
-        nextPermutation(new int[] { 3, 2, 1 });
     }
 }

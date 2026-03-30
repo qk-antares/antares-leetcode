@@ -6,6 +6,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * 矩阵快速幂
+ */
 public class MatrixQuickPowDpT {
     /*
      * 3337. 字符串转换后的长度 II [Hard] <Star>

@@ -76,48 +76,9 @@ public class DpEasy {
         return max_pro;
     }
 
-    /**
-     * 打家劫舍（我的解法，动态规划解法，效率还是不错滴）
-     * dp[i][0]= max(dp[i-1][1], dp[i-1][0])
-     * dp[i][1] = dp[i-1][0] + nums[i]
-     * dp[0][0] = 0
-     * dp[1][0] = nums[0]
-     *
-     * [1,2,3,1]
-     */
-    public int rob(int[] nums) {
-        int[][] dp = new int[nums.length][2];
-        dp[0][0] = 0;
-        dp[0][1] = nums[0];
-
-        for(int i = 1;i < nums.length;i++){
-            dp[i][1] = dp[i-1][0] + nums[i];
-            dp[i][0] = Math.max(dp[i-1][1], dp[i-1][0]);
-        }
-
-        return Math.max(dp[nums.length-1][0], dp[nums.length-1][1]);
-    }
-
-    /**
-     * 我的解法二（使用临时变量而不是数组）
-     * [1,1]
-     */
-    public int rob0(int[] nums) {
-        int res0 = 0,res1 = nums[0];
-        int temp = nums[0];
-        for(int i = 1;i < nums.length;i++){
-            res1 = res0 + nums[i];
-            res0 = Math.max(temp, res0);
-            temp = res1;
-        }
-
-        return Math.max(res0, res1);
-    }
-
     @Test
     public void invoke(){
 //        maxProfit1(new int[]{7,1,6,5,9,4});
-        rob(new int[]{1,2,3,1});
     }
 
 }

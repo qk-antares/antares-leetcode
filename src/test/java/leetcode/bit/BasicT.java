@@ -222,7 +222,7 @@ public class BasicT {
     }
 
     public int insertBits0(int N, int M, int i, int j) {
-        int mask = ~(((1 << (j-i+1)) - 1) << i);
+        int mask = ~(((1 << (j - i + 1)) - 1) << i);
         return (N & mask) | (M << i);
     }
 
@@ -310,6 +310,19 @@ public class BasicT {
     /*
      * ========================== 分割线 ==========================
      */
+
+    /**
+     * 136. 只出现一次的数字 [Easy]
+     * 
+     * 对数组中的所有元素使用异或运算，则两两相等的元素最终被抵消，只剩下那个唯一的元素
+     */
+    public int singleNumber(int[] nums) {
+        int ans = 0;
+        for (int num : nums) {
+            ans ^= num;
+        }
+        return ans;
+    }
 
     /*
      * 1935. 可以输入的最大单词数 [Easy]

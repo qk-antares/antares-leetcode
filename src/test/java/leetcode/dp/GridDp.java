@@ -7,6 +7,20 @@ import java.util.List;
  * 网格DP
  */
 public class GridDp {
+    /**
+     * 62. 不同路径 [Medium]
+     */
+    public int uniquePaths(int m, int n) {
+        int[] dp = new int[n + 1];
+        Arrays.fill(dp, 1);
+        dp[0] = 0;
+        for (int i = 1; i < m; i++) {
+            for (int j = 0; j < n; j++)
+                dp[j + 1] += dp[j];
+        }
+        return dp[n];
+    }
+
     /*
      * 64. 最小路径和 [Medium]
      */

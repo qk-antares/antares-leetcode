@@ -93,34 +93,6 @@ public class EasyArray {
     }
 
     /**
-     * 只出现一次的数字
-     * 我的解法：排序（内存消耗小但执行用时不理想）
-     */
-    public int singleNumber(int[] nums) {
-        Arrays.sort(nums);
-        for(int i = 0,j = 1;i < nums.length;i+=2,j+=2){
-            if(j == nums.length)
-                return nums[i];
-            if(nums[i] != nums[j])
-                return nums[i];
-        }
-        return 0;
-    }
-
-    /**
-     * 答案解法：异或运算
-     * 异或运算，相异为真，相同为假，所以 a^a = 0 ;0^a = a
-     * 因为异或运算 满足交换律 a^b^a = a^a^b = b 所以数组经过异或运算，单独的值就剩下了
-     */
-    public int singleNumber0(int[] nums) {
-        int res = 0;
-        for (int num : nums) {
-            res = res ^ num;
-        }
-        return res;
-    }
-
-    /**
      * 两个数组的交集 II
      * 我的解法：排序法（和答案的一个解法相同）
      */
