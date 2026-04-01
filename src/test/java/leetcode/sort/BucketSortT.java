@@ -1,13 +1,79 @@
 package leetcode.sort;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * 桶排序
+ */
 public class BucketSortT {
+    /**
+     * 347. 前 K 个高频元素 [Medium]
+     * 
+     * 桶排序O(n)
+     * 堆O(nlongn)
+     */
+    @SuppressWarnings("unchecked")
+    public int[] topKFrequent(int[] nums, int k) {
+        Map<Integer, Integer> cnt = new HashMap<>();
+        for (int num : nums) {
+            cnt.merge(num, 1, Integer::sum);
+        }
+        int maxCnt = Collections.max(cnt.values());
+
+        List<Integer>[] buckets = new List[maxCnt + 1];
+        Arrays.setAll(buckets, i -> new ArrayList<>());
+
+        for (Map.Entry<Integer, Integer> e : cnt.entrySet()) {
+            buckets[e.getValue()].add(e.getKey());
+        }
+
+        int[] ans = new int[k];
+        int idx = 0;
+        for (int i = maxCnt; i > 0; i--) {
+            for (int val : buckets[i]) {
+                ans[idx++] = val;
+            }
+            if (idx == k)
+                return ans;
+        }
+
+        return ans;
+    }
+
+    public int[] topKFrequent0(int[] nums, int k) {
+        // 首先统计每个数字的出现次数
+        HashMap<Integer, Integer> count = new HashMap<>();
+        for (int num : nums) {
+            count.put(num, count.getOrDefault(num, 0) + 1);
+        }
+
+        PriorityQueue<int[]> priorityQueue = new PriorityQueue<>((a, b) -> b[1] - a[1]);
+
+        Set<Integer> keySet = count.keySet();
+        for (Integer integer : keySet) {
+            priorityQueue.add(new int[] { integer, count.get(integer) });
+        }
+
+        // 取堆中前k大元素
+        int[] ans = new int[k];
+        for (int i = 0; i < k; i++) {
+            ans[i] = priorityQueue.poll()[0];
+        }
+
+        return ans;
+    }
+
     /*
-     * 220. 存在重复元素 III    [Hard]
+     * 220. 存在重复元素 III [Hard]
      * 
      * 使用桶排序+滑动窗口，假设元素的绝对差是valueDiff，则桶的大小w=valueDiff+1，确保桶内的元素差不超过valueDiff
      * 

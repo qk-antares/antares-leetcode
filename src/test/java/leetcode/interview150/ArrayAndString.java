@@ -1,12 +1,10 @@
 package leetcode.interview150;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
@@ -77,27 +75,6 @@ public class ArrayAndString {
     }
 
     /**
-     * 121. 买卖股票的最佳时机
-     */
-    public int maxProfit(int[] prices) {
-        //计算每个元素右侧的最大值
-        int len = prices.length;
-        int[] max = new int[len];
-        max[len-1] = prices[len-1];
-        for (int i = len - 2;i >= 0;i--){
-            max[i] = Math.max(prices[i+1], max[i+1]);
-        }
-
-        int ans = Integer.MIN_VALUE;
-        for (int i = 0;i < len;i++){
-            if(max[i] - prices[i] > ans){
-                ans = max[i] - prices[i];
-            }
-        }
-        return ans;
-    }
-
-    /**
      * 122. 买卖股票的最佳时机 II
      */
     public int maxProfit2(int[] prices) {
@@ -108,20 +85,6 @@ public class ArrayAndString {
             }
         }
         return ans;
-    }
-
-    /**
-     * 55. 跳跃游戏
-     */
-    public boolean canJump(int[] nums) {
-        int maxDis = 0;
-        for (int i = 0; i < nums.length; i++) {
-            if(i > maxDis){
-                return false;
-            }
-            maxDis = Math.max(maxDis, i+nums[i]);
-        }
-        return maxDis >= nums.length-1;
     }
 
     /**
@@ -266,61 +229,6 @@ public class ArrayAndString {
             }
         }
         return ans.toString();
-    }
-
-    /**
-     * 45. 跳跃游戏 II
-     * 使用bfs，检索到答案就返回
-     */
-    public int jump(int[] nums) {
-        if(nums.length == 1){
-            return 0;
-        }
-
-        Queue<Integer> queue = new ArrayDeque<Integer>();
-        boolean[] vis = new boolean[nums.length];
-        //初始在0的位置
-        queue.offer(0);
-        vis[0] = true;
-        int ans = 0;
-        while (!queue.isEmpty()){
-            int size = queue.size();
-            ans++;
-            for(int i = 0;i < size;i++){
-                Integer poll = queue.poll();
-                if(poll + nums[poll] >= nums.length-1){
-                    return ans;
-                } else {
-                    for(int j = poll+1;j <= poll+nums[poll];j++){
-                        if(!vis[j]){
-                            vis[j] = true;
-                            queue.offer(j);
-                        }
-                    }
-                }
-            }
-        }
-        return -1;
-    }
-
-    /**
-     * 45. 跳跃游戏 II
-     * 答案解法：一直记录每次跳跃的范围
-     */
-    public int jump0(int[] nums) {
-        if(nums.length == 1) return 0;
-
-        int low = 0, high = 0, ans = 0;
-        //还未到达
-        while (high < nums.length-1){
-            int tmpHigh = high;
-            for(int i = low;i <= high;i++){
-                tmpHigh = Math.max(tmpHigh, i+nums[i]);
-            }
-            high = tmpHigh;
-            ans++;
-        }
-        return ans;
     }
 
     /**

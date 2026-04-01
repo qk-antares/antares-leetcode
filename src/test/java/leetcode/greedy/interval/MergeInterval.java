@@ -10,6 +10,50 @@ import org.junit.jupiter.api.Test;
  * 贪心合并区间
  */
 public class MergeInterval {
+    /**
+     * 55. 跳跃游戏 [Medium]
+     * max是可跳跃的最远距离
+     */
+    public boolean canJump(int[] nums) {
+        int max = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (i > max)
+                return false;
+            max = Math.max(max, i + nums[i]);
+            if (max >= nums.length - 1)
+                return true;
+        }
+        return true;
+    }
+
+    /**
+     * 763. 划分字母区间 [Medium]
+     * 
+     * 先统计每个字符最后出现的位置
+     * 然后遍历s，用end来标记当前遍历到的字母，它们【最大】的最后出现位置
+     * 如果end==i，证明找到了一次分割
+     */
+    public List<Integer> partitionLabels(String s) {
+        char[] ss = s.toCharArray();
+        int[] last = new int[26];
+        for (int i = 0; i < ss.length; i++) {
+            last[ss[i] - 'a'] = i;
+        }
+
+        List<Integer> ans = new ArrayList<>();
+        int end = -1;
+        int pre = -1;
+        for (int i = 0; i < ss.length; i++) {
+            end = Math.max(end, last[ss[i] - 'a']);
+            if (i == end) {
+                ans.add(end - pre);
+                pre = end;
+            }
+        }
+
+        return ans;
+    }
+
     /*
      * 3169. 无需开会的工作日 [Medium]
      * 

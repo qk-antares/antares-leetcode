@@ -12,34 +12,6 @@ import org.junit.jupiter.api.Test;
 import leetcode.common.TreeNode;
 
 public class StackLearn {
-
-    class MinStack {
-
-        LinkedList<int[]> list;
-
-        public MinStack() {
-            list = new LinkedList<>();
-            list.addLast(new int[]{0, Integer.MAX_VALUE});
-        }
-
-        public void push(int val) {
-            int min = Math.min(list.getLast()[1], val);
-            list.addLast(new int[]{val, min});
-        }
-
-        public void pop() {
-            list.removeLast();
-        }
-
-        public int top() {
-            return list.getLast()[0];
-        }
-
-        public int getMin() {
-            return list.getLast()[1];
-        }
-    }
-
     /**
      * 深度优先搜索使用栈，递归地实现 DFS 时，似乎不需要使用任何栈。但实际上，我们使用的是由系统提供的隐式栈，也称为调用栈
      */

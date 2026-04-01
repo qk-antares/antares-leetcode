@@ -150,22 +150,6 @@ public class LRBasicT {
     }
 
     /*
-     * 121. 买卖股票的最佳时机 [Easy]
-     * 
-     * 从右往左进行遍历，遍历的过程中记录当前遇到过的最大值max，则：
-     * ans = Math.max(ans, max-prices[i])
-     */
-    public int maxProfit(int[] prices) {
-        int n = prices.length;
-        int ans = 0, max = prices[n - 1];
-        for (int i = n - 2; i >= 0; i--) {
-            ans = Math.max(ans, max - prices[i]);
-            max = Math.max(max, prices[i]);
-        }
-        return ans;
-    }
-
-    /*
      * 2016. 增量元素之间的最大差值 [Easy]
      * 
      * 遍历数组的同时，保存当前的最小值

@@ -1,7 +1,6 @@
 package leetcode.interview150;
 
 import java.util.ArrayDeque;
-import java.util.LinkedList;
 
 import org.junit.jupiter.api.Test;
 
@@ -36,34 +35,6 @@ public class Stack {
             return "/";
         }
         return sb.toString();
-    }
-
-    /**
-     * 155. 最小栈
-     */
-    class MinStack {
-
-        LinkedList<int[]> list;
-
-        public MinStack() {
-            list = new LinkedList<>();
-        }
-
-        public void push(int val) {
-            list.addLast(new int[] { val, list.isEmpty() ? val : Math.min(val, list.getLast()[1]) });
-        }
-
-        public void pop() {
-            list.removeLast();
-        }
-
-        public int top() {
-            return list.getLast()[0];
-        }
-
-        public int getMin() {
-            return list.getLast()[1];
-        }
     }
 
     /**
