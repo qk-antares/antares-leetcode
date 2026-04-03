@@ -667,43 +667,74 @@ public class DBFST {
     /*
      * 207. 课程表 [Medium] <Star>
      * 
-     * 用List<Integer>[] 来表示图，有多少个节点，数组就有多大
+     * 用List<Integer>[] 来表示图（邻接表），有多少个节点，数组就有多大
      * 每个节点的后继保存在一个List<Integer>中
      * 用一个int[] color数组标记每个节点的状态
      * 节点有3种状态：未遍历、遍历中、完成遍历
      * 当通过dfs重复到达一个遍历中的节点，证明找到了环
+     * 
+     * 方法二： 拓扑排序
+     * 首先计算每个节点的入度
+     * 入度=0的节点可以直接选，将其加入队列
+     * 从队列中取出节点，vis++，将其指向的所有节点入度-1
+     * 如果指向的节点的入度变为了0，代表它可以选了，将其加入队列
+     * 最后根据vis==numCourses即可判断
      */
     @SuppressWarnings("unchecked")
     public boolean canFinish(int numCourses, int[][] prerequisites) {
-        List<Integer>[] g = new ArrayList[numCourses];
-        for (int i = 0; i < numCourses; i++) {
-            g[i] = new ArrayList<>();
-        }
-        for (int i = 0; i < prerequisites.length; i++) {
-            g[prerequisites[i][1]].add(prerequisites[i][0]);
+        List<Integer>[] g = new List[numCourses];
+        Arrays.setAll(g, i -> new ArrayList<>());
+        for (int[] p : prerequisites) {
+            g[p[1]].add(p[0]);
         }
 
         int[] color = new int[numCourses];
         for (int i = 0; i < numCourses; i++) {
-            if (color[i] == 0 && dfs(i, color, g))
+            if (color[i] == 0 && findCircle(i, color, g))
                 return false;
         }
-
         return true;
     }
 
-    // dfs找环，找到了返回true，否则返回false
-    boolean dfs(int idx, int[] color, List<Integer>[] g) {
+    boolean findCircle(int idx, int[] color, List<Integer>[] g) {
         color[idx] = 1;
-        List<Integer> nbors = g[idx];
-        int n = nbors.size();
-        for (int i = 0; i < n; i++) {
-            int nbor = nbors.get(i);
-            if (color[nbor] == 1 || color[nbor] == 0 && dfs(nbor, color, g))
+        for (int nbr : g[idx]) {
+            if (color[nbr] == 1 || color[nbr] == 0 && findCircle(nbr, color, g))
                 return true;
         }
         color[idx] = 2;
         return false;
+    }
+
+    @SuppressWarnings("unchecked")
+    public boolean canFinish0(int numCourses, int[][] prerequisites) {
+        List<Integer>[] g = new List[numCourses];
+        Arrays.setAll(g, i -> new ArrayList<Integer>());
+
+        int[] d = new int[numCourses];
+        for (int[] p : prerequisites) {
+            g[p[1]].add(p[0]);
+            d[p[0]]++;
+        }
+
+        Queue<Integer> q = new ArrayDeque<Integer>();
+        for (int i = 0; i < numCourses; i++) {
+            if (d[i] == 0)
+                q.offer(i);
+        }
+
+        int vis = 0;
+        while (!q.isEmpty()) {
+            int tmp = q.poll();
+            vis++;
+            for (int nbor : g[tmp]) {
+                d[nbor]--;
+                if (d[nbor] == 0)
+                    q.offer(nbor);
+            }
+        }
+
+        return vis == numCourses;
     }
 
     /*
@@ -979,7 +1010,8 @@ public class DBFST {
 
     @Test
     public void test() {
-        // minMalwareSpread(new int[][] { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } }, new int[] { 1, 2 });
+        // minMalwareSpread(new int[][] { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } }, new
+        // int[] { 1, 2 });
 
         // int[] status = { 1, 0, 1, 0 };
         // int[] candies = { 7, 5, 4, 100 };

@@ -55,3 +55,44 @@ class Trie {
         return s.substring(0, len);
     }
 }
+
+/**
+ * 另一种写法，代码更简洁
+ */
+class Trie0 {
+    Trie0[] children;
+    boolean isLeaf;
+
+    public Trie0() {
+        children = new Trie0[26];
+        isLeaf = false;
+    }
+    
+    public void insert(String word) {
+        char[] s = word.toCharArray();
+        Trie0 cur = this;
+        for(char ch : s) {
+            if(cur.children[ch-'a'] == null) cur.children[ch-'a'] = new Trie0();
+            cur = cur.children[ch-'a'];
+        }
+        cur.isLeaf = true;
+    }
+    
+    public boolean search(String word) {
+        return find(word) == 1;
+    }
+    
+    public boolean startsWith(String prefix) {
+        return find(prefix) != 0;
+    }
+
+    int find(String str) {
+        char[] s = str.toCharArray();
+        Trie0 cur = this;
+        for(char ch : s) {
+            cur = cur.children[ch-'a'];
+            if(cur == null) return 0;
+        }
+        return cur.isLeaf ? 1 : 2;
+    }
+}

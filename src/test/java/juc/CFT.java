@@ -22,6 +22,15 @@ public class CFT {
             return 1;
         }).thenApply(x -> x + 1);
         future2.join();
+
+        CompletableFuture.runAsync(() -> {
+            System.out.println("Hello");
+        }).thenRunAsync(() -> {
+            System.out.println("World");
+        }).exceptionally((e)->{
+            System.out.println("hello");
+            return null;
+        });
     }
 
 }

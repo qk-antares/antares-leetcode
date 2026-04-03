@@ -37,9 +37,10 @@ public class Exp1 {
     }
 
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-        String str = in.nextLine();
-        Map<String, Integer> result = count1(str);
-        System.out.println(result);
+        try (Scanner in = new Scanner(System.in)) {
+            String str = in.nextLine();
+            Map<String, Integer> result = count1(str);
+            System.out.println(result);
+        }
     }
 }

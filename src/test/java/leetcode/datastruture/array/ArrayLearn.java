@@ -79,31 +79,6 @@ public class ArrayLearn {
     }
 
     /**
-     * 搜索插入位置
-     */
-    class SearchInsert {
-        public int searchInsert(int[] nums, int target) {
-            return binarySearch(nums, 0, nums.length-1, target);
-        }
-
-        public int binarySearch(int[] nums, int left, int right, int target){
-            if(left > right){
-                return left;
-            }
-            int mid = left + (right - left) / 2;
-
-            if(nums[mid] == target || nums[mid] > target && mid > 0 && nums[mid-1] < target){
-                return mid;
-            } else if (nums[mid] > target) {
-                return binarySearch(nums, left, mid-1, target);
-            }
-            else {
-                return binarySearch(nums, mid+1, right, target);
-            }
-        }
-    }
-
-    /**
      * 对角线遍历
      * 来看一下访问坐标
      * (0,0)
@@ -229,7 +204,6 @@ public class ArrayLearn {
     @Test
     public void invoke(){
 //        new PivotIndex().pivotIndex(new int[]{-1, 1, -1});
-//        new SearchInsert().searchInsert(new int[]{1,3}, 0);
 //        new FindDiagonalOrder().findDiagonalOrder(new int[][]{{1,2,3},{4,5,6},{7,8,9},{10,11,12}});
 //        new FindDiagonalOrder().findDiagonalOrder(new int[][]{{1,2,3},{4,5,6},{7,8,9}});
 

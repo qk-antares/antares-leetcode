@@ -3,7 +3,6 @@ package leetcode.questions.Easy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Stack;
 
 import org.junit.jupiter.api.Test;
 
@@ -60,54 +59,6 @@ public class OtherEasy {
         }
 
         return res;
-    }
-
-    /**
-     * 有效的括号(我的解法：双栈)
-     */
-    public boolean isValid(String s) {
-        Stack<Character> characters = new Stack<>();
-        for(int i = 0;i < s.length();i++){
-            characters.push(s.charAt(i));
-        }
-
-        Stack<Character> resolveStack = new Stack<>();
-        char top;
-
-        while (!characters.isEmpty()){
-            top = characters.pop();
-            if(!resolveStack.isEmpty() && (top == '(' && resolveStack.peek() == ')' || top == '[' && resolveStack.peek() == ']' || top == '{' && resolveStack.peek() == '}')){
-                resolveStack.pop();
-            }else {
-                resolveStack.push(top);
-            }
-        }
-
-        if(resolveStack.isEmpty())
-            return true;
-        return false;
-    }
-
-    /**
-     * 解法一（双栈的优化，只使用单栈）
-     * 遇到左括号就压栈，遇到右括号就看是否相等
-     */
-    public boolean isValid0(String s) {
-        Stack<Character> resolveStack = new Stack<>();
-        char temp;
-        for(int i = 0;i < s.length();i++){
-            temp = s.charAt(i);
-            if(temp == '(' || temp == '[' || temp == '{')
-                resolveStack.push(temp);
-            else if(!resolveStack.isEmpty() && (temp == ')' && resolveStack.peek() == '(' || temp == ']' && resolveStack.peek() == '[' || temp == '}' && resolveStack.peek() == '{'))
-                resolveStack.pop();
-            else
-                return false;
-        }
-
-        if(resolveStack.isEmpty())
-            return true;
-        return false;
     }
 
     /**

@@ -54,83 +54,6 @@ public class BinarySearch {
     }
 
     /**
-     * 寻找两个正序数组的中位数
-     */
-    class FindMedianSortedArrays {
-        /**
-         * 双指针法：时间复杂度O(m+n)
-         */
-        public double findMedianSortedArrays(int[] nums1, int[] nums2) {
-            int m = nums1.length;
-            int n = nums2.length;
-
-            int[] ints = new int[(m + n)/2 + 1];
-            int i = 0, j = 0, k = 0;
-            while (i < m && j < n && k < ints.length){
-                if(nums1[i] < nums2[j]){
-                    ints[k++] = nums1[i++];
-                }else {
-                    ints[k++] = nums2[j++];
-                }
-            }
-
-            while (i < m && k < ints.length){
-                ints[k++] = nums1[i++];
-            }
-            while (j < n && k < ints.length){
-                ints[k++] = nums2[j++];
-            }
-
-            if((m + n) % 2 == 0){
-                return (ints[k-1] + ints[k-2]) / 2.0;
-            }else {
-                return ints[k-1];
-            }
-        }
-
-        /**
-         * 二分法（后续研究下）
-         */
-        public double findMedianSortedArrays0(int[] nums1, int[] nums2) {
-            //找长度短的数组的分界线更快
-            if (nums1.length>nums2.length){
-                int [] temp=nums1;
-                nums1=nums2;
-                nums2=temp;
-            }
-            int m=nums1.length;
-            int n=nums2.length;
-            //奇数个就让左边多一个，左边的最大值就是中位数
-            int totalLeft=(m+n+1)/2;
-            int left=0;
-            int right=m;
-            while(left<right){
-                int i=left+((right-left+1)>>1);
-                int j=totalLeft-i;
-                //第一个数组分界线左边的那个数一定要小于等于第二个数组分界线右边的数
-                if (nums1[i-1]>nums2[j]){
-                    right=i-1;
-                }
-                else{
-                    left=i;
-                }
-            }
-            int i=left;
-            int j=totalLeft-i;
-            int nums1LeftMax=i==0?Integer.MIN_VALUE:nums1[i-1];
-            int nums1RightMin=i==m?Integer.MAX_VALUE:nums1[i];
-            int nums2LeftMax=j==0?Integer.MIN_VALUE:nums2[j-1];
-            int nums2RightMin=j==n?Integer.MAX_VALUE:nums2[j];
-            if ((m+n)%2==0){
-                return (Math.max(nums1LeftMax,nums2LeftMax)+Math.min(nums1RightMin,nums2RightMin))*1.0/2;
-            }
-            else {
-                return Math.max(nums1LeftMax,nums2LeftMax);
-            }
-        }
-    }
-
-    /**
      * 找出第 k 小的距离对，我的解法（暴力求解，可以求解，但是内存超出限制）
      */
     class SmallestDistancePair {
@@ -274,7 +197,6 @@ public class BinarySearch {
         // new SearchRange().searchRange(new int[]{}, 0);
         // new NextGreatestLetter().nextGreatestLetter(new char[]{'c','f','j'}, 'a');
         // new FindMin1().findMin(new int[]{3,3,1,3});
-        // new FindMedianSortedArrays().findMedianSortedArrays(new int[]{}, new int[]{2});
         // PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(new Comparator<Integer>() {
         //     @Override
         //     public int compare(Integer o1, Integer o2) {
