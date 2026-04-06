@@ -18,84 +18,6 @@ import org.junit.jupiter.api.Test;
 import leetcode.common.TreeNode;
 
 public class BinaryTreeMedium {
-
-    /**
-     * 二叉树展开为链表，用前序遍历+队列接收结果
-     */
-    class Flatten {
-        /**
-         * 递归实现（效率和寻找前驱节点相近）
-         */
-        public void flatten(TreeNode root) {
-            if(root == null) return;
-
-            Queue<TreeNode> queue = new LinkedList<>();
-            preOrder(root, queue);
-
-            TreeNode head = queue.poll();
-            TreeNode cur = head;
-            while (!queue.isEmpty()){
-                cur.left = null;
-                cur.right = queue.poll();
-                cur = cur.right;
-            }
-        }
-
-        public TreeNode preOrder(TreeNode root, Queue<TreeNode> queue){
-            queue.add(root);
-            if(root.left != null) preOrder(root.left, queue);
-            if(root.right != null) preOrder(root.right, queue);
-            return root;
-        }
-
-        /**
-         * 非递归实现（效率最低）
-         */
-        public void flatten0(TreeNode root) {
-            Stack<TreeNode> stack = new Stack<>();
-            Queue<TreeNode> queue = new LinkedList<>();
-
-            TreeNode cur = root;
-            while (cur != null || !stack.isEmpty()){
-                while (cur != null){
-                    stack.push(cur);
-                    queue.add(cur);
-                    cur = cur.left;
-                }
-                cur = stack.pop().right;
-            }
-
-            root = queue.poll();
-            cur = root;
-            while (!queue.isEmpty()){
-                cur.left = null;
-                cur.right = queue.poll();
-                cur = cur.right;
-            }
-        }
-
-        /**
-         * 最佳解法：寻找前驱节点
-         */
-        public void flatten1(TreeNode root) {
-            TreeNode cur = root;
-            TreeNode next, pre;
-            while (cur != null){
-                if(cur.left != null){
-                    next = cur.left;
-                    pre = cur.left;
-                    while (pre.right != null){
-                        pre = pre.right;
-                    }
-                    pre.right = cur.right;
-                    cur.left = null;
-                    cur.right = next;
-                }
-                cur = cur.right;
-            }
-        }
-    }
-
     /**
      * 求根节点到叶节点数字之和，我的解法，广度优先遍历，另外用一个arrayList存储叶节点的结果（效率比较低），深度优先遍历不用再单独存储叶节点结果
      */
@@ -149,29 +71,6 @@ public class BinaryTreeMedium {
                 return sum;
             }
             return dfs(root.left, sum) + dfs(root.right, sum);
-        }
-    }
-
-    /**
-     * 二叉搜索树的最近公共祖先
-     * 就按照二叉搜索树的特性往下搜索，第一个分叉的结点就是最近公共祖先
-     */
-    class LowestCommonAncestor {
-        public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-            TreeNode ans = root;
-            int max = Math.max(p.val, q.val);
-            int min = Math.min(p.val, q.val);
-
-            while (ans != null){
-                if(ans.val > max){
-                    ans = ans.left;
-                } else if (ans.val < min) {
-                    ans = ans.right;
-                } else {
-                    return ans;
-                }
-            }
-            return null;
         }
     }
 

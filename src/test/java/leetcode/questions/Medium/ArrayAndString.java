@@ -3,9 +3,7 @@ package leetcode.questions.Medium;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
@@ -73,29 +71,6 @@ public class ArrayAndString {
         }
 
         return res;
-    }
-
-    /**
-     * 字母异位词分组（我的解法：字符串排序，可以，但是效率比较低，注意chars.toString()和String.valueOf(chars)是不同的）
-     */
-    public List<List<String>> groupAnagrams(String[] strs) {
-        if(strs == null || strs.length == 0)
-            return new ArrayList<>();
-
-        Map<String, List<String>> ans = new HashMap<>();
-
-        char[] chars;
-        for(int i = 0;i < strs.length;i++){
-            chars = strs[i].toCharArray();
-            Arrays.sort(chars);
-            if(ans.containsKey(String.valueOf(chars))){
-                ans.get(String.valueOf(chars)).add(strs[i]);
-            }else{
-                ans.put(String.valueOf(chars), new ArrayList<String>(Arrays.asList(strs[i])));
-            }
-        }
-
-        return new ArrayList<>(ans.values());
     }
 
 

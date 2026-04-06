@@ -9,6 +9,21 @@ import leetcode.common.TreeNode;
  */
 public class DFSTReverseT {
     /**
+     * 101. 对称二叉树 [Easy]
+     */
+    public boolean isSymmetric(TreeNode root) {
+        return isSymmetric(root.left, root.right);
+    }
+
+    boolean isSymmetric(TreeNode left, TreeNode right) {
+        if (left == null && right == null)
+            return true;
+        if (left == null || right == null || left.val != right.val)
+            return false;
+        return isSymmetric(left.left, right.right) && isSymmetric(left.right, right.left);
+    }
+
+    /**
      * 110. 平衡二叉树
      * 
      * 找到一棵子树不满足条件直接返回-1，最后判断根节点的返回值是否为-1
@@ -25,5 +40,19 @@ public class DFSTReverseT {
         if (left == -1 || right == -1 || Math.abs(left - right) > 1)
             return -1;
         return Math.max(left, right) + 1;
+    }
+
+    /**
+     * 226. 翻转二叉树 [Easy]
+     */
+    public TreeNode invertTree(TreeNode root) {
+        if (root == null)
+            return null;
+        invertTree(root.left);
+        invertTree(root.right);
+        TreeNode tmp = root.left;
+        root.left = root.right;
+        root.right = tmp;
+        return root;
     }
 }

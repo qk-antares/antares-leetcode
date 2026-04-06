@@ -46,38 +46,4 @@ public class Tree {
 
         return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
     }
-
-    /**
-     * 226. 翻转二叉树
-     */
-    public TreeNode invertTree(TreeNode root) {
-        if (root == null || root.left == null && root.right == null) {
-            return root;
-        }
-        TreeNode tmp = root.left;
-        root.left = root.right;
-        root.right = tmp;
-        invertTree(root.left);
-        invertTree(root.right);
-        return root;
-    }
-
-    /**
-     * 101. 对称二叉树
-     */
-    public boolean isSymmetric(TreeNode root) {
-        if (root == null) {
-            return true;
-        }
-        return isSymmetricHelper(root.left, root.right);
-    }
-
-    public boolean isSymmetricHelper(TreeNode tree1, TreeNode tree2) {
-        if (tree1 == null && tree2 == null) {
-            return true;
-        } else if (tree1 == null || tree2 == null || tree1.val != tree2.val) {
-            return false;
-        }
-        return isSymmetricHelper(tree1.left, tree2.right) && isSymmetricHelper(tree1.right, tree2.left);
-    }
 }

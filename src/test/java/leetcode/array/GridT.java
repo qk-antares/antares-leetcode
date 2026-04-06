@@ -2,12 +2,44 @@ package leetcode.array;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 /**
  * 二维数组Grid
  */
 public class GridT {
+    /**
+     * 73. 矩阵置零 [Medium]
+     */
+    public void setZeroes(int[][] matrix) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+        HashSet<Integer> rows = new HashSet<>(m);
+        HashSet<Integer> columns = new HashSet<>(n);
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if(matrix[i][j] == 0){
+                    rows.add(i);
+                    columns.add(j);
+                }
+            }
+        }
+
+        for (Integer row : rows) {
+            for (int j = 0; j < n; j++) {
+                matrix[row][j] = 0;
+            }
+        }
+
+        for (Integer column : columns) {
+            for (int i = 0; i < m; i++) {
+                matrix[i][column] = 0;
+            }
+        }
+    }
+    
     /**
      * 54. 螺旋矩阵 [Medium]
      * 

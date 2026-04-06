@@ -7,26 +7,6 @@ import leetcode.common.TreeNode;
 
 public class BinaryTreeEasy {
     /**
-     * 翻转二叉树，我的解法，递归
-     */
-    class Solution {
-        public TreeNode invertTree(TreeNode root) {
-            invertHelper(root);
-            return root;
-        }
-
-        public void invertHelper(TreeNode root) {
-            if(root == null) return;
-
-            TreeNode left = root.left;
-            root.left = root.right;
-            root.right = left;
-            invertHelper(root.left);
-            invertHelper(root.right);
-        }
-    }
-
-    /**
      * 二叉树的所有路径（深度优先搜索，递归写法）
      */
     class BinaryTreePaths {
@@ -71,7 +51,4 @@ public class BinaryTreeEasy {
             }
         }
     }
-
-
-
 }

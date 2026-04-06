@@ -2,7 +2,6 @@ package leetcode.datastruture.queue;
 
 import java.util.ArrayDeque;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Queue;
 
 import org.junit.jupiter.api.Test;
@@ -92,67 +91,6 @@ public class QueueLearn {
     }
      */
 
-    /**
-     * 岛屿数量，我的解法（广度优先搜索，代码上可以再优化下，但思想是对的）
-     */
-    class NumIslands {
-        boolean[][] visited;
-        public int numIslands(char[][] grid) {
-            int height = grid.length;
-            int width = grid[0].length;
-            visited = new boolean[height][width];
-
-            int ans = 0;
-
-            for(int i = 0;i < height;i++){
-                for(int j = 0;j < width;j++){
-                    //如果该节点是没有访问过的1结点
-                    if(grid[i][j] == '1' && !visited[i][j]){
-                        ans++;
-                        visited[i][j] = true;
-                        bfs(grid, i, j);
-                    }
-                }
-            }
-
-            return ans;
-        }
-
-        //将岛屿及其周围的0结点标记为访问过
-        public void bfs(char[][] grid, int i , int j){
-            Queue<int[]> queue = new LinkedList<>();
-            queue.offer(new int[]{i, j});
-
-            int size;
-            while (!queue.isEmpty()){
-                size = queue.size();
-                for(int k = 0;k < size;k++){
-                    int[] poll = queue.poll();
-                    //遍历周边的四个结点
-                    if(poll[0] - 1 > -1 && !visited[poll[0]-1][poll[1]]){
-                        visited[poll[0]-1][poll[1]] = true;
-                        if(grid[poll[0]-1][poll[1]] == '1')
-                            queue.offer(new int[]{poll[0]-1, poll[1]});
-                    }
-                    if(poll[0] + 1 < grid.length && !visited[poll[0]+1][poll[1]]){
-                        visited[poll[0]+1][poll[1]] = true;
-                        if(grid[poll[0]+1][poll[1]] == '1')
-                            queue.offer(new int[]{poll[0]+1, poll[1]});
-                    }
-                    if(poll[1] - 1 > -1 && !visited[poll[0]][poll[1]-1]){
-                        visited[poll[0]][poll[1]-1] = true;
-                        if(grid[poll[0]][poll[1]-1] == '1')
-                            queue.offer(new int[]{poll[0], poll[1]-1});
-                    }
-                    if(poll[1] + 1 < grid[0].length && !visited[poll[0]][poll[1]+1]){
-                        visited[poll[0]][poll[1]+1] = true;
-                        if(grid[poll[0]][poll[1]+1] == '1')
-                            queue.offer(new int[]{poll[0], poll[1]+1});
-                    }
-                }
-            }
-        }
-    }
 
     /**
      * 打开转盘锁（BFS解决，每一个结点有8个子结点，但是结点不能重复，不能有deadends结点，这意味着大多数是没有8个子结点的）
@@ -278,7 +216,6 @@ public class QueueLearn {
 
     @Test
     public void invoke(){
-        // new NumIslands().numIslands(new char[][]{{'1','1','1','1','0'},{'1','1','0','1','0'},{'1','1','0','0','0'},{'0','0','0','0','0'}});
         // new OpenLock().openLock(new String[]{"0201","0101","0102","1212","2002"}, "0202");
     }
 }

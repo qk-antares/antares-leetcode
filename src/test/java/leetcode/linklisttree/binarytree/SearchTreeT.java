@@ -58,6 +58,9 @@ public class SearchTreeT {
      * 230. 二叉搜索树中第 K 小的元素 [Medium]
      * 
      * 维护一个全局的当前访问到的元素，思路和[530]类似
+     * 需要记录ans
+     * 
+     * 另一种方法是不记录ans
      */
     int cur = 0;
     int ans = -1;
@@ -79,10 +82,32 @@ public class SearchTreeT {
         inorder(root.right, k);
     }
 
+    int k;
+
+    public int kthSmallest0(TreeNode root, int k) {
+        this.k = k;
+        return dfs(root);
+    }
+
+    int dfs(TreeNode root) {
+        // 没有找到
+        if (root == null)
+            return -1;
+        // 在左子树找
+        int leftAns = dfs(root.left);
+        if (leftAns != -1)
+            return leftAns;
+        if (--k == 0) {
+            return root.val;
+        }
+        return dfs(root.right);
+    }
+
     /**
      * 98. 验证二叉搜索树
      * 
-     * 中序遍历，记录上一个节点
+     * 方法1：中序遍历，记录上一个节点
+     * 方法2：递归，记录节点的范围（注意节点的值不仅受其父节点的限制，还受所有祖先节点的限制）
      */
     long prev1 = Long.MIN_VALUE;
     boolean ans1 = true;
@@ -102,5 +127,17 @@ public class SearchTreeT {
         }
         prev1 = root.val;
         inorder1(root.right);
+    }
+
+    public boolean isValidBST0(TreeNode root) {
+        return isValidBST(root, Long.MIN_VALUE, Long.MAX_VALUE);
+    }
+
+    boolean isValidBST(TreeNode root, long min, long max) {
+        if (root == null)
+            return true;
+        return root.val > min && root.val < max
+                && isValidBST(root.left, min, root.val)
+                && isValidBST(root.right, root.val, max);
     }
 }

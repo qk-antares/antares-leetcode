@@ -33,15 +33,16 @@ public class RecursionT {
     }
 
     int dfs(TreeNode root, int depth) {
-        if(root == null) {
+        if (root == null) {
             maxDepth = Math.max(maxDepth, depth);
             return depth;
         }
 
-        int leftMaxDepth =dfs(root.left, depth+1);
-        int rightMaxDepth = dfs(root.right, depth+1);
+        int leftMaxDepth = dfs(root.left, depth + 1);
+        int rightMaxDepth = dfs(root.right, depth + 1);
 
-        if(leftMaxDepth == maxDepth && rightMaxDepth == maxDepth) ansN = root;
+        if (leftMaxDepth == maxDepth && rightMaxDepth == maxDepth)
+            ansN = root;
 
         return Math.max(leftMaxDepth, rightMaxDepth);
     }
@@ -80,35 +81,5 @@ public class RecursionT {
         }
 
         return maxDepth.iterator().next();
-    }
-
-    /*
-     * ========================== 分割线 ==========================
-     */
-
-    /**
-     * 124. 二叉树中的最大路径和 [Hard]
-     * 
-     * 枚举树中的每个节点作为拐弯点
-     * 则 ans = Math.max(ans, 拐弯点.val+左子树的最大链+右子树的最大链)
-     * 写一个函数来计算树的最大链
-     */
-
-    int ans = Integer.MIN_VALUE;
-
-    public int maxPathSum(TreeNode root) {
-        maxGain(root);
-        return ans;
-    }
-
-    int maxGain(TreeNode root) {
-        if (root == null)
-            return 0;
-
-        int leftGain = Math.max(maxGain(root.left), 0);
-        int rightGain = Math.max(maxGain(root.right), 0);
-
-        ans = Math.max(ans, root.val + leftGain + rightGain);
-        return Math.max(root.val + leftGain, root.val + rightGain);
     }
 }

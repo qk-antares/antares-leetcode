@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import org.junit.jupiter.api.Test;
-
 import leetcode.common.ListNode;
 
 public class LinkedListLearn {
@@ -257,11 +255,6 @@ public class LinkedListLearn {
 
             return ans;
         }
-
-    }
-
-    @Test
-    void invoke(){
 
     }
 }

@@ -148,24 +148,6 @@ public class BinaryTree {
     }
     
     /**
-     * 对称二叉树（我的解法：递归，内存消耗有点大）
-     */
-    public boolean isSymmetric(TreeNode root) {
-        if(root == null)
-            return true;
-        return isSymmetricHelper(root.left, root.right);
-    }
-
-    public boolean isSymmetricHelper(TreeNode left, TreeNode right){
-        if(left == null && right == null)
-            return true;
-        if(left == null || right == null || left.val != right.val)
-            return false;
-
-        return isSymmetricHelper(left.left, right.right) && isSymmetricHelper(left.right, right.left);
-    }
-
-    /**
      * 二叉树的序列化与反序列化（答案解法：BFS，用#代表空，用，分隔，存储所有的null结点）
      */
     public class Codec {

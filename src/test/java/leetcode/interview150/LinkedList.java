@@ -1,16 +1,11 @@
 package leetcode.interview150;
 
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.jupiter.api.Test;
 
 import leetcode.common.ListNode;
 
 public class LinkedList {
-
-
     /**
      * 92. 反转链表 II
      */
@@ -195,84 +190,6 @@ public class LinkedList {
         reverse.next = reverseHelper(next);
         return kNode;
     }
-
-    class LRUCache {
-        class DNode {
-            DNode pre;
-            DNode next;
-            int key;
-            int val;
-        }
-        
-        Map<Integer, DNode> map;
-        DNode head;
-        DNode tail;
-        int capacity;
-
-        public LRUCache(int capacity) {
-            map = new HashMap<>();
-            head = new DNode();
-            tail = new DNode();
-            head.next = tail;
-            tail.pre = head;
-            this.capacity = capacity;
-        }
-        
-        public int get(int key) {
-            if(map.containsKey(key)) {
-                DNode node = map.get(key);
-                moveToHead(node);
-                return node.val;
-            }
-            return -1;
-        }
-        
-        public void put(int key, int value) {
-            if(map.containsKey(key)) {
-                DNode node = map.get(key);
-                node.val = value;
-                moveToHead(node);
-            } else {
-                DNode newNode = new DNode();
-                newNode.key = key;
-                newNode.val = value;
-                insertNodeToHead(newNode);
-                map.put(key, newNode);
-
-                if(map.size() > capacity){
-                    map.remove(tail.pre.key);
-                    removeTail();
-                }
-            }
-        }
-
-        void moveToHead(DNode node) {
-            node.pre.next = node.next;
-            node.next.pre = node.pre;
-
-            head.next.pre = node;
-            node.next = head.next;
-            head.next = node;
-            node.pre = head;
-        }
-
-        void insertNodeToHead(DNode node){
-            node.pre = head;
-            node.next = head.next;
-            head.next.pre = node;
-            head.next = node;
-        }
-
-        void removeTail(){
-            DNode remove = tail.pre;
-
-            tail.pre = tail.pre.pre;
-            tail.pre.next = tail;
-            remove.next = null;
-            remove.pre = null;
-        }
-    }
-
 
     @Test
     void test(){

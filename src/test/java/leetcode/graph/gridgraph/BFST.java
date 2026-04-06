@@ -1,4 +1,4 @@
-package leetcode.gridgraph;
+package leetcode.graph.gridgraph;
 
 import java.util.ArrayDeque;
 
@@ -8,6 +8,46 @@ import org.junit.jupiter.api.Test;
  * 网格图BFS
  */
 public class BFST {
+    /**
+     * 994. 腐烂的橘子 [Medium]
+     */
+    public int orangesRotting(int[][] grid) {
+        int m = grid.length, n = grid[0].length;
+        ArrayDeque<Integer> q = new ArrayDeque<>();
+        int cnt = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 2) {
+                    q.offer(i * 10 + j);
+                    grid[i][j] = 0;
+                } else if (grid[i][j] == 1) {
+                    cnt++;
+                }
+            }
+        }
+
+        int ans = 0;
+        int[][] dirs = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
+        while (cnt > 0 && !q.isEmpty()) {
+            int size = q.size();
+            ans++;
+            for (int i = 0; i < size; i++) {
+                int tmp = q.poll();
+                int x = tmp / 10, y = tmp % 10;
+                for (int[] dir : dirs) {
+                    int nextX = x + dir[0], nextY = y + dir[1];
+                    if (nextX >= 0 && nextX < m && nextY >= 0 && nextY < n && grid[nextX][nextY] == 1) {
+                        q.offer(nextX * 10 + nextY);
+                        grid[nextX][nextY] = 0;
+                        cnt--;
+                    }
+                }
+            }
+        }
+
+        return cnt == 0 ? ans : -1;
+    }
+
     /**
      * 909. 蛇梯棋 [Medium]
      * 

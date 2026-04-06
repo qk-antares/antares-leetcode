@@ -1,4 +1,4 @@
-package leetcode.gridgraph;
+package leetcode.graph.gridgraph;
 
 /**
  * 网格图的深度优先遍历

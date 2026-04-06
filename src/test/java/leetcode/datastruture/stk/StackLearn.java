@@ -29,54 +29,6 @@ public class StackLearn {
     }
 
     /**
-     * 岛屿数量
-     */
-    class NumIslands {
-        boolean[][] visited;
-        int m;
-        int n;
-
-        public int numIslands(char[][] grid) {
-            m = grid.length;
-            n = grid[0].length;
-            visited = new boolean[m][n];
-
-            int ans = 0;
-            for(int i = 0;i < m;i++){
-                for(int j = 0;j < n;j++){
-                    //没有访问过
-                    if(!visited[i][j]){
-                        visited[i][j] = true;
-                        if(grid[i][j] == '1'){
-                            ans++;
-                            dfs(grid, i, j);
-                        }
-                    }
-                }
-            }
-
-            return ans;
-        }
-
-        public void dfs(char[][] grid, int i, int j){
-            for(int step = -1;step <= 1;step += 2){
-                if(i+step >= 0 && i+step<m && !visited[i+step][j]){
-                    visited[i+step][j] = true;
-                    if(grid[i+step][j] == '1'){
-                        dfs(grid, i+step, j);
-                    }
-                }
-                if(j+step >= 0 && j+step<n && !visited[i][j+step]){
-                    visited[i][j+step] = true;
-                    if(grid[i][j+step] == '1'){
-                        dfs(grid, i, j+step);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
      * 克隆图
      */
     class Node {

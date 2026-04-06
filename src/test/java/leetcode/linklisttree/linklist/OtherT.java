@@ -123,8 +123,8 @@ public class OtherT {
         void removeTail(){
             DLinkedNode remove = tail.prev;
 
-            tail.prev = tail.prev.prev;
-            tail.prev.next = tail;
+            tail.prev = remove.prev;
+            remove.prev.next = tail;
             remove.next = null;
             remove.prev = null;
         }

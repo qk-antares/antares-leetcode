@@ -1,5 +1,7 @@
 package leetcode.dp;
 
+import java.util.ArrayDeque;
+
 /*
  * 前后缀分解
  */
@@ -12,13 +14,13 @@ public class PreSuffixT {
         int[] l = new int[n];
         l[0] = 1;
         int[] r = new int[n];
-        r[n-1] = 1;
-        for(int i = 1; i < n; i++) {
-            l[i] = l[i-1] * nums[i-1];
-            r[n-1-i] = r[n-i] * nums[n-i];
+        r[n - 1] = 1;
+        for (int i = 1; i < n; i++) {
+            l[i] = l[i - 1] * nums[i - 1];
+            r[n - 1 - i] = r[n - i] * nums[n - i];
         }
 
-        for(int i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) {
             l[i] *= r[i];
         }
         return l;
@@ -131,6 +133,62 @@ public class PreSuffixT {
             ans = Math.min(ans, cnt);
         }
 
+        return ans;
+    }
+
+    /**
+     * 42. 接雨水 [Hard]
+     * 
+     * 记录每个元素左侧的最大值和右侧的最大值
+     * 
+     * 单调栈的方法是一行一行接雨水
+     * 想象输入是一个数据流，如果是递减的，就塞进栈中
+     * 当遇到一个比栈顶大的，
+     */
+    public int trap(int[] height) {
+        int n = height.length;
+        int[] rMax = new int[n];
+        for (int i = n - 2; i >= 0; i--) {
+            rMax[i] = Math.max(rMax[i + 1], height[i + 1]);
+        }
+
+        int ans = 0;
+        int lMax = 0;
+        for (int i = 0; i < n; i++) {
+            lMax = Math.max(lMax, height[i]);
+            ans += Math.max(0, Math.min(lMax, rMax[i]) - height[i]);
+        }
+        return ans;
+    }
+
+    public int trap0(int[] height) {
+        int l = 0, r = height.length - 1;
+        int lMax = 0, rMax = 0;
+        int ans = 0;
+        while (l <= r) {
+            lMax = Math.max(lMax, height[l]);
+            rMax = Math.max(rMax, height[r]);
+            if (lMax < rMax) {
+                ans += lMax - height[l++];
+            } else {
+                ans += rMax - height[r--];
+            }
+        }
+        return ans;
+    }
+
+    public int trap1(int[] height) {
+        ArrayDeque<Integer> stk = new ArrayDeque<>();
+        int ans = 0;
+        for(int i = 0; i < height.length; i++) {
+            while(!stk.isEmpty() && height[stk.peek()] <= height[i]) {
+                int idx = stk.pop();
+                if(stk.isEmpty()) break;
+                int pre = stk.peek();
+                ans += (Math.min(height[pre], height[i]) - height[idx]) * (i-pre-1);
+            }
+            stk.push(i);
+        }
         return ans;
     }
 }

@@ -91,7 +91,9 @@ public class ConstructT {
     }
 
     /**
-     * 105. 从前序与中序遍历序列构造二叉树
+     * 105. 从前序与中序遍历序列构造二叉树 [Medium]
+     * 
+     * 前序遍历[根,左,右]，中序遍历[左,根,右]
      */
     public TreeNode buildTree1(int[] preorder, int[] inorder) {
         Map<Integer, Integer> idxMap = new HashMap<>();

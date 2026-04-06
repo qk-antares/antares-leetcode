@@ -1,8 +1,9 @@
 package leetcode.interview150;
 
-import org.junit.jupiter.api.Test;
+import java.util.HashMap;
+import java.util.HashSet;
 
-import java.util.*;
+import org.junit.jupiter.api.Test;
 
 public class Hash {
     /**
@@ -71,24 +72,6 @@ public class Hash {
     }
 
     /**
-     * 49. 字母异位词分组
-     */
-    public List<List<String>> groupAnagrams(String[] strs) {
-        HashMap<String, List<String>> ans = new HashMap<>();
-        char[] chars;
-        for (String str : strs) {
-            chars = str.toCharArray();
-            Arrays.sort(chars);
-            if (ans.containsKey(String.valueOf(chars))) {
-                ans.get(String.valueOf(chars)).add(str);
-            } else {
-                ans.put(String.valueOf(chars), new ArrayList<String>(Collections.singletonList(str)));
-            }
-        }
-        return new ArrayList<>(ans.values());
-    }
-
-    /**
      * 219. 存在重复元素 II
      */
     public boolean containsNearbyDuplicate(int[] nums, int k) {
@@ -100,31 +83,6 @@ public class Hash {
             map.put(nums[i], i);
         }
         return false;
-    }
-
-    /**
-     * 128. 最长连续序列
-     */
-    public int longestConsecutive(int[] nums) {
-        if(nums.length == 0) return 0;
-
-        HashSet<Integer> set = new HashSet<>();
-        for (int num : nums) {
-            set.add(num);
-        }
-        int ans = Integer.MIN_VALUE;
-        int max;
-        for (int num : nums) {
-            if(set.contains(num-1)){
-                continue;
-            }
-            max = 1;
-            while (set.contains(num+max)){
-                max++;
-            }
-            ans = Math.max(max, ans);
-        }
-        return ans;
     }
 
     @Test
