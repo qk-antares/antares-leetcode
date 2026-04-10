@@ -1,4 +1,4 @@
-package leetcode.datastruture.saveenum;
+package leetcode.algorithm.saveenum;
 
 import java.util.HashMap;
 import java.util.HashSet;

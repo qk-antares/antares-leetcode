@@ -1,4 +1,4 @@
-package leetcode.datastruture.diffArr;
+package leetcode.algorithm.diffArr;
 
 /**
  * 二维差分

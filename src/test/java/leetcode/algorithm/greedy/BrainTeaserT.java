@@ -1,4 +1,4 @@
-package leetcode.greedy;
+package leetcode.algorithm.greedy;
 
 /*
  * 脑筋急转弯，基本上是根据输入直接输出，需要找规律

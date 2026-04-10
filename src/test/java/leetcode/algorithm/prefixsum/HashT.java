@@ -1,4 +1,4 @@
-package leetcode.datastruture.prefixsum;
+package leetcode.algorithm.prefixsum;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;

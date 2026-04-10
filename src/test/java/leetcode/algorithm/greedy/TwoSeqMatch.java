@@ -1,4 +1,4 @@
-package leetcode.greedy;
+package leetcode.algorithm.greedy;
 
 import java.util.ArrayList;
 import java.util.Arrays;

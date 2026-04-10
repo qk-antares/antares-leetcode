@@ -1,4 +1,4 @@
-package leetcode.datastruture.prefixsum;
+package leetcode.algorithm.prefixsum;
 
 /*
  * 二维前缀和

@@ -21,7 +21,9 @@ public class CFT {
         CompletableFuture<Integer> future2 = CompletableFuture.supplyAsync(() -> {
             return 1;
         }).thenApply(x -> x + 1);
-        future2.join();
+        Integer join = future2.join();
+
+        CompletableFuture.allOf(future, future2).join();
 
         CompletableFuture.runAsync(() -> {
             System.out.println("Hello");

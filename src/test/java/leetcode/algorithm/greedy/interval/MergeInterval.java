@@ -1,4 +1,4 @@
-package leetcode.greedy.interval;
+package leetcode.algorithm.greedy.interval;
 
 import java.util.ArrayList;
 import java.util.Arrays;

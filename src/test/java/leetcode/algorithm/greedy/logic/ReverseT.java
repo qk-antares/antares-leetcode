@@ -1,4 +1,4 @@
-package leetcode.greedy.logic;
+package leetcode.algorithm.greedy.logic;
 
 /*
  * 逆向思维
