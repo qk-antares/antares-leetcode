@@ -454,6 +454,33 @@ public class LRBasicT {
         return ans;
     }
 
+    /**
+     * 3761. 镜像对之间最小绝对距离 [Medium]
+     */
+    public int minMirrorPairDistance(int[] nums) {
+        Map<Integer, Integer> reverseIdx = new HashMap<>();
+        int ans = Integer.MAX_VALUE;
+        for (int i = 0; i < nums.length; i++) {
+            if (reverseIdx.containsKey(nums[i])) {
+                ans = Math.min(ans, i - reverseIdx.get(nums[i]));
+            }
+
+            int r = reverse(nums[i]);
+            reverseIdx.put(r, i);
+        }
+        return ans != Integer.MAX_VALUE ? ans : -1;
+    }
+
+    int reverse(int num) {
+        int ans = 0;
+        while (num != 0) {
+            ans *= 10;
+            ans += num % 10;
+            num /= 10;
+        }
+        return ans;
+    }
+
     /*
      * 1014. 最佳观光组合 [Medium]
      * 
